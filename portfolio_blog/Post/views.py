@@ -101,3 +101,4 @@ def add_post(request):
         post_form = AddPostForm()
         
     return render(request, 'pages/Post/create_post_form.html', {'post_form': post_form})
+

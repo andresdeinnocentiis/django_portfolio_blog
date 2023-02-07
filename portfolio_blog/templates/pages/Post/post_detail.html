@@ -8,6 +8,11 @@
 <h1>{{post.title}}</h1>
 
     <div>
+        {% if post.image %}
+
+            <img src="{{post.image.url}}" alt="" srcset="">
+            
+        {% endif %}
         <p>{{post.caption}}</p>
 
         <p>{{post.description}}</p>
