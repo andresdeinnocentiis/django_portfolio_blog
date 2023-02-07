@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register User{% endblock %}
+
+{% block content %}
+
+    <h1>Register</h1>
+
+    {% if register_user_form.errors %}
+
+    <p style='color: red;'>Error: Check input data.</p>
+
+    {% endif %}
+
+    <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+
+        <table>
+            {{register_user_form.as_table}}
+        </table>
+
+        <input type="submit" value="Post">
+
+    </form>
+
+{% endblock %}

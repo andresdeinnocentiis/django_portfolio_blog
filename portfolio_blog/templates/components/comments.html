@@ -1,0 +1,22 @@
+{% with comments=comments %}
+  <ul>
+    {% for comment in comments %}
+        <div class='comment' style='margin:1em;margin-left:3rem'>
+            <div class='comment-content'>
+                {% if comment.user %}
+                    <p>@{{comment.user.username}} wrote:</p>
+                {% elif comment.anonymous_user %}
+                    <p>@{{comment.anonymous_user.name}} wrote:</p>
+                {% endif %}
+                <p style='margin:.5rem;margin-left:1rem'>{{comment.content}}</p>
+                <p>{{comment.created_at}} | {{comment.likes}} likes</p>
+            </div>
+            {% if comment.comment_set.exists %}
+                <h6 style='margin:1rem'>Replies</h6>
+              {% include "components/comments.html" with comments=comment.comment_set.all %}
+            {% endif %}
+        </div>
+    {% endfor %}
+  </ul>
+{% endwith %}
+

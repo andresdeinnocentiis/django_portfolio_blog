@@ -1,0 +1,15 @@
+{% if review_form.errors %}
+
+<p style='color: red;'>Error: Check input data.</p>
+
+{% endif %}
+
+<form action="" method="post">{% csrf_token %}
+
+    <table>
+        {{review_form.as_table}}
+    </table>
+
+    <input type="submit" value="Post">
+
+</form>

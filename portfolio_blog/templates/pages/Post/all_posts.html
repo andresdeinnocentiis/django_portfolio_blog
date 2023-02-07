@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}Projects{% endblock %}
+
+{% block content %}
+
+<h1>Projects</h1>
+
+{% for post in posts %}
+
+    <a href="{% url 'post' post.id %}">
+        <div>
+            <h2>{{post.title}}</h2>
+    
+            <p>{{post.caption}}</p>
+    
+            <p>{{post.description}}</p>
+    
+            <p>{{post.tech_used}}</p>
+        </div>
+    </a>
+        
+{% endfor %}
+
+{% endblock %}

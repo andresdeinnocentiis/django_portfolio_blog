@@ -10,5 +10,9 @@ class UserProfile(models.Model):
     bio = models.TextField(null=True, blank=True)
     
     
-
+class AnonymousUser(models.Model):
+    name = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.name
 

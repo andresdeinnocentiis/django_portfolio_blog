@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Project | {{post.title}}{% endblock %}
+
+{% block content %}
+
+<h1>{{post.title}}</h1>
+
+    <div>
+        <p>{{post.caption}}</p>
+
+        <p>{{post.description}}</p>
+
+        <p>{{post.tech_used}}</p>
+
+        <p>{{post.likes}} likes</p>
+    </div>
+
+    <h3>Reviews</h3>
+    <div>
+        {% for review in reviews %}
+            {% if review.post.id == post.id %}
+            <div class'review' style='margin:1rem'>
+                <p>{{review.rating}} / 5</p>
+                {% if review.user %}
+                    <p>@{{review.user.username}} wrote:</p>
+                {% elif review.anonymous_user %}
+                    <p>@{{review.anonymous_user.name}} wrote:</p>
+                {% endif %}
+                <p style='margin:.5rem;margin-left:1rem'>{{review.content}}</p>
+                <p>{{review.created_at}} | {{review.likes}} likes</p>
+            </div>
+            {% if review.comment_set.exists %}
+                <h6 style='margin:1rem'>Comments</h6>
+                
+                {% include "components/comments.html" with comments=review.comment_set.all %}
+            
+            {% endif %}
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <h3>Leave a Review!</h3>
+    {% include "pages/Post/create_review.html" %}
+
+{% endblock %}

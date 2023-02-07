@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}All Technologies{% endblock %}
+
+{% block content %}
+
+<h1>Technologies</h1>
+
+{% for tech in technologies %}
+
+
+        <div>
+            <h2>{{tech.name}}</h2>
+            
+            {% if tech.image %}
+
+                <img src="{{tech.image.url}}" alt="" srcset="">
+            
+            {% endif %}
+
+            <p>{{tech.years_exp}}</p>
+    
+            <p>{{tech.validations}}</p>
+        </div>
+
+
+{% endfor %}
+
+{% endblock %}
