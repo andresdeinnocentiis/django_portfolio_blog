@@ -10,3 +10,6 @@ def contact(request):
 
 def about(request):
     return render(request, 'pages/About/about.html')
+
+def resume(request):
+    return render(request, 'pages/Resume/resume.html')

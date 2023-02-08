@@ -1,6 +1,8 @@
-from django.shortcuts import render
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate, login, logout
 from .models import UserProfile
 from .forms import UserRegisterForm
 from django.http import HttpResponse
@@ -20,13 +22,41 @@ def get_all_users(request):
 
 def get_user(request, id):
     
-    user = get_object_or_404(User, id = id)
-    
+    if id:
+        user = get_object_or_404(User, id = id)
+    else:
+        id = request.GET['id']
+        user = get_object_or_404(User, id = id)
     context = {
         'user': user,   
     }
     
     return render(request, 'pages/User/single_user.html', context)
+
+
+def login_user(request):
+    
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            
+            user = authenticate(username=username, password=password)
+            
+            if user is not None:
+                login(request, user)
+                return redirect(reverse('home'))
+            
+    else:
+        form = AuthenticationForm()
+    return render(request, 'pages/User/login.html', {'form': form})
+
+
+def logout_user(request):
+    logout(request)
+    return(redirect('home'))
 
 
 def register_user(request):

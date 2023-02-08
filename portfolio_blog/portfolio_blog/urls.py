@@ -15,15 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from portfolio_blog.views import home, contact, about
+from portfolio_blog.views import home, contact, about, resume
 from django.conf.urls.static import static
 from . import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    
     path('', home, name="home"),
     path('contact/', contact, name="contact"),
     path('about/', about, name="about"),
+    path('resume/', resume, name="resume"),
+    
     path('users/', include('UserProfile.urls')),
     path('posts/', include('Post.urls')),
     path('extras/', include('Extra.urls')),
