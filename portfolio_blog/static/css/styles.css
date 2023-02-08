@@ -90,6 +90,16 @@ ul {
     gap: 1rem;
 }
 
+.not-user {
+    padding: 1.5rem;
+    letter-spacing: 2px;
+}
+
+.not-user-link {
+    padding: .5rem;
+    letter-spacing: 2px;
+    font-weight: 600;
+}
 
 @media (min-width: 900px) {
     .navbar-toggler, .navbar-toggler-icon {
