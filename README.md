@@ -70,6 +70,13 @@ Install the required dependencies from the requirements.txt file:
   python manage.py runserver
 ```
 
+- Seguidamente, haga las migraciones de los modelos a tablas en la base de datos corriendo los siguientes comandos:
+```bash
+  python manage.py makemigrations
+
+  python manage.py migrate
+```
+
 **Nota: puede crear su propio super usuario para testear funcionalidades desde el admin panel:**
 ```bash
   python manage.py createsuperuser
