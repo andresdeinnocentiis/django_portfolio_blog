@@ -1,8 +1,9 @@
 {% with comments=comments %}
   <ul class="comments-ul">
     {% for comment in comments %}
-        <div class='comment' style='margin:1em;margin-left:3rem'>
-            <div class='comment__content'>
+        <div class="comment__section" style='margin:1em;margin-left:3rem'>
+
+            <div class='comment__content {% if comment.id|divisibleby:2 %}comment__content--even{% else %}comment__content--odd{% endif %}'>
                 {% if comment.user %}
                     <p><span class='comment__username'>@{{comment.user.username}}</span> wrote:</p>
                 {% elif comment.anonymous_user %}
@@ -10,13 +11,17 @@
                 {% endif %}
                 <p style='margin:.5rem;margin-left:1rem'>{{comment.content}}</p>
                 <p>{{comment.created_at}} | {{comment.likes}} likes</p>
+                <p class="like-comment"><span class="like-btn">Like</span> | <span class="comment-btn">Reply</span></p>
             </div>
+
             {% if comment.comment_set.exists %}
                 <h6 style='margin:1rem'>Replies</h6>
-              {% include "components/comments.html" with comments=comment.comment_set.all %}
+                
+                {% include "components/comments.html" with comments=comment.comment_set.all %}
+                
             {% endif %}
+
         </div>
     {% endfor %}
   </ul>
 {% endwith %}
-

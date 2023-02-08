@@ -41,6 +41,7 @@
                     {% endif %}
                     <p class="review__content" style='margin:.5rem;margin-left:1rem'>{{review.content}}</p>
                     <p class="review__created-likes"><span class="review__created">{{review.created_at}}</span> | <span class="review__likes">{{review.likes}} likes</span></p>
+                    <p class="like-comment"><span class="like-btn">Like</span> | <span class="comment-btn">Comment</span></p>
                 </div>
                 {% if review.comment_set.exists %}
                     <h6 class="comments-title" style='margin:1rem'>Comments</h6>
