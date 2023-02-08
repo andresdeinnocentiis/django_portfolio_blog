@@ -2,18 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
-:root {
-    --colorWhite: #F4FCFF; 
-    --colorGrey: #95A3B3; 
-    --colorGreyBlue: #185068; 
-    --colorBlue: #142E66; 
-    --colorCelticBlue: #1969CB; 
-    --colorDodgerBlue: #2697F5; 
-    --colorPictonBlue: #00AAFF; 
-    --colorAquamarine: #4AE7C1; 
-    --colorEmerald: #27D49F; 
-    --colorSpringGreen: #00FF9D; 
-}
+@import "./variables.css";
 
 * {
     margin: 0;

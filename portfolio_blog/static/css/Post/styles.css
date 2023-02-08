@@ -1,0 +1,42 @@
+@import "../variables.css";
+
+body {
+    color: var(--colorGreyBlue);
+    background: var(--colorWhite);
+}
+
+a {
+    color: var(--colorGreyBlue); 
+}
+
+.post-title {
+    color: var(--colorGreyBlue);
+}
+
+
+@media (min-width: 900px) {
+
+    .icon-logo-innokentiy-2 {
+        border-right: solid var(--colorGreyBlue);
+        
+    }
+
+    .nav-item-logout {
+        border-left: solid 1px var(--colorGreyBlue);
+    }
+
+    .last-nav-item {
+        border-left: solid 1px var(--colorGreyBlue);
+    }
+
+    .post-container-all {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .post-container {
+        width: 80%;
+    }
+
+}

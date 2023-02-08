@@ -13,6 +13,11 @@ class UserProfile(models.Model):
 class AnonymousUser(models.Model):
     name = models.CharField(max_length=100)
     
+    def save(self, *args, **kwargs):
+        self.name = self.name.lower()
+        self.name = self.name.replace(" ", "_")
+        return super(AnonymousUser, self).save(*args, **kwargs)
+    
     def __str__(self):
         return self.name
 

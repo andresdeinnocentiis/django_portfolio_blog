@@ -38,11 +38,6 @@ class UserRegisterForm(forms.Form):
             raise forms.ValidationError("Passwords must match.")
         return data
 
-"""
-class AuthenticationForm(forms.Form):
-    username = forms.CharField(max_length=30)
-    password = forms.CharField(widget=forms.PasswordInput)
-"""
 
 
 

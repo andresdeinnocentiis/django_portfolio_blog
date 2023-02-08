@@ -1,10 +1,10 @@
 {% with comments=comments %}
-  <ul>
+  <ul class="comments-ul">
     {% for comment in comments %}
         <div class='comment' style='margin:1em;margin-left:3rem'>
-            <div class='comment-content'>
+            <div class='comment__content'>
                 {% if comment.user %}
-                    <p>@{{comment.user.username}} wrote:</p>
+                    <p><span class='comment__username'>@{{comment.user.username}}</span> wrote:</p>
                 {% elif comment.anonymous_user %}
                     <p>@{{comment.anonymous_user.name}} wrote:</p>
                 {% endif %}

@@ -72,11 +72,11 @@ def register_user(request):
             info = register_user_form.cleaned_data
     
             user = User.objects.create_user(
-                username= info['username'],
-                email= info['email'],
+                username= info['username'].lower(),
+                email= info['email'].lower(),
                 password= info['password'],
-                first_name= info['first_name'],
-                last_name= info['last_name'],
+                first_name= info['first_name'].capitalize(),
+                last_name= info['last_name'].capitalize(),
             )
             
             # I do this because I've extended the Django's default User to UserProfile to add some extra data 
