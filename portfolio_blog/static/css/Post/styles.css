@@ -45,6 +45,7 @@ a {
     width: 30%;
     border-radius: 40px;
     border-top-left-radius: 0;
+    
 }
 
 .comment__content--odd {
@@ -59,6 +60,7 @@ a {
     width: 30%;
     border-radius: 40px;
     border-bottom-right-radius: 0;
+    
 }
 
 @media (min-width: 900px) {
