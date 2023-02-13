@@ -34,7 +34,7 @@
                 {% if review.post.id == post.id %}
                 <div class='review' style='margin:1rem'>
                     <p class="review__rating">{{review.rating}} / 5</p>
-                    {% if review.user %}
+                    {% if review.user.is_authenticated and review.user %}
                         <p class="review__wrote"><span class="review__username">@{{review.user.username}}</span> wrote:</p>
                     {% elif review.anonymous_user %}
                         <p><span class="review__username">@{{review.anonymous_user.name}}</span> wrote:</p>

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Post, Comment, Review
-from UserProfile.models import AnonymousUser
+from UserProfile.models import AnonymousUser, UserProfile
 from .forms import AddReviewForm, AddPostForm
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
@@ -39,7 +39,8 @@ def add_review_form(request, post_id):
             )
             
             if request.user.is_authenticated:
-                review.user = request.user.username
+                review.user = request.user
+
             else:
                 anonymous_user = AnonymousUser.objects.create(name=info['user'])
                 review.anonymous_user = anonymous_user
