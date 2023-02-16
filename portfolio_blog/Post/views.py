@@ -4,6 +4,7 @@ from UserProfile.models import AnonymousUser, UserProfile
 from .forms import AddReviewForm, AddPostForm
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
+from django.http import Http404
 
 # Django REST Framework imports:
 from rest_framework.response import Response
@@ -12,14 +13,15 @@ from .serializers import PostSerializer
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.generics import (
     ListAPIView,
+    RetrieveAPIView,
     CreateAPIView,
     UpdateAPIView,
     DestroyAPIView
 )
 
 # Create your views here.
-"""
-BORRAR ESTAS VIEWS PORQUE SE VAN A MANEJAR DESDE EL FRONT
+
+# BORRAR ESTAS VIEWS PORQUE SE VAN A MANEJAR DESDE EL FRONT
 def get_all_posts(request):
     
     posts = Post.objects.all()
@@ -112,7 +114,7 @@ def add_post(request):
         post_form = AddPostForm()
         
     return render(request, 'pages/Post/create_post_form.html', {'post_form': post_form})
-"""
+
 
 # BLOG POST VIEWS:
 class GetPostAPIView(ListAPIView):
@@ -124,7 +126,7 @@ class GetPostAPIView(ListAPIView):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
     
-class GetSinglePostAPIView(ListAPIView):
+class GetSinglePostAPIView(RetrieveAPIView):
     __doc__ = f'''
     `[GET]`
     This API view returns a single blog post.
@@ -132,18 +134,13 @@ class GetSinglePostAPIView(ListAPIView):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
 
-    def get_queryset(self):
-        '''
-        Sobrescribimos la función `get_queryset` para poder filtrar el request 
-        por medio de la url. En este caso traemos de la url por medio de `self.kwargs` 
-        el parámetro `Post_id` y con él realizamos una query para traer 
-        el Post del ID solicitado.  
-        '''
+    def get_object(self):
         try:
             id = self.kwargs['id']
-            queryset = Post.objects.filter(id=id)
-            return queryset
-        
+            obj = Post.objects.get(id=id)
+            return obj
+        except Post.DoesNotExist:
+            raise Http404
         except Exception as error:
             return {'error': f'The following error has occurred: {error}'}
         

@@ -6,6 +6,18 @@ from django.contrib.auth import authenticate, login, logout
 from .models import UserProfile
 from .forms import UserRegisterForm
 from django.http import HttpResponse
+
+# Django REST Framework imports:
+from .serializers import UserProfileSerializer, AnonymousUserSerializer
+
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.generics import (
+    ListAPIView,
+    CreateAPIView,
+    UpdateAPIView,
+    DestroyAPIView
+)
+
 # Create your views here.
 
 
@@ -120,4 +132,63 @@ def search_user_result(request):
         
     return HttpResponse(response)
     
+
+# API USER VIEWS:
+class GetUserAPIView(ListAPIView):
+    __doc__ = f'''
+    `[GET]`
+    This API view returns all the blog Users.
+    '''
+    queryset = User.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
     
+class GetSingleUserAPIView(ListAPIView):
+    __doc__ = f'''
+    `[GET]`
+    This API view returns a single blog User.
+    '''
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def get_queryset(self):
+        '''
+        Sobrescribimos la función `get_queryset` para poder filtrar el request 
+        por medio de la url. En este caso traemos de la url por medio de `self.kwargs` 
+        el parámetro `User_id` y con él realizamos una query para traer 
+        el User del ID solicitado.  
+        '''
+        try:
+            id = self.kwargs['id']
+            queryset = User.objects.filter(id=id)
+            return queryset
+        
+        except Exception as error:
+            return {'error': f'The following error has occurred: {error}'}
+        
+class PostUserAPIView(CreateAPIView):
+    __doc__ = f'''
+    `[POST]`
+    This API view inserts a blog post on the DataBase.
+    '''
+    queryset = User.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+    
+class UpdateUserAPIView(UpdateAPIView):
+    __doc__ = f'''
+    `[PUT]`
+    This API view updates a blog User.
+    '''
+    queryset = User.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+class DestroyUserAPIView(DestroyAPIView):
+    __doc__ = f'''
+    `[DELETE]`
+    This API view updates a blog User.
+    '''
+    queryset = User.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser] 
