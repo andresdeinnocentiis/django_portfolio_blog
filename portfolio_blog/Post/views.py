@@ -5,8 +5,21 @@ from .forms import AddReviewForm, AddPostForm
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
 
-# Create your views here.
+# Django REST Framework imports:
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .serializers import PostSerializer
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.generics import (
+    ListAPIView,
+    CreateAPIView,
+    UpdateAPIView,
+    DestroyAPIView
+)
 
+# Create your views here.
+"""
+BORRAR ESTAS VIEWS PORQUE SE VAN A MANEJAR DESDE EL FRONT
 def get_all_posts(request):
     
     posts = Post.objects.all()
@@ -16,9 +29,6 @@ def get_all_posts(request):
     }
     
     return render(request, 'pages/Post/all_posts.html', context)
-
-
-
 
 
 def add_review_form(request, post_id):
@@ -102,4 +112,64 @@ def add_post(request):
         post_form = AddPostForm()
         
     return render(request, 'pages/Post/create_post_form.html', {'post_form': post_form})
+"""
 
+# BLOG POST VIEWS:
+class GetPostAPIView(ListAPIView):
+    __doc__ = f'''
+    `[GET]`
+    This API view returns all the blog posts.
+    '''
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+    
+class GetSinglePostAPIView(ListAPIView):
+    __doc__ = f'''
+    `[GET]`
+    This API view returns a single blog post.
+    '''
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def get_queryset(self):
+        '''
+        Sobrescribimos la función `get_queryset` para poder filtrar el request 
+        por medio de la url. En este caso traemos de la url por medio de `self.kwargs` 
+        el parámetro `Post_id` y con él realizamos una query para traer 
+        el Post del ID solicitado.  
+        '''
+        try:
+            id = self.kwargs['id']
+            queryset = Post.objects.filter(id=id)
+            return queryset
+        
+        except Exception as error:
+            return {'error': f'The following error has occurred: {error}'}
+        
+class PostPostAPIView(CreateAPIView):
+    __doc__ = f'''
+    `[POST]`
+    This API view inserts a blog post on the DataBase.
+    '''
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+    
+class UpdatePostAPIView(UpdateAPIView):
+    __doc__ = f'''
+    `[PUT]`
+    This API view updates a blog post.
+    '''
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+class DestroyPostAPIView(DestroyAPIView):
+    __doc__ = f'''
+    `[DELETE]`
+    This API view updates a blog post.
+    '''
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]

@@ -25,11 +25,12 @@ urlpatterns = [
     path('', home, name="home"),
     path('contact/', contact, name="contact"),
     path('about/', about, name="about"),
+    path('posts/', about, name="about"),
     path('resume/', resume, name="resume"),
     
-    path('users/', include('UserProfile.urls')),
-    path('posts/', include('Post.urls')),
-    path('extras/', include('Extra.urls')),
+    path('api/users/', include('UserProfile.urls')),
+    path('api/posts/', include('Post.urls')),
+    path('api/extras/', include('Extra.urls')),
     
 ]
 

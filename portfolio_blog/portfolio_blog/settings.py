@@ -40,9 +40,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     # Own apps:
-    'UserProfile',
-    'Post',
-    'Extra',
+    'UserProfile.apps.UserProfileConfig',
+    'Post.apps.PostConfig',
+    'Extra.apps.ExtraConfig',
+    
+    # Django REST Framework
+    'rest_framework'
 ]
 
 MIDDLEWARE = [

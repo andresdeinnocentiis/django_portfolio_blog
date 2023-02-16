@@ -13,3 +13,6 @@ def about(request):
 
 def resume(request):
     return render(request, 'pages/Resume/resume.html')
+
+
+
