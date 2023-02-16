@@ -5,19 +5,20 @@ from django.db import models
 
 # Create your models here.
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     image = models.ImageField(upload_to='profile_images', null=True, blank=True)
     bio = models.TextField(null=True, blank=True)
     
     
 class AnonymousUser(models.Model):
-    name = models.CharField(max_length=100)
+    username = models.CharField(max_length=100)
+    anonymous_identifier = models.CharField(max_length=255)
     
     def save(self, *args, **kwargs):
-        self.name = self.name.lower()
-        self.name = self.name.replace(" ", "_")
+        self.username = self.username.lower()
+        self.username = self.username.replace(" ", "_")
         return super(AnonymousUser, self).save(*args, **kwargs)
     
     def __str__(self):
-        return self.name
+        return self.username
 

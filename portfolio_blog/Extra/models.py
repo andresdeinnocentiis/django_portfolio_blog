@@ -9,6 +9,13 @@ class Technology(models.Model):
     years_exp = models.FloatField(default=0.0)
     validations = models.IntegerField(default=0)
     
+    def get_validations_count(self):
+        return Validation.objects.filter(technology=self).count()
+
+    @property
+    def validations(self):
+        return self.get_validations_count()
+    
     def __str__(self) -> str:
         return self.name
 
@@ -24,10 +31,19 @@ class Study(models.Model):
     certificate_link = models.CharField(max_length=100,null=True, blank=True)
     validations = models.IntegerField(default=0)
     
+        
+    def get_validations_count(self):
+        return Validation.objects.filter(study=self).count()
+
+    @property
+    def validations(self):
+        return self.get_validations_count()
+    
     def __str__(self) -> str:
         return self.name
     
 class Validation(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    anonymous_identifier = models.CharField(max_length=255, null=True, blank=True)
     technology = models.ForeignKey(Technology, null=True, blank=True, on_delete=models.CASCADE)
     study = models.ForeignKey(Study, null=True, blank=True, on_delete=models.CASCADE)

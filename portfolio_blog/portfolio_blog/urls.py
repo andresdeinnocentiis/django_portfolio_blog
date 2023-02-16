@@ -33,8 +33,14 @@ urlpatterns = [
     
     # API URLS
     path('api/users/', include('UserProfile.urls.user_api_urls')),
+    path('api/anonymous_users/', include('UserProfile.urls.anonymous_user_api_urls')),
     path('api/posts/', include('Post.urls.post_api_urls')),
-    path('api/extras/', include('Extra.urls.extra_api_urls')),
+    path('api/reviews/', include('Post.urls.review_api_urls')),
+    path('api/comments/', include('Post.urls.comment_api_urls')),
+    path('api/likes/', include('Post.urls.like_api_urls')),
+    path('api/technologies/', include('Extra.urls.technologies_api_urls')),
+    path('api/studies/', include('Extra.urls.studies_api_urls')),
+    path('api/validations/', include('Extra.urls.validations_api_urls')),
     
 ]
 

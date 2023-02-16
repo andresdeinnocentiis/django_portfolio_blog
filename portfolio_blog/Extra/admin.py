@@ -10,21 +10,22 @@ class StudyAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'institution', 'type', 'from_date', 'to_date', 'validations']
 
 class ValidationAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user_username', 'technology_name', 'study_name']
+    list_display = ['id', 'user_username', 'anonymous_identifier', 'technology_name', 'study_name']
     
     def user_username(self, obj):
-        return obj.user.username
+        return obj.user.username if obj.user else '-'
     
     def study_name(self, obj):
         try:
             return obj.study.name
         except:
-            return ""
+            return "-"
+        
     def technology_name(self, obj): 
         try:
             return obj.technology.name
         except:
-            return ""
+            return "-"
 
 
 admin.site.register(Study, StudyAdmin)

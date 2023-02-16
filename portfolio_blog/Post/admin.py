@@ -16,7 +16,7 @@ class CommentAdmin(admin.ModelAdmin):
    
 
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ['id', 'post_id', 'post_title', 'user_username', 'rating', 'likes', 'created_at']
+    list_display = ['id', 'post_id', 'post_title', 'user_username', 'anonymoususer_username', 'rating', 'likes', 'created_at']
     
     def post_title(self, obj):
         return obj.post.title
@@ -28,19 +28,30 @@ class ReviewAdmin(admin.ModelAdmin):
             return obj.user.username
         elif obj.anonymous_user:
             return obj.anonymous_user.name
+    
+    def anonymoususer_username(self, obj):
+        return obj.anonymous_user.username if obj.anonymous_user else '-'
         
     post_title.short_description = 'Post Title' 
 
 class LikeAdmin(admin.ModelAdmin):
-    list_display = ['id', 'post_title', 'user_username', 'created_at']
+    list_display = ['id', 'post_title', 'review_id', 'comment_id', 'user_username', 'anonymous_identifier', 'created_at']
     
     def post_title(self, obj):
-        return obj.post.title
+        return obj.post.title if obj.post else '-'
+    
+    def review_id(self, obj):
+        return obj.review.id if obj.review else '-'
+    
+    def comment_id(self, obj):
+        return obj.comment.id if obj.comment else '-'
     
     post_title.short_description = 'Post Title'  
     
     def user_username(self, obj):
-        return obj.user.username
+        return obj.user.username if obj.user else ''
+    
+    
     
     post_title.short_description = 'Post Title' 
 
