@@ -13,6 +13,13 @@ class UserProfileInline(admin.StackedInline):
 
 class UserAdmin(UserAdmin):
     inlines = (UserProfileInline,)
+    list_display = ('id', 'username', 'email', 'first_name', 'last_name', 'is_staff')
+    
+    def id(self, obj):
+        return obj.id
+
+    id.admin_order_field = 'id'
+    id.short_description = 'ID'
 
 
 class AnonymousUserAdmin(admin.ModelAdmin):

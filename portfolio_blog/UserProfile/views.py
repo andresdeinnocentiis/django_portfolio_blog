@@ -6,10 +6,18 @@ from django.contrib.auth import authenticate, login, logout
 from .models import UserProfile, AnonymousUser
 from .forms import UserRegisterForm
 from django.http import HttpResponse
+from rest_framework.response import Response
+
+
+# Para Autenticar con JWT Token:
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
 
 # Django REST Framework imports:
-from .serializers import UserProfileSerializer, AnonymousUserSerializer
-
+from .serializers import UserSerializer, UserProfileSerializer, AnonymousUserSerializer, UserSerializerWithToken
+from rest_framework.decorators import api_view, permission_classes
+from django.contrib.auth.hashers import make_password
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.generics import (
     ListAPIView,
@@ -18,34 +26,36 @@ from rest_framework.generics import (
     DestroyAPIView
 )
 
+# Imports para JWT Serializer:
+#https://django-rest-framework-simplejwt.readthedocs.io/en/latest/customizing_token_claims.html
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+# Imports para enviar emails:
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+
+# JWT Token Customization:
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        
+        #user_profile_data = UserProfileSerializerWithToken(self.user.userprofile).data
+        serializer = UserSerializerWithToken(self.user).data
+
+        #serializer = UserProfileSerializerWithToken(self.user).data
+        
+        for k, v in serializer.items():
+            data[k] = v
+        
+            
+        return data
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+    
+    
 # Create your views here.
-
-
-def get_all_users(request):
-    
-    users = User.objects.all()
-    
-    context = {
-        'users': users,   
-    }
-    
-    return render(request, 'pages/User/all_users.html', context)
-
-
-def get_user(request, id):
-    
-    if id:
-        user = get_object_or_404(User, id = id)
-    else:
-        id = request.GET['id']
-        user = get_object_or_404(User, id = id)
-    context = {
-        'user': user,   
-    }
-    
-    return render(request, 'pages/User/single_user.html', context)
-
-
 def login_user(request):
     
     if request.method == 'POST':
@@ -71,49 +81,6 @@ def logout_user(request):
     return(redirect('home'))
 
 
-def register_user(request):
-    
-    if request.method == 'POST':
-        register_user_form = UserRegisterForm(request.POST, request.FILES)
-        
-        
-        
-        if register_user_form.is_valid():
-            
-            
-            info = register_user_form.cleaned_data
-    
-            user = User.objects.create_user(
-                username= info['username'].lower(),
-                email= info['email'].lower(),
-                password= info['password'],
-                first_name= info['first_name'].capitalize(),
-                last_name= info['last_name'].capitalize(),
-            )
-            
-            # I do this because I've extended the Django's default User to UserProfile to add some extra data 
-            user_profile = UserProfile.objects.create(
-                user = user,
-                image = info['image'],
-                bio = info['bio']
-            )
-            
-            user_profile.save()
-            
-            return redirect('/')
-        
-    else:
-        register_user_form = UserRegisterForm()
-        
-    return render(request, 'pages/User/register_user.html', {'register_user_form': register_user_form})
-
-
-def search_user(request):
-    
-    return render(request, 'pages/User/search_user.html')
-
-
-def search_user_result(request):
     
     if request.GET['username']:
         
@@ -141,6 +108,8 @@ class GetUserAPIView(ListAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
     
 class GetSingleUserAPIView(ListAPIView):
     __doc__ = f'''
@@ -149,6 +118,8 @@ class GetSingleUserAPIView(ListAPIView):
     '''
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
 
     def get_queryset(self):
         '''
@@ -164,15 +135,34 @@ class GetSingleUserAPIView(ListAPIView):
         
         except Exception as error:
             return {'error': f'The following error has occurred: {error}'}
-        
-class PostUserAPIView(CreateAPIView):
+
+"""        
+class RegisterUserAPIView(CreateAPIView):
     __doc__ = f'''
     `[POST]`
     This API view inserts a new User on the DataBase.
     '''
     queryset = User.objects.all()
-    serializer_class = UserProfileSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    serializer_class = UserSerializerWithToken #WithToken # Este serializer sobreescribe el metodo 'create()' para crear un User y desde ese un UserProfile. 
+    #Ademas, 'create_user()' automaticamente hashea la clave
+    
+    permission_classes = []
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
+"""
+
+class RegisterUserAPIView(CreateAPIView):
+
+    authentication_classes = []
+    serializer_class = UserSerializerWithToken
+
+    def perform_create(self, serializer):
+        password = make_password(serializer.validated_data['password'])
+        user = serializer.save(password=password)
+        UserProfile.objects.create(user=user)
+        
+        
+    
     
 class UpdateUserAPIView(UpdateAPIView):
     __doc__ = f'''
@@ -182,6 +172,8 @@ class UpdateUserAPIView(UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
 
 class DestroyUserAPIView(DestroyAPIView):
     __doc__ = f'''
@@ -191,6 +183,8 @@ class DestroyUserAPIView(DestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated, IsAdminUser] 
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
 
 #NOTE: API ANONYMOUS USER VIEWS:
 class GetAnonymousUserAPIView(ListAPIView):
@@ -201,6 +195,8 @@ class GetAnonymousUserAPIView(ListAPIView):
     queryset = AnonymousUser.objects.all()
     serializer_class = AnonymousUserSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
     
 class GetSingleAnonymousUserAPIView(ListAPIView):
     __doc__ = f'''
@@ -209,6 +205,8 @@ class GetSingleAnonymousUserAPIView(ListAPIView):
     '''
     serializer_class = AnonymousUserSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
 
     def get_queryset(self):
         '''
@@ -225,7 +223,7 @@ class GetSingleAnonymousUserAPIView(ListAPIView):
         except Exception as error:
             return {'error': f'The following error has occurred: {error}'}
         
-class PostAnonymousUserAPIView(CreateAPIView):
+class RegisterAnonymousUserAPIView(CreateAPIView):
     __doc__ = f'''
     `[POST]`
     This API view inserts a new Anonymous User on the DataBase.
@@ -233,6 +231,8 @@ class PostAnonymousUserAPIView(CreateAPIView):
     queryset = AnonymousUser.objects.all()
     serializer_class = AnonymousUserSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
     
 class UpdateAnonymousUserAPIView(UpdateAPIView):
     __doc__ = f'''
@@ -242,6 +242,8 @@ class UpdateAnonymousUserAPIView(UpdateAPIView):
     queryset = AnonymousUser.objects.all()
     serializer_class = AnonymousUserSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
 
 class DestroyAnonymousUserAPIView(DestroyAPIView):
     __doc__ = f'''
@@ -251,3 +253,5 @@ class DestroyAnonymousUserAPIView(DestroyAPIView):
     queryset = AnonymousUser.objects.all()
     serializer_class = AnonymousUserSerializer
     permission_classes = [IsAuthenticated, IsAdminUser] 
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]

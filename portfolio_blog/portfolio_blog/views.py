@@ -2,6 +2,9 @@ from django.shortcuts import render
 
 
 
+# PROJECT VIEWS:
+
+
 def home(request):
     return render(request, 'index.html', {})
 

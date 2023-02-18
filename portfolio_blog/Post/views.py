@@ -6,6 +6,9 @@ from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.http import Http404
 
+# Para Autenticar con JWT Token:
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
 # Django REST Framework imports:
 from .serializers import PostSerializer, ReviewSerializer, CommentSerializer, LikeSerializer
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -123,6 +126,9 @@ class GetPostAPIView(ListAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
+    
     
 class GetSinglePostAPIView(RetrieveAPIView):
     __doc__ = f'''
@@ -131,6 +137,8 @@ class GetSinglePostAPIView(RetrieveAPIView):
     '''
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
 
     def get_object(self):
         try:
@@ -150,6 +158,8 @@ class PostPostAPIView(CreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
     
 class UpdatePostAPIView(UpdateAPIView):
     __doc__ = f'''
@@ -159,6 +169,8 @@ class UpdatePostAPIView(UpdateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
 
 class DestroyPostAPIView(DestroyAPIView):
     __doc__ = f'''
@@ -168,6 +180,8 @@ class DestroyPostAPIView(DestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
 
 #NOTE: REVIEW VIEWS:
 class GetReviewAPIView(ListAPIView):
@@ -178,6 +192,8 @@ class GetReviewAPIView(ListAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
     
 class GetSingleReviewAPIView(RetrieveAPIView):
     __doc__ = f'''
@@ -186,6 +202,8 @@ class GetSingleReviewAPIView(RetrieveAPIView):
     '''
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
 
     def get_object(self):
         try:
@@ -205,6 +223,8 @@ class PostReviewAPIView(CreateAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
     
 class UpdateReviewAPIView(UpdateAPIView):
     __doc__ = f'''
@@ -214,6 +234,8 @@ class UpdateReviewAPIView(UpdateAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
 
 class DestroyReviewAPIView(DestroyAPIView):
     __doc__ = f'''
@@ -223,6 +245,8 @@ class DestroyReviewAPIView(DestroyAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
 
 #NOTE: COMMENT VIEWS:
 class GetCommentAPIView(ListAPIView):
@@ -233,6 +257,8 @@ class GetCommentAPIView(ListAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
     
 class GetSingleCommentAPIView(RetrieveAPIView):
     __doc__ = f'''
@@ -241,6 +267,8 @@ class GetSingleCommentAPIView(RetrieveAPIView):
     '''
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
 
     def get_object(self):
         try:
@@ -260,6 +288,8 @@ class PostCommentAPIView(CreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
     
 class UpdateCommentAPIView(UpdateAPIView):
     __doc__ = f'''
@@ -269,6 +299,8 @@ class UpdateCommentAPIView(UpdateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
 
 class DestroyCommentAPIView(DestroyAPIView):
     __doc__ = f'''
@@ -278,6 +310,8 @@ class DestroyCommentAPIView(DestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
 
 #NOTE: LIKE VIEWS:
 class GetLikeAPIView(ListAPIView):
@@ -288,6 +322,8 @@ class GetLikeAPIView(ListAPIView):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
     
 class GetSingleLikeAPIView(RetrieveAPIView):
     __doc__ = f'''
@@ -296,6 +332,8 @@ class GetSingleLikeAPIView(RetrieveAPIView):
     '''
     serializer_class = LikeSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
 
     def get_object(self):
         try:
@@ -315,6 +353,8 @@ class PostLikeAPIView(CreateAPIView):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
     
 class UpdateLikeAPIView(UpdateAPIView):
     __doc__ = f'''
@@ -324,6 +364,8 @@ class UpdateLikeAPIView(UpdateAPIView):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
 
 class DestroyLikeAPIView(DestroyAPIView):
     __doc__ = f'''
@@ -333,3 +375,5 @@ class DestroyLikeAPIView(DestroyAPIView):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]

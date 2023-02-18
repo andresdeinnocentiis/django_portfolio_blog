@@ -3,6 +3,9 @@ from django.http import Http404
 from .models import Study, Technology, Validation
 from .forms import AddStudyForm, AddTechnologyForm
 
+# Para Autenticar con JWT Token:
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
 # Django REST Framework imports:
 from .serializers import StudySerializer, TechnologySerializer, ValidationSerializer
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -102,6 +105,8 @@ class GetStudyAPIView(ListAPIView):
     queryset = Study.objects.all()
     serializer_class = StudySerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
     
 class GetSingleStudyAPIView(RetrieveAPIView):
     __doc__ = f'''
@@ -110,6 +115,8 @@ class GetSingleStudyAPIView(RetrieveAPIView):
     '''
     serializer_class = StudySerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
 
     def get_object(self):
         try:
@@ -129,6 +136,8 @@ class PostStudyAPIView(CreateAPIView):
     queryset = Study.objects.all()
     serializer_class = StudySerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
     
 class UpdateStudyAPIView(UpdateAPIView):
     __doc__ = f'''
@@ -138,6 +147,8 @@ class UpdateStudyAPIView(UpdateAPIView):
     queryset = Study.objects.all()
     serializer_class = StudySerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
 
 class DestroyStudyAPIView(DestroyAPIView):
     __doc__ = f'''
@@ -147,6 +158,8 @@ class DestroyStudyAPIView(DestroyAPIView):
     queryset = Study.objects.all()
     serializer_class = StudySerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
 
 #NOTE: TECHNOLOGY VIEWS:
 class GetTechnologyAPIView(ListAPIView):
@@ -157,6 +170,8 @@ class GetTechnologyAPIView(ListAPIView):
     queryset = Technology.objects.all()
     serializer_class = TechnologySerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
     
 class GetSingleTechnologyAPIView(RetrieveAPIView):
     __doc__ = f'''
@@ -165,6 +180,8 @@ class GetSingleTechnologyAPIView(RetrieveAPIView):
     '''
     serializer_class = TechnologySerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
 
     def get_object(self):
         try:
@@ -184,6 +201,8 @@ class PostTechnologyAPIView(CreateAPIView):
     queryset = Technology.objects.all()
     serializer_class = TechnologySerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
     
 class UpdateTechnologyAPIView(UpdateAPIView):
     __doc__ = f'''
@@ -193,6 +212,8 @@ class UpdateTechnologyAPIView(UpdateAPIView):
     queryset = Technology.objects.all()
     serializer_class = TechnologySerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
 
 class DestroyTechnologyAPIView(DestroyAPIView):
     __doc__ = f'''
@@ -202,6 +223,8 @@ class DestroyTechnologyAPIView(DestroyAPIView):
     queryset = Technology.objects.all()
     serializer_class = TechnologySerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
 
 #NOTE: VALIDATION VIEWS:
 class GetValidationAPIView(ListAPIView):
@@ -212,6 +235,8 @@ class GetValidationAPIView(ListAPIView):
     queryset = Validation.objects.all()
     serializer_class = ValidationSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
     
 class GetSingleValidationAPIView(RetrieveAPIView):
     __doc__ = f'''
@@ -220,6 +245,8 @@ class GetSingleValidationAPIView(RetrieveAPIView):
     '''
     serializer_class = ValidationSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
 
     def get_object(self):
         try:
@@ -239,6 +266,8 @@ class PostValidationAPIView(CreateAPIView):
     queryset = Validation.objects.all()
     serializer_class = ValidationSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
     
 class UpdateValidationAPIView(UpdateAPIView):
     __doc__ = f'''
@@ -248,6 +277,8 @@ class UpdateValidationAPIView(UpdateAPIView):
     queryset = Validation.objects.all()
     serializer_class = ValidationSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]
 
 class DestroyValidationAPIView(DestroyAPIView):
     __doc__ = f'''
@@ -257,3 +288,5 @@ class DestroyValidationAPIView(DestroyAPIView):
     queryset = Validation.objects.all()
     serializer_class = ValidationSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    authentication_classes = [JWTAuthentication]

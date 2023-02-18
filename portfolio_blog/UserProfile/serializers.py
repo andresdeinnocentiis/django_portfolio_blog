@@ -1,28 +1,42 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User, Group
 from .models import UserProfile, AnonymousUser
+from django.contrib.auth.hashers import make_password
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 
 class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
-    id = serializers.CharField(read_only=True)
+    isAdmin = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'password', 'email', 'first_name', 'last_name']
-        
+        fields = ['id', 'username','password', 'email', 'isAdmin']
+
+
+    def get_isAdmin(self, obj):
+        return obj.is_staff
+
 class UserProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     class Meta:
         model = UserProfile
-        fields = ['user', 'image', 'bio']
-        
-    def create(self, validated_data):
-        user_data = validated_data.pop('user')
-        
-        user = User.objects.create_user(**user_data)
-        user_profile = UserProfile.objects.create(user=user, **validated_data)
+        fields = ['user', 'bio', 'image']
+    
+    
+    
 
-        return user_profile
+class UserSerializerWithToken(UserSerializer):
+    token = serializers.SerializerMethodField(read_only=True)
+   
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'password', 'email', 'isAdmin', 'token']
+
+    def get_token(self, obj):
+        token = RefreshToken.for_user(obj)
+        return str(token.access_token)
 
 class AnonymousUserSerializer(serializers.ModelSerializer):
     class Meta:
