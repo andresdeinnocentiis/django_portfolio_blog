@@ -22,14 +22,3 @@ def send_welcome_email(sender, instance, created, **kwargs):
         
         email.attach_alternative(html_message, 'text/html')
         email.send()
-        
-        """
-        send_mail(
-            subject=subject,
-            message=message,
-            from_email=sender,
-            recipient_list=[instance.email],
-            fail_silently=False,
-        )"""
-
-        print("The EMAIL WAS SENT CARAJOOOO!!")

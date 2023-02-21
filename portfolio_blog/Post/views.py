@@ -23,15 +23,15 @@ from rest_framework.generics import (
 # Create your views here.
 
 # BORRAR ESTAS VIEWS PORQUE SE VAN A MANEJAR DESDE EL FRONT
-def get_all_posts(request):
+# def get_all_posts(request):
     
-    posts = Post.objects.all()
+#     posts = Post.objects.all()
     
-    context = {
-        'posts': posts,   
-    }
+#     context = {
+#         'posts': posts,   
+#     }
     
-    return render(request, 'pages/Post/all_posts.html', context)
+#     return render(request, 'pages/Post/all_posts.html', context)
 
 
 def add_review_form(request, post_id):
@@ -118,16 +118,16 @@ def add_post(request):
 
 
 #NOTE: BLOG POST VIEWS:
-class GetPostAPIView(ListAPIView):
+class GetPostsAPIView(ListAPIView):
     __doc__ = f'''
     `[GET]`
     This API view returns all the blog posts.
     '''
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    #permission_classes = [IsAuthenticated, IsAdminUser]  # Lo dejo comentado porque supongo que todos los usuarios deben poder ver los posteos
     # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    authentication_classes = [JWTAuthentication]
+    #authentication_classes = [JWTAuthentication] # Lo dejo comentado porque supongo que todos los usuarios deben poder ver los posteos
     
     
 class GetSinglePostAPIView(RetrieveAPIView):
@@ -136,9 +136,9 @@ class GetSinglePostAPIView(RetrieveAPIView):
     This API view returns a single blog post.
     '''
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated, IsAdminUser]  # Lo dejo comentado porque supongo que todos los usuarios deben poder ver los posteos
+    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    # authentication_classes = [JWTAuthentication]  # Lo dejo comentado porque supongo que todos los usuarios deben poder ver los posteos
 
     def get_object(self):
         try:
@@ -184,16 +184,16 @@ class DestroyPostAPIView(DestroyAPIView):
     authentication_classes = [JWTAuthentication]
 
 #NOTE: REVIEW VIEWS:
-class GetReviewAPIView(ListAPIView):
+class GetReviewsAPIView(ListAPIView):
     __doc__ = f'''
     `[GET]`
     This API view returns all the posts' reviews.
     '''
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated, IsAdminUser]  # Lo dejo comentado porque supongo que todos los usuarios deben poder ver las reviews
+    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    # authentication_classes = [JWTAuthentication] # Lo dejo comentado porque supongo que todos los usuarios deben poder ver las reviews
     
 class GetSingleReviewAPIView(RetrieveAPIView):
     __doc__ = f'''
@@ -222,9 +222,9 @@ class PostReviewAPIView(CreateAPIView):
     '''
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated, IsAdminUser] # Lo dejo comentado porque supongo que todos los usuarios deben poder postear reviews
+    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    # authentication_classes = [JWTAuthentication] # Lo dejo comentado porque supongo que todos los usuarios deben poder postear reviews
     
 class UpdateReviewAPIView(UpdateAPIView):
     __doc__ = f'''
@@ -233,9 +233,9 @@ class UpdateReviewAPIView(UpdateAPIView):
     '''
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated, IsAdminUser] # Lo dejo comentado porque supongo que todos los usuarios deben poder editar sus reviews
+    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    # authentication_classes = [JWTAuthentication] # Lo dejo comentado porque supongo que todos los usuarios deben poder editar sus reviews
 
 class DestroyReviewAPIView(DestroyAPIView):
     __doc__ = f'''
@@ -244,21 +244,21 @@ class DestroyReviewAPIView(DestroyAPIView):
     '''
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated, IsAdminUser] # Lo dejo comentado porque supongo que todos los usuarios deben poder eliminar sus reviews
+    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    # authentication_classes = [JWTAuthentication] # Lo dejo comentado porque supongo que todos los usuarios deben poder eliminar sus reviews
 
 #NOTE: COMMENT VIEWS:
-class GetCommentAPIView(ListAPIView):
+class GetCommentsAPIView(ListAPIView):
     __doc__ = f'''
     `[GET]`
     This API view returns all the reviews' comments.
     '''
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated, IsAdminUser] # Lo dejo comentado porque supongo que todos los usuarios deben poder ver los comments
+    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    # authentication_classes = [JWTAuthentication] # Lo dejo comentado porque supongo que todos los usuarios deben poder ver los comments
     
 class GetSingleCommentAPIView(RetrieveAPIView):
     __doc__ = f'''
@@ -287,9 +287,9 @@ class PostCommentAPIView(CreateAPIView):
     '''
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated, IsAdminUser] # Lo dejo comentado porque supongo que todos los usuarios deben poder postear comments
+    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    # authentication_classes = [JWTAuthentication] # Lo dejo comentado porque supongo que todos los usuarios deben poder postear comments
     
 class UpdateCommentAPIView(UpdateAPIView):
     __doc__ = f'''
@@ -298,9 +298,9 @@ class UpdateCommentAPIView(UpdateAPIView):
     '''
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated, IsAdminUser] # Lo dejo comentado porque supongo que todos los usuarios deben poder editar sus comments
+    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    # authentication_classes = [JWTAuthentication] # Lo dejo comentado porque supongo que todos los usuarios deben poder editar sus comments
 
 class DestroyCommentAPIView(DestroyAPIView):
     __doc__ = f'''
@@ -309,12 +309,12 @@ class DestroyCommentAPIView(DestroyAPIView):
     '''
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated, IsAdminUser] # Lo dejo comentado porque supongo que todos los usuarios deben poder eliminar sus comments
+    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    # authentication_classes = [JWTAuthentication] # Lo dejo comentado porque supongo que todos los usuarios deben poder eliminar sus comments
 
 #NOTE: LIKE VIEWS:
-class GetLikeAPIView(ListAPIView):
+class GetLikesAPIView(ListAPIView):
     __doc__ = f'''
     `[GET]`
     This API view returns all the likes for all posts, reviews and comments.
@@ -352,9 +352,9 @@ class PostLikeAPIView(CreateAPIView):
     '''
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated, IsAdminUser] # Lo dejo comentado porque supongo que todos los usuarios deben poder dejar un like
+    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    # authentication_classes = [JWTAuthentication] # Lo dejo comentado porque supongo que todos los usuarios deben poder dejar un like
     
 class UpdateLikeAPIView(UpdateAPIView):
     __doc__ = f'''
@@ -374,6 +374,6 @@ class DestroyLikeAPIView(DestroyAPIView):
     '''
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated, IsAdminUser] # Lo dejo comentado porque supongo que todos los usuarios deben poder eliminar su like
+    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    # authentication_classes = [JWTAuthentication] # Lo dejo comentado porque supongo que todos los usuarios deben poder eliminar su like

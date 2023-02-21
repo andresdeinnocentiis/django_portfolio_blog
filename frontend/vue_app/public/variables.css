@@ -1,0 +1,28 @@
+:root {
+    --colorWhite: #F4FCFF; 
+    --colorAbsoluteWhite: #FFFFFF; 
+    --colorGrey: #95A3B3; 
+    --colorGreyBlue: #185068; 
+    --colorBlue: #142E66; 
+    --colorCelticBlue: #1969CB; 
+    --colorDodgerBlue: #2697F5; 
+    --colorPictonBlue: #00AAFF; 
+    --colorAquamarine: #4AE7C1; 
+    --colorEmerald: #27D49F; 
+    --colorSpringGreen: #00FF9D; 
+    --darkBackground: linear-gradient(
+        95deg,
+        hsl(233deg 27% 18%) 0%,
+        hsl(217deg 42% 20%) 33%,
+        hsl(203deg 49% 24%) 67%,
+        hsl(190deg 29% 37%) 100%
+    );;
+    --lightBackground:linear-gradient(
+        95deg,
+        hsl(0, 0%, 100%) 0%,
+        hsl(235, 45%, 94%) 33%,
+        hsl(234, 66%, 94%) 67%,
+        hsl(257, 85%, 92%) 100%
+    );;
+}
+

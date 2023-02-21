@@ -11,8 +11,8 @@ class UserProfile(models.Model):
     
     
 class AnonymousUser(models.Model):
-    username = models.CharField(max_length=100)
-    anonymous_identifier = models.CharField(max_length=255)
+    username = models.CharField(max_length=100, blank=True)
+    anonymous_identifier = models.CharField(max_length=255, unique=True)
     
     def save(self, *args, **kwargs):
         self.username = self.username.lower()
@@ -20,5 +20,8 @@ class AnonymousUser(models.Model):
         return super(AnonymousUser, self).save(*args, **kwargs)
     
     def __str__(self):
-        return self.username
+        if self.username:
+            return self.username
+        else:
+            return self.anonymous_identifier
 

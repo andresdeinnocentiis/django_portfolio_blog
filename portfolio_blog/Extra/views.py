@@ -97,16 +97,16 @@ def add_technology(request):
 
 
 #NOTE: STUDY VIEWS:
-class GetStudyAPIView(ListAPIView):
+class GetStudysAPIView(ListAPIView):
     __doc__ = f'''
     `[GET]`
     This API view returns all the studies.
     '''
     queryset = Study.objects.all()
     serializer_class = StudySerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated, IsAdminUser]
+    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    # authentication_classes = [JWTAuthentication]
     
 class GetSingleStudyAPIView(RetrieveAPIView):
     __doc__ = f'''
@@ -162,16 +162,16 @@ class DestroyStudyAPIView(DestroyAPIView):
     authentication_classes = [JWTAuthentication]
 
 #NOTE: TECHNOLOGY VIEWS:
-class GetTechnologyAPIView(ListAPIView):
+class GetTechnologysAPIView(ListAPIView):
     __doc__ = f'''
     `[GET]`
     This API view returns all the technologies.
     '''
     queryset = Technology.objects.all()
     serializer_class = TechnologySerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated, IsAdminUser]
+    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    # authentication_classes = [JWTAuthentication]
     
 class GetSingleTechnologyAPIView(RetrieveAPIView):
     __doc__ = f'''
@@ -227,16 +227,16 @@ class DestroyTechnologyAPIView(DestroyAPIView):
     authentication_classes = [JWTAuthentication]
 
 #NOTE: VALIDATION VIEWS:
-class GetValidationAPIView(ListAPIView):
+class GetValidationsAPIView(ListAPIView):
     __doc__ = f'''
     `[GET]`
     This API view returns all the users' validations for all technologies and studies.
     '''
     queryset = Validation.objects.all()
     serializer_class = ValidationSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated, IsAdminUser]
+    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    # authentication_classes = [JWTAuthentication]
     
 class GetSingleValidationAPIView(RetrieveAPIView):
     __doc__ = f'''
@@ -265,9 +265,9 @@ class PostValidationAPIView(CreateAPIView):
     '''
     queryset = Validation.objects.all()
     serializer_class = ValidationSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated, IsAdminUser] # Lo dejo comentado porque supongo que todos los usuarios deben poder validar una tech o study
+    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    # authentication_classes = [JWTAuthentication] # Lo dejo comentado porque supongo que todos los usuarios deben poder validar una tech o study
     
 class UpdateValidationAPIView(UpdateAPIView):
     __doc__ = f'''
@@ -287,6 +287,6 @@ class DestroyValidationAPIView(DestroyAPIView):
     '''
     queryset = Validation.objects.all()
     serializer_class = ValidationSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated, IsAdminUser] # Lo dejo comentado porque supongo que todos los usuarios deben poder remover su validacion
+    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
+    # authentication_classes = [JWTAuthentication] # Lo dejo comentado porque supongo que todos los usuarios deben poder remover su validacion

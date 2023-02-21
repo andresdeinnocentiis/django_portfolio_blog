@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     # Django Rest Framework:
     'rest_framework',
     
-    # CORS (Para poder conectar React con el puerto de Django y que le permita entrar):
+    # CORS (Para poder conectar React/Vue con el puerto de Django y que le permita entrar):
     # Previo, hacer: >> python -m pip install django-cors-headers
     'corsheaders',
     # Luego hay que agregar el MIDDLEWARE de CORS en MIDDLEWARE = []
@@ -58,7 +58,7 @@ INSTALLED_APPS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication'
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
 

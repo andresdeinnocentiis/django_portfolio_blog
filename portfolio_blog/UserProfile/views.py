@@ -7,7 +7,7 @@ from .models import UserProfile, AnonymousUser
 from .forms import UserRegisterForm
 from django.http import HttpResponse
 from rest_framework.response import Response
-
+from django.db import IntegrityError
 
 # Para Autenticar con JWT Token:
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -136,32 +136,23 @@ class GetSingleUserAPIView(ListAPIView):
         except Exception as error:
             return {'error': f'The following error has occurred: {error}'}
 
-"""        
+        
+
 class RegisterUserAPIView(CreateAPIView):
     __doc__ = f'''
     `[POST]`
-    This API view inserts a new User on the DataBase.
+    This API view creates a new User.
     '''
-    queryset = User.objects.all()
-    serializer_class = UserSerializerWithToken #WithToken # Este serializer sobreescribe el metodo 'create()' para crear un User y desde ese un UserProfile. 
-    #Ademas, 'create_user()' automaticamente hashea la clave
-    
-    permission_classes = []
-    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    authentication_classes = [JWTAuthentication]
-"""
-
-class RegisterUserAPIView(CreateAPIView):
-
     authentication_classes = []
     serializer_class = UserSerializerWithToken
-
+    
     def perform_create(self, serializer):
+
         password = make_password(serializer.validated_data['password'])
         user = serializer.save(password=password)
         UserProfile.objects.create(user=user)
-        
-        
+
+
     
     
 class UpdateUserAPIView(UpdateAPIView):
