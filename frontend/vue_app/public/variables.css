@@ -1,5 +1,6 @@
 :root {
     --colorWhite: #F4FCFF; 
+    --colorGhostWhite: #F3F4FF; 
     --colorAbsoluteWhite: #FFFFFF; 
     --colorGrey: #95A3B3; 
     --colorGreyBlue: #185068; 
@@ -7,9 +8,13 @@
     --colorCelticBlue: #1969CB; 
     --colorDodgerBlue: #2697F5; 
     --colorPictonBlue: #00AAFF; 
+    --colorStrongBlue: #0066FF; 
+    --colorArgentinianBlue: #4CA8FF; 
     --colorAquamarine: #4AE7C1; 
     --colorEmerald: #27D49F; 
     --colorSpringGreen: #00FF9D; 
+    --colorPrussianBlue: #252E40; 
+    --colorGummetal: #2C2F36; 
     --darkBackground: linear-gradient(
         95deg,
         hsl(233deg 27% 18%) 0%,
@@ -23,6 +28,8 @@
         hsl(235, 45%, 94%) 33%,
         hsl(234, 66%, 94%) 67%,
         hsl(257, 85%, 92%) 100%
-    );;
+    );
+    --darkBackgroundSecondary: ;
+    --lightBackgroundSecondary: ;
 }
 

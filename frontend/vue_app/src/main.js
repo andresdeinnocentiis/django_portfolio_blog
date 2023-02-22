@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import { MotionPlugin } from '@vueuse/motion'
 
 import App from './App.vue'
 import router from './router'
@@ -12,11 +13,12 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 /* import specific icons */
-import { faPowerOff} from '@fortawesome/free-solid-svg-icons'
-import { faSun, faMoon } from '@fortawesome/free-regular-svg-icons'
+import { faPowerOff, faLayerGroup, faCode, faDatabase, faNetworkWired, faScaleBalanced, faLanguage} from '@fortawesome/free-solid-svg-icons'
+import { faSun, faMoon, faEnvelope } from '@fortawesome/free-regular-svg-icons'
+import { faLinkedin, faInstagram } from '@fortawesome/free-brands-svg-icons'
 
 /* add icons to the library */
-library.add(faPowerOff, faSun, faMoon)
+library.add(faPowerOff, faSun, faMoon, faLayerGroup, faCode, faDatabase, faNetworkWired, faScaleBalanced, faLanguage, faEnvelope, faLinkedin, faInstagram)
 
 // END OF FONTAWESOME IMPORTS
 
@@ -27,6 +29,7 @@ const pinia = createPinia()
 
 app.use(pinia)
 app.use(router)
+app.use(MotionPlugin)
 
 /* Add font awesome icon component */
 .component('font-awesome-icon', FontAwesomeIcon)

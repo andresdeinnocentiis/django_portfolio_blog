@@ -1,9 +1,11 @@
 <template>
-    <div class="home_container">
-        <h1>Home View</h1>
+    <div class="home-container">
+        <MainSection />
+        <SecondSection />
     </div>
 </template>
 
 <script setup>
-
+import MainSection from '../components/Home/MainSection.vue'
+import SecondSection from '../components/Home/SecondSection.vue';
 </script>

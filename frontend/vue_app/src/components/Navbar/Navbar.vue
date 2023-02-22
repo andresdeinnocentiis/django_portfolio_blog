@@ -11,7 +11,7 @@
             :class="{'dark-theme-link':darkModeStore.isDarkMode, 'light-theme-link':!darkModeStore.isDarkMode}"
           >
             <span class="icon-logo-innokentiy-2" :class="{'dark-theme-logo':darkModeStore.isDarkMode, 'light-theme-logo':!darkModeStore.isDarkMode}"></span>
-            <p class="logo-text" :class="{'dark-theme-link':darkModeStore.isDarkMode, 'light-theme-link':!darkModeStore.isDarkMode}">Innokentiy Coding .</p>
+            <p class="logo-text" :class="{'dark-theme-link logo-text-dark':darkModeStore.isDarkMode, 'light-theme-link logo-text-light':!darkModeStore.isDarkMode}">Innokentiy Coding .</p>
           </router-link> 
 
           <div class="navbar-toggler" :class="{'toggler-absolute': isMenuOpen}">
