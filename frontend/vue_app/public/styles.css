@@ -1006,6 +1006,10 @@ input:focus, textarea:focus {
     font-size: .7rem;
 }
 
+.hashtag-text {
+    color: var(--colorGreyBlue) !important;
+}
+
 .project-img-container {
     width: 100%;
 }
