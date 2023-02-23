@@ -1,41 +1,66 @@
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import { getAPI } from '../axios-api';
 
 export const useUserLoggedStore = defineStore("userLogged", () => {
   
   const userInfo = ref(null) 
+  const logging = ref(false)
+
+  const loadUserInfo = () => {
+    const userInfoFromLocalStorage = localStorage.getItem('userInfo')
+    if (userInfoFromLocalStorage) {
+      userInfo.value = JSON.parse(userInfoFromLocalStorage)
+    }
+  }
 
   const login = async (username, password) => {
-    // Make an API request to authenticate the user
-    const response = await fetch('/api/users/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
-    })
+    try{
+      // Make an API request to authenticate the user
+      logging.value = true
+      const config = {
+        headers: {
+          'Content-type' : 'application/json'
+        }
+      }
 
-    if (response.ok) {
-      // Update the store state with the logged in user's information
-      const user = await response.json()
+      const response = await getAPI.post('/api/users/login/',
+        {'username': username, 'password': password},
+        config
+      )
+
+      const user = response.data
       userInfo.value = user
       // Save the user info to local storage
       localStorage.setItem('userInfo', JSON.stringify(user))
-    } else {
+
+      return true; // Login successful
+       
+    } catch(error) {
+        
         // Handle login failure
         userInfo.value = null
-        // Throw an error or display an error message to the user
-        throw new Error('Login failed. Please try again.')
+        // login failed
+        return false; 
+
+    } finally {
+        logging.value = false
     }
+    
   }
 
   const logout = () => {
         // Clear the store state and remove the user info from local storage
         userInfo.value = null
         localStorage.removeItem('userInfo')    
-    }
+  }
  
   const isUserLogged = () => {
     return !!userInfo.value // Usar doble "!!" convierte al objeto en booleano, porque si usara solo this.userInfo sería un objeto
   }
+
+
+  loadUserInfo()
   
   return { userInfo, login, logout, isUserLogged }
 });

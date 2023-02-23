@@ -29,7 +29,6 @@ urlpatterns = [
     path('about/', about, name="about"),
     path('resume/', resume, name="resume"),
     
-    path('users/', include('UserProfile.urls.user_urls')),
     path('posts/', include('Post.urls.post_urls')),
     path('extras/', include('Extra.urls.extra_urls')),
     

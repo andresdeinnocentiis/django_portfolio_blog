@@ -12,7 +12,7 @@
         <div class="dexterities-container">
             <div 
                 class="card-dex"
-                v-for="dex in dexterities"  
+                v-for="dex in dexterities" 
                 v-motion-slide-visible-right  
             >
                 <div 

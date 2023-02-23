@@ -56,47 +56,6 @@ class MyTokenObtainPairView(TokenObtainPairView):
     
     
 # Create your views here.
-def login_user(request):
-    
-    if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
-        
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            
-            user = authenticate(username=username, password=password)
-            
-            if user is not None:
-                login(request, user)
-                return redirect(reverse('home'))
-            
-    else:
-        form = AuthenticationForm()
-    return render(request, 'pages/User/login.html', {'form': form})
-
-
-def logout_user(request):
-    logout(request)
-    return(redirect('home'))
-
-
-    
-    if request.GET['username']:
-        
-        username = request.GET['username']
-        
-        # Se que se podría haber usado simplemente User.objects.get(username = username)) xq es un dato que no se repite, pero quería probar un metodo distinto
-        user = User.objects.get(username = username)
-        user_profile = UserProfile.objects.get(user=user)
-        
-        return render(request, 'pages/User/search_user_result.html', {"user": user_profile, "username": username})
-    
-    else:
-        
-        response = "You haven't sent any data. You have to enter a username."
-        
-    return HttpResponse(response)
     
 
 #NOTE: API USER VIEWS:
@@ -135,7 +94,6 @@ class GetSingleUserAPIView(ListAPIView):
         
         except Exception as error:
             return {'error': f'The following error has occurred: {error}'}
-
         
 
 class RegisterUserAPIView(CreateAPIView):

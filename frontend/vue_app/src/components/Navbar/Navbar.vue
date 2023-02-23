@@ -58,7 +58,6 @@ const homeItem = {name: "Home", routeName:"home"}
 const navItems = [
           {name: "About", routeName:"about"},
           {name: "Projects", routeName:"posts"},
-          {name: "Resume", routeName:"resume"},
           {name: "Contact", routeName:"contact"},
 ]
 

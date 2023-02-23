@@ -1,0 +1,71 @@
+:root {
+    --backgroundDanger:#ffa2ab; 
+    --textDanger:#DC1957; 
+    --backgroundSuccess:#83ECA3; 
+    --textSuccess:#2DDE62; 
+    --backgroundWarning:#EBE498; 
+    --textWarning:#D7CB43; 
+    --backgroundPrimary:#99CFEA; 
+    --textPrimary:#175676; 
+    --backgroundSecondary:#bdb8b8; 
+    --textSecondary:#575052; 
+    --backgroundInfo:#8bf1f5; 
+    --textInfo:#10a8ad;
+}
+
+.alert-container {
+    width: fit-content;
+    padding: 1rem;
+    border-radius: 5px;
+    position: absolute;
+    top: 10rem;
+    transition: all .2s ;
+}
+
+.alert-danger-container {
+    background-color: var(--backgroundDanger);
+    border: 1px solid var(--textDanger);
+}
+.alert-danger-text {
+    color: var(--textDanger);
+}
+
+.alert-success-container {
+    background-color: var(--backgroundSuccess);
+    border: 1px solid var(--textSuccess);
+}
+.alert-success-text {
+    color: var(--textSuccess);
+}
+
+.alert-warning-container {
+    background-color: var(--backgroundWarning);
+    border: 1px solid var(--textWarning);
+}
+.alert-warning-text {
+    color: var(--textWarning);
+}
+
+.alert-primary-container {
+    background-color: var(--backgroundPrimary);
+    border: 1px solid var(--textPrimary);
+}
+.alert-primary-text {
+    color: var(--textPrimary);
+}
+
+.alert-secondary-container {
+    background-color: var(--backgroundSecondary);
+    border: 1px solid var(--textSecondary);
+}
+.alert-secondary-text {
+    color: var(--textSecondary);
+}
+
+.alert-info-container {
+    background-color: var(--backgroundInfo);
+    border: 1px solid var(--textInfo);
+}
+.alert-info-text {
+    color: var(--textInfo);
+}

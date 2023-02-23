@@ -8,7 +8,7 @@ from UserProfile.models import AnonymousUser, UserProfile
 class Post(models.Model):
     title = models.CharField(max_length=100)
     caption = models.TextField()
-    image = models.ImageField(null=True, blank=True, upload_to=f'media/posts_images/{title}')
+    image = models.ImageField(null=True, blank=True, upload_to=f'posts_images')
     description = models.TextField()
     rating = models.FloatField(default=0.0)
     tech_used = models.TextField()
