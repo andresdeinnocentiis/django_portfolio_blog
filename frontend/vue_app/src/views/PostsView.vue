@@ -1,7 +1,7 @@
 <template>
     
     <div class="posts_container">
-        <h1>Posts View</h1>
+        <h1 class="posts__title">Posts View</h1>
         <div class="posts-container">
             <ProjectCard 
                 class="post"
