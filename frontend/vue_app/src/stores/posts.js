@@ -8,15 +8,14 @@ export const usePostsStore = defineStore("getPosts", () => {
     const listPosts = ref([]) 
 
     const getPosts = async () => {
-        console.log("INICIA GET POSTS");
+
         try {
             const response = await getAPI.get('/api/posts/get/')
-            console.log("RESPONSE: ", response.data);
+
             if (response.data) {
             // Update the store state with the logged in user's information
                 const posts = response.data
                 listPosts.value = posts
-                console.log("listPosts: ", listPosts.value);
                 // Save the posts info to local storage
                 localStorage.setItem('listPosts', JSON.stringify(posts))
             } else {

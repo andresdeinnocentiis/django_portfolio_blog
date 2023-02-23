@@ -10,7 +10,7 @@
             <h5 class="project-caption" :class="{'light-theme-text': isDarkMode, 'dark-theme-text': !isDarkMode}">{{project.caption}}</h5>
             <div class="project-last-part">
                 <div class="project-tech-used" :class="{'light-theme-text': isDarkMode, 'dark-theme-text': !isDarkMode}">{{project.tech_used}}</div>
-                <div class="project-rating">{{project.rating}}</div>
+                <div class="project-rating"><StarRating :value="project.rating" color='#00FF9D' /></div>
             </div>
         </div>
     </router-link>
@@ -20,6 +20,7 @@
 import { useDarkModeStore } from '../../stores/darkMode';
 import { storeToRefs } from 'pinia';
 import { defineProps } from 'vue';
+import StarRating from '../Elements/StarRating.vue';
 
 const darkModeStore = useDarkModeStore()
 const { isDarkMode } = storeToRefs(darkModeStore)
