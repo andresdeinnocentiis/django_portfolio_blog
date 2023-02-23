@@ -958,16 +958,17 @@ input:focus, textarea:focus {
     margin: 2rem;
     margin-bottom: 4rem;
     position: relative;
+    width: fit-content;
 }
 
-.post__title::after {
+.posts__title::after {
     content: "";
     position: absolute;
-    width: 80%;
+    width: 70%;
     height: 1rem;
     background-color: var(--colorSpringGreen);
     left: 0;
-    top: 0rem;
+    bottom: -1.5rem;
     border-radius: 13% 87% 10% 90% / 100% 19% 81% 0%;
 }
 
@@ -975,6 +976,34 @@ input:focus, textarea:focus {
     flex-basis: 25%; 
     min-width: 250px; 
     margin-bottom: 20px;
+    border-radius: 10px;
+}
+
+.project-img-container {
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+}
+
+.project-img {
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+}
+
+.hashtags-container {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: .1rem;
+    
+}
+
+.hashtag-box {
+    background-color: var(--backgroundInfo);
+    padding: .1rem .3rem;
+    border-radius: 5px;
+    border: 1px solid var(--textInfo);
+    font-weight: 500;
+    font-size: .7rem;
 }
 
 .project-img-container {
@@ -995,12 +1024,23 @@ input:focus, textarea:focus {
 
 .project-rest-container {
     padding: .7rem;
+    
 }
 
 .project-title {
-    
+    font-size: 1rem;
+    margin-bottom: .5rem;
 }
-  
+
+.project-caption {
+    font-size: .7rem;
+    margin-bottom: .5rem;
+    width: 80%;
+}
+
+.project-tech-used {
+    margin-bottom: 1rem;
+}
 
 /* ============================================================================================================
 ============================================= DESKTOP VERSION =================================================

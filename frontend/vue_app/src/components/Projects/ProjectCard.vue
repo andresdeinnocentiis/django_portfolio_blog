@@ -9,7 +9,7 @@
             <h3 class="project-title" :class="{'light-theme-text': isDarkMode, 'dark-theme-text': !isDarkMode}">{{project.title}}</h3>
             <h5 class="project-caption" :class="{'light-theme-text': isDarkMode, 'dark-theme-text': !isDarkMode}">{{project.caption}}</h5>
             <div class="project-last-part">
-                <div class="project-tech-used" :class="{'light-theme-text': isDarkMode, 'dark-theme-text': !isDarkMode}">{{project.tech_used}}</div>
+                <div class="project-tech-used" :class="{'light-theme-text': isDarkMode, 'dark-theme-text': !isDarkMode}"><Hashtag :hashtagsArray="arr_tech_used" /></div>
                 <div class="project-rating"><StarRating :value="project.rating" color='#00FF9D' /></div>
             </div>
         </div>
@@ -19,8 +19,9 @@
 <script setup>
 import { useDarkModeStore } from '../../stores/darkMode';
 import { storeToRefs } from 'pinia';
-import { defineProps } from 'vue';
+import { defineProps, computed } from 'vue';
 import StarRating from '../Elements/StarRating.vue';
+import Hashtag from '../Elements/Hashtag.vue';
 
 const darkModeStore = useDarkModeStore()
 const { isDarkMode } = storeToRefs(darkModeStore)
@@ -28,5 +29,7 @@ const { isDarkMode } = storeToRefs(darkModeStore)
 const props = defineProps({
     project: Object
 })
+
+const arr_tech_used = computed(() => props.project.tech_used.split(",").map((str) => str.trimStart())) 
 
 </script>
