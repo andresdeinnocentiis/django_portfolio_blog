@@ -2,7 +2,7 @@
     --backgroundDanger:#ffa2ab; 
     --textDanger:#DC1957; 
     --backgroundSuccess:#83ECA3; 
-    --textSuccess:#2DDE62; 
+    --textSuccess:#0e8030; 
     --backgroundWarning:#EBE498; 
     --textWarning:#D7CB43; 
     --backgroundPrimary:#99CFEA; 
@@ -91,6 +91,12 @@
         position: absolute;
         top: 10rem;
         transition: all .2s ;
+    }
+
+    .modal-message {
+        position: relative;
+        top: 0;
+        transition: all .3s;
     }
     
 

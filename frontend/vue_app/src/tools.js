@@ -11,5 +11,6 @@ const isValidPassword = (password) => {
     return regex.test(password);
 }
 
-export { isValidUsername, isValidPassword }
+
+export { isValidUsername, isValidPassword, showMessage }
   

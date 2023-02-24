@@ -14,7 +14,9 @@
 
     </div>
     <!-- Add Project [Modal] -->
-    <ProjectAddModal />
+    <transition name="fade">
+        <ProjectAddModal />
+    </transition>
 </template>
 
 <script setup>
@@ -39,6 +41,13 @@ const { getPosts } = postsStore
 
 getPosts()
 
-
-
 </script>
+
+<style>
+    .fade-enter-active, .fade-leave-active {
+    transition: opacity 0.5s;
+    }
+    .fade-enter, .fade-leave-to {
+    opacity: 0;
+    }
+</style>

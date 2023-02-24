@@ -5,7 +5,12 @@
             <div class="form-modal-container">
                 <h3 class="form-title light-theme-text">Add a new Project</h3>
                 <form class="form-modal">
-                    <Message v-if="error" :variant="'danger'" :message="error" />
+                    <transition name="fade">
+                        <Message class="modal-message" v-if="errorMsg" :variant="'danger'" :message="errorMsg" />
+                    </transition>
+                    <transition name="fade">    
+                        <Message class="modal-message" v-if="successMsg" :variant="'success'" :message="successMsg" />
+                    </transition>
                     <div class="inputs-container inputs-container-modal">
                         <label class="custom-field input-form-dark" aria-label="Enter title">
                             <input class="input-form-dark" v-model="title" type="text" required placeholder="&nbsp;"/>
@@ -58,21 +63,21 @@
 import { storeToRefs } from 'pinia';
 import { ref } from 'vue'
 import { useModalStore } from '../../stores/modal';
-import { useUserLoggedStore } from "../../stores/userLogged";
 import { usePostsStore } from "../../stores/posts"
 import Message from '../Elements/Message.vue';
-import { getAPI } from '../../axios-api';
+
 
 const modalStore = useModalStore()
 const { hiddenClass } = storeToRefs(modalStore)
 const { toggleProjectModal } = modalStore
 
-const userLoggedStore = useUserLoggedStore()
-const { userInfo } = storeToRefs(userLoggedStore)
-const postsStore = usePostsStore()
-const { getPosts}  = postsStore
 
-const error = ref("");
+const postsStore = usePostsStore()
+const { postPost }  = postsStore
+
+const errorMsg = ref("");
+
+const successMsg = ref("")
 
 let title = ref("")
 let caption = ref("")
@@ -86,7 +91,28 @@ const setImage = (e) => {
     image.value = e.target.files[0]
 }
 
-const handleSubmit = async () => {
+const showSuccess = (success) => {
+    
+    if (success) {
+        successMsg.value = "The Project has been added successfully!"
+    
+        setTimeout(() => {
+                successMsg.value = ""
+                toggleProjectModal()
+            }, 3000)
+    } else {
+        errorMsg.value = "The Project has been added errorfully!"
+    
+        setTimeout(() => {
+                errorMsg.value = ""
+            }, 3000)
+    }
+    
+    
+}
+
+
+const handleSubmit = async () => {   
 
     let formData = new FormData();
     formData.append('title', title.value);
@@ -97,30 +123,36 @@ const handleSubmit = async () => {
     formData.append('github_link', github_link.value);
     formData.append('website_link', website_link.value);
 
+    
+
     try {
-        const response = await getAPI.post('api/posts/post/', formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${userInfo.value.token}`
+        const success = await postPost(formData)
+        if (success) {
+            showSuccess(success)
+        } else { 
+            showSuccess(success)
         }
-        });
+
+    } catch(error) {
+        console.log(error);
+    } finally {
+        title.value = ""
+        caption.value = ""
+        image.value = null
+        description.value = ""
+        tech_used.value = ""
+        github_link.value = ""
+        website_link.value = ""
         
-        // Now we update the PostsView:
-        getPosts()
-    } catch (error) {   
-        console.error(error);
     }
-
-    title.value = ""
-    caption.value = ""
-    image.value = null
-    description.value = ""
-    tech_used.value = ""
-    github_link.value = ""
-    website_link.value = ""
-
 }
-
-
-
 </script>
+
+<style>
+    .fade-enter-active, .fade-leave-active {
+    transition: opacity 0.5s;
+    }
+    .fade-enter, .fade-leave-to {
+    opacity: 0;
+    }
+</style>

@@ -1,9 +1,13 @@
-import { ref, computed } from 'vue'
-import { defineStore } from 'pinia'
+import { ref } from 'vue'
+import { defineStore, storeToRefs } from 'pinia'
+import { useUserLoggedStore } from './userLogged'
 import { getAPI } from '../axios-api';
 
 export const usePostsStore = defineStore("getPosts", () => {
-  
+    
+    const userLoggedStore = useUserLoggedStore()
+    const { userInfo } = storeToRefs(userLoggedStore)
+
     const listPosts = ref([]) 
 
     const getPosts = async () => {
@@ -29,6 +33,25 @@ export const usePostsStore = defineStore("getPosts", () => {
         } 
 
     }
+
+    const postPost = async (project) => {
+        try {
+            const response = await getAPI.post('api/posts/post/', project, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${userInfo.value.token}`
+            }
+            });
+            
+            // Now we update the PostsView:
+            getPosts()
+
+            return true
+        } catch (error) {   
+            console.error(error);
+            return false
+        }
+    }
   
-  return { listPosts, getPosts }
+  return { listPosts, getPosts, postPost }
 });
