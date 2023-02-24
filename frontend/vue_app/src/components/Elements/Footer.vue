@@ -59,7 +59,7 @@ const route = useRoute()
 const currentPage = computed(() => {
   return route.name;
 });
-console.log(currentPage.value);
+
 const forThisPage = () => {
     let isForThisPage = false
     if (currentPage.value == 'home') {

@@ -1,6 +1,5 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import axios from 'axios'
 import { getAPI } from '../axios-api';
 
 export const usePostsStore = defineStore("getPosts", () => {
@@ -13,16 +12,16 @@ export const usePostsStore = defineStore("getPosts", () => {
             const response = await getAPI.get('/api/posts/get/')
 
             if (response.data) {
-            // Update the store state with the logged in user's information
+            // Update the store state with the posts' information
                 const posts = response.data
                 listPosts.value = posts
                 // Save the posts info to local storage
                 localStorage.setItem('listPosts', JSON.stringify(posts))
             } else {
-                // Handle login failure
+                // Handle failure
                 listPosts.value = []
                 // Throw an error or display an error message to the user
-                throw new Error('Login failed. Please try again.')
+                throw new Error('Failed getting the posts. Please try again.')
             }
 
         } catch(error) { 

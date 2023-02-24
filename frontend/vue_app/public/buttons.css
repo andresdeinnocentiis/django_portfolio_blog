@@ -1,0 +1,45 @@
+@import "./variables.css";
+
+.add-btn {
+    z-index: 999;
+}
+
+.add-project-btn {
+    width: fit-content;
+    border-radius: 30% 70% 44% 56% / 33% 40% 60% 67% ;
+    padding: .7rem;
+    position: fixed;
+    right: 6vw;
+    bottom: 6vw;
+    transition: all .3s;
+}
+
+.plus-icon-project {
+    font-size: 8vw;
+    color: var(--colorWhite);
+}
+
+
+.add-project-btn:active {
+    border-radius: 81% 19% 66% 34% / 41% 59% 41% 59%;
+    transition: all .3s;
+}
+
+
+@media (min-width: 900px) {
+
+    .add-project-btn {
+        right: 4vw;
+        bottom: 3vw;
+        transition: all .3s;
+    }
+
+    .plus-icon-project {
+        font-size: 4vw;  
+    }
+
+    .add-project-btn:hover, .add-project-btn:focus {
+        border-radius: 81% 19% 66% 34% / 41% 59% 41% 59%;
+        transition: all .3s;
+    }
+}

@@ -6,11 +6,13 @@ export const useUserLoggedStore = defineStore("userLogged", () => {
   
   const userInfo = ref(null) 
   const logging = ref(false)
+  const isUserAdmin = ref(false)
 
   const loadUserInfo = () => {
     const userInfoFromLocalStorage = localStorage.getItem('userInfo')
     if (userInfoFromLocalStorage) {
       userInfo.value = JSON.parse(userInfoFromLocalStorage)
+      isUserAdmin.value = userInfo.value.isAdmin
     }
   }
 
@@ -34,6 +36,8 @@ export const useUserLoggedStore = defineStore("userLogged", () => {
       // Save the user info to local storage
       localStorage.setItem('userInfo', JSON.stringify(user))
 
+      isUserAdmin.value = userInfo.value.isAdmin
+
       return true; // Login successful
        
     } catch(error) {
@@ -52,15 +56,22 @@ export const useUserLoggedStore = defineStore("userLogged", () => {
   const logout = () => {
         // Clear the store state and remove the user info from local storage
         userInfo.value = null
-        localStorage.removeItem('userInfo')    
+        localStorage.removeItem('userInfo') 
+        isUserAdmin.value = false   
   }
  
   const isUserLogged = () => {
     return !!userInfo.value // Usar doble "!!" convierte al objeto en booleano, porque si usara solo this.userInfo sería un objeto
   }
 
+  /*
+  const isUserAdmin = ref(
+    JSON.parse(localStorage.getItem("userInfo")).isAdmin ?? true
+  )
+    */
+  //console.log(isUserAdmin);
 
   loadUserInfo()
   
-  return { userInfo, login, logout, isUserLogged }
+  return { userInfo, login, logout, isUserLogged, isUserAdmin }
 });
