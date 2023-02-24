@@ -1041,6 +1041,7 @@ input:focus, textarea:focus {
     margin-bottom: 4rem;
     position: relative;
     width: fit-content;
+    font-size: 8vmin;
 }
 
 .posts__title::after {
@@ -1166,6 +1167,19 @@ opacity: 1;
 
 .project-tech-used {
     margin-bottom: 1rem;
+}
+
+.rating-adm-options {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.adm-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 10vmin;
 }
 
 /* ADD PROJECT [MODAL] */
@@ -2034,8 +2048,8 @@ opacity: 1;
     }
 
     .posts__title {
-        margin: 2rem;
-        margin-bottom: 4rem;
+        font-size: 6vmin;
+        margin: 0 10rem 6rem 10rem;
         position: relative;
         width: fit-content;
     }
@@ -2057,7 +2071,7 @@ opacity: 1;
         flex-basis: 30%; 
         flex-grow: 2;
         min-width: 250px; 
-        margin-bottom: 20px;
+        margin-bottom: 40px;
         border-radius: 10px;
         max-width: 30%;
     }
@@ -2143,5 +2157,17 @@ opacity: 1;
         flex-grow: 1;
         justify-content: space-between;
         align-items: stretch;
+    }
+
+    .rating-adm-options {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .adm-options {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 2.5vw;
     }
 }
