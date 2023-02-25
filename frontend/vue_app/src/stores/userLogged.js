@@ -64,12 +64,7 @@ export const useUserLoggedStore = defineStore("userLogged", () => {
     return !!userInfo.value // Usar doble "!!" convierte al objeto en booleano, porque si usara solo this.userInfo sería un objeto
   }
 
-  /*
-  const isUserAdmin = ref(
-    JSON.parse(localStorage.getItem("userInfo")).isAdmin ?? true
-  )
-    */
-  //console.log(isUserAdmin);
+
 
   loadUserInfo()
   

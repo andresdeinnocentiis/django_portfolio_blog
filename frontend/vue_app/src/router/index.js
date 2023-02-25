@@ -44,7 +44,8 @@ const router = createRouter({
     {
       path: '/posts/:id',
       name: 'project',
-      component: ProjectView
+      component: ProjectView,
+      props: true
     },
     {
       path: '/about/',

@@ -9,6 +9,9 @@ export const usePostsStore = defineStore("getPosts", () => {
     const { userInfo } = storeToRefs(userLoggedStore)
 
     const listPosts = ref([]) 
+    const currentPost = ref({})
+
+    const isPostLikedByUser = ref(false)
 
     const getPosts = async () => {
 
@@ -21,11 +24,13 @@ export const usePostsStore = defineStore("getPosts", () => {
                 listPosts.value = posts
                 // Save the posts info to local storage
                 localStorage.setItem('listPosts', JSON.stringify(posts))
+
             } else {
                 // Handle failure
                 listPosts.value = []
                 // Throw an error or display an error message to the user
                 throw new Error('Failed getting the posts. Please try again.')
+
             }
 
         } catch(error) { 
@@ -33,6 +38,47 @@ export const usePostsStore = defineStore("getPosts", () => {
         } 
 
     }
+
+    const getPostDetails = async (id) => {
+
+        try {
+            const response = await getAPI.get(`/api/posts/${id}/get/`)
+
+            if (response.data) {
+            // Update the store state with the posts' information
+                const post = response.data
+                currentPost.value = post
+                // Save the post info to local storage
+                localStorage.setItem('currentPost', JSON.stringify(post))
+                
+            } else {
+                // Handle failure
+                currentPost.value = {}
+                // Throw an error or display an error message to the user
+                throw new Error('Failed getting the post. Please try again.')
+
+            }
+
+        } catch(error) { 
+            console.error("ERROR: ", error);
+
+            
+        } 
+
+    }
+
+    const getIsPostLikedByUser = async (postId, identifier) => {
+        try {
+            const response = await getAPI.get(`/api/posts/${postId}/is_liked/user/${identifier}/`, {})
+            const isLiked = response.data.is_liked
+            console.log("is Liked:", isLiked);
+            isPostLikedByUser.value = isLiked        
+        } catch(error) {
+            console.log(error);
+        }
+    }
+    
+        
 
     const postPost = async (project) => {
         try {
@@ -53,5 +99,5 @@ export const usePostsStore = defineStore("getPosts", () => {
         }
     }
   
-  return { listPosts, getPosts, postPost }
+  return { listPosts, currentPost, getPosts, getPostDetails, postPost, getIsPostLikedByUser, isPostLikedByUser }
 });
