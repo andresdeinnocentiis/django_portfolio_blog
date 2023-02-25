@@ -4,7 +4,7 @@ from .models import Post, Comment, Review, Like
 # Register your models here.
 
 class PostAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title', 'caption', 'rating', 'likes', 'num_reviews', 'tech_used', 'created_at', 'updated_at']
+    list_display = ['id', 'title', 'caption', 'rating', 'likes', 'num_reviews', 'tech_used', 'developed_for', 'created_at', 'updated_at']
 
 class CommentAdmin(admin.ModelAdmin):
     list_display = ['id', 'review_id', 'parent_id', 'user_username', 'likes', 'created_at']

@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Post, Review, Comment, Like
 
 class PostSerializer(serializers.ModelSerializer):
+    likes = serializers.IntegerField(source='get_likes_count', read_only=True)
     class Meta:
         model = Post
         fields = '__all__'

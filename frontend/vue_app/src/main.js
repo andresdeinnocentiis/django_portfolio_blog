@@ -13,12 +13,12 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 /* import specific icons */
-import { faPowerOff, faLayerGroup, faCode, faDatabase, faNetworkWired, faScaleBalanced, faLanguage, faCircleNodes, faCloudArrowUp, faDiagramProject, faJ, faStar, faPlus, faXmark, faTrash, faPenToSquare} from '@fortawesome/free-solid-svg-icons'
-import { faSun, faMoon, faEnvelope, faStar as faStarEmpty, faStarHalfStroke } from '@fortawesome/free-regular-svg-icons'
+import { faPowerOff, faLayerGroup, faCode, faDatabase, faNetworkWired, faScaleBalanced, faLanguage, faCircleNodes, faCloudArrowUp, faDiagramProject, faJ, faStar, faPlus, faXmark, faTrash, faPenToSquare, faHeart} from '@fortawesome/free-solid-svg-icons'
+import { faSun, faMoon, faEnvelope, faStar as faStarEmpty, faStarHalfStroke, faHeart as faHeartEmpty} from '@fortawesome/free-regular-svg-icons'
 import { faLinkedin, faInstagram, faGithub, faPython, faEthereum, faHtml5, faCss3Alt, faDyalog, faReact, faVuejs, faSquareJs} from '@fortawesome/free-brands-svg-icons'
 
 /* add icons to the library */
-library.add(faPowerOff, faSun, faMoon, faLayerGroup, faCode, faDatabase, faNetworkWired, faScaleBalanced, faLanguage, faEnvelope, faLinkedin, faInstagram, faGithub, faPython, faEthereum, faHtml5, faCss3Alt, faDyalog, faReact, faVuejs, faSquareJs, faCircleNodes, faCloudArrowUp, faDiagramProject, faJ, faStar, faStarEmpty, faStarHalfStroke, faPlus, faXmark, faTrash, faPenToSquare)
+library.add(faPowerOff, faSun, faMoon, faLayerGroup, faCode, faDatabase, faNetworkWired, faScaleBalanced, faLanguage, faEnvelope, faLinkedin, faInstagram, faGithub, faPython, faEthereum, faHtml5, faCss3Alt, faDyalog, faReact, faVuejs, faSquareJs, faCircleNodes, faCloudArrowUp, faDiagramProject, faJ, faStar, faStarEmpty, faStarHalfStroke, faPlus, faXmark, faTrash, faPenToSquare, faHeart, faHeartEmpty)
 
 // END OF FONTAWESOME IMPORTS
 

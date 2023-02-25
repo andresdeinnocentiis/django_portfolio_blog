@@ -12,12 +12,13 @@ class Post(models.Model):
     description = models.TextField()
     rating = models.FloatField(default=0.0)
     tech_used = models.TextField()
+    developed_for = models.CharField(max_length=100, null=True, blank=True, default="")
     num_reviews = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     github_link = models.CharField(max_length=100, null=True, blank=True)
     website_link = models.CharField(max_length=100, null=True, blank=True)
-    likes = models.IntegerField(default=0)
+    #likes = models.IntegerField(default=0)
     
     def get_likes_count(self):
         return Like.objects.filter(post=self).count()
@@ -25,6 +26,8 @@ class Post(models.Model):
     @property
     def likes(self):
         return self.get_likes_count()
+
+    likes.fget.short_description = 'Likes'
     
     def __str__(self) -> str:
         return self.title

@@ -70,7 +70,23 @@ export const usePostsStore = defineStore("getPosts", () => {
     const getIsPostLikedByUser = async (postId, identifier) => {
         try {
             const response = await getAPI.get(`/api/posts/${postId}/is_liked/user/${identifier}/`, {})
-            const isLiked = response.data.is_liked
+            const likeArray = response.data
+            let isLiked = false
+            
+            console.log("Like:", likeArray);
+            if (likeArray.length > 0) {
+                const like = likeArray[0]
+                console.log("Post: ", like.post);
+                console.log("User: ", like.user);
+                console.log("Anon: ", like.anonymous_identifier);
+                if(like.post == postId && (like.user == identifier || like.anonymous_identifier == identifier)) {
+                    isLiked = true
+                }
+            } else {
+
+            }
+            
+         
             console.log("is Liked:", isLiked);
             isPostLikedByUser.value = isLiked        
         } catch(error) {

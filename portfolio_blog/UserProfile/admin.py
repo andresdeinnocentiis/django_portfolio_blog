@@ -10,6 +10,7 @@ class UserProfileInline(admin.StackedInline):
     model = UserProfile
     can_delete = False
     verbose_name_plural = 'userprofile'
+    fields = ('bio', 'image')
 
 class UserAdmin(UserAdmin):
     inlines = (UserProfileInline,)

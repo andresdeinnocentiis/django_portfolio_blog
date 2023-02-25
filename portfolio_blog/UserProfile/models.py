@@ -6,6 +6,7 @@ from django.db import models
 # Create your models here.
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    linkedin = models.TextField(null=True, blank=True, default="")
     image = models.ImageField(upload_to='profile_images', null=True, blank=True)
     bio = models.TextField(null=True, blank=True)
     
