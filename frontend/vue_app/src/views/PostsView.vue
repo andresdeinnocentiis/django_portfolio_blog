@@ -4,6 +4,7 @@
         <h1 class="posts__title">Projects</h1>
         <AddButton v-if="isUserAdmin" :btnName="'project'" :color="'#FF435E'" @click.prevent="toggleProjectModal"/>
         <div class="posts-container">
+            
             <ProjectCard 
                 class="post"
                 v-for="post in postsStore.listPosts"

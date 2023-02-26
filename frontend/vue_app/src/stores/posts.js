@@ -8,7 +8,7 @@ export const usePostsStore = defineStore("getPosts", () => {
     const userLoggedStore = useUserLoggedStore()
     const { userInfo } = storeToRefs(userLoggedStore)
 
-    const listPosts = ref([]) 
+    const listPosts = ref([{}]) 
     const currentPost = ref({})
 
     const isPostLikedByUser = ref(false)
@@ -73,12 +73,9 @@ export const usePostsStore = defineStore("getPosts", () => {
             const likeArray = response.data
             let isLiked = false
             
-            console.log("Like:", likeArray);
             if (likeArray.length > 0) {
                 const like = likeArray[0]
-                console.log("Post: ", like.post);
-                console.log("User: ", like.user);
-                console.log("Anon: ", like.anonymous_identifier);
+
                 if(like.post == postId && (like.user == identifier || like.anonymous_identifier == identifier)) {
                     isLiked = true
                 }
@@ -86,8 +83,6 @@ export const usePostsStore = defineStore("getPosts", () => {
 
             }
             
-         
-            console.log("is Liked:", isLiked);
             isPostLikedByUser.value = isLiked        
         } catch(error) {
             console.log(error);

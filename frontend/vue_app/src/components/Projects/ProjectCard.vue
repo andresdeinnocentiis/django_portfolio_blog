@@ -1,5 +1,5 @@
 <template>
-    <router-link :to="{name: 'project', params: {id: project.id}}" class="project-card" 
+    <router-link v-if="project.id" :to="{name: 'project', params: {id: project.id}}" class="project-card" 
         :class="{'project-card-dark': !isDarkMode, 'project-card-light': isDarkMode}"
     >
         <div class="project-img-container">

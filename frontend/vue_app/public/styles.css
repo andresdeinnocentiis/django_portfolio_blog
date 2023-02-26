@@ -5,6 +5,8 @@
 @import "./alerts.css";
 @import "./buttons.css";
 @import "./modals.css";
+@import "./projectView.css";
+@import "./starRating.css";
 
 * {
     margin: 0;
@@ -173,6 +175,7 @@ ul {
 
 .fa-power-off {
     font-size: 2rem;
+    transition: all .3s;
 }
 
 .toggler-absolute {
@@ -1392,6 +1395,8 @@ opacity: 1;
     }
 
     .fa-power-off:hover {
+        transition: all .3s;
+        color: var(--colorSpringGreen);
         text-shadow: 0px 0px 6px rgba(0, 255, 157, 1);
     }
 

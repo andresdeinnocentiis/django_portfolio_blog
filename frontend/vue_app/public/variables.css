@@ -17,6 +17,8 @@
     --colorSpringGreen: #00FF9D; 
     --colorPrussianBlue: #252E40; 
     --colorGummetal: #2C2F36; 
+    --colorDarkGrey: rgb(63, 58, 82);
+    --colorLightGold: rgb(226, 210, 179);
     --darkBackground: linear-gradient(
         95deg,
         hsl(233deg 27% 18%) 0%,

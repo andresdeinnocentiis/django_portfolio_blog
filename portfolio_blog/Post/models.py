@@ -13,6 +13,7 @@ class Post(models.Model):
     rating = models.FloatField(default=0.0)
     tech_used = models.TextField()
     developed_for = models.CharField(max_length=100, null=True, blank=True, default="")
+    developed_for_link = models.CharField(max_length=100, null=True, blank=True, default="")
     num_reviews = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
