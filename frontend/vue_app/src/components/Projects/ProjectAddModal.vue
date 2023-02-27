@@ -36,6 +36,15 @@
                             <span class="placeholder-textarea">Enter Techs Used</span>
                         </label>
 
+                        <label class="custom-field input-form-dark" aria-label="Enter developed for">
+                            <input class="input-form-dark" v-model="developed_for" type="text" required placeholder="&nbsp;"/>
+                            <span class="placeholder placeholder-modal">Enter Developed For</span>
+                        </label>
+
+                        <label class="custom-field input-form-dark" aria-label="Enter Developed for Link">
+                            <input class="input-form-dark" v-model="developed_for_link" type="url" required placeholder="&nbsp;"/>
+                            <span class="placeholder placeholder-modal">Enter Developed For Link</span>
+                        </label>
                         <label class="custom-field input-form-dark" aria-label="Enter Github link">
                             <input class="input-form-dark" v-model="github_link" type="url" required placeholder="&nbsp;"/>
                             <span class="placeholder placeholder-modal">Enter Github link</span>
@@ -84,6 +93,8 @@ let caption = ref("")
 let image = ref(null)
 let description = ref("")
 let tech_used = ref("")
+let developed_for = ref("")
+let developed_for_link = ref("")
 let github_link = ref("")
 let website_link = ref("")
 
@@ -92,7 +103,7 @@ const setImage = (e) => {
 }
 
 const showSuccess = (success) => {
-    
+    console.log("SUCCESS?", success);
     if (success) {
         successMsg.value = "The Project has been added successfully!"
     
@@ -101,7 +112,7 @@ const showSuccess = (success) => {
                 toggleProjectModal()
             }, 3000)
     } else {
-        errorMsg.value = "The Project has been added errorfully!"
+        errorMsg.value = "There was a problem adding the Project. Please try again."
     
         setTimeout(() => {
                 errorMsg.value = ""
@@ -120,6 +131,8 @@ const handleSubmit = async () => {
     formData.append('image', image.value);
     formData.append('description', description.value);
     formData.append('tech_used', tech_used.value);
+    formData.append('developed_for', developed_for.value);
+    formData.append('developed_for_link', developed_for_link.value);
     formData.append('github_link', github_link.value);
     formData.append('website_link', website_link.value);
 
@@ -141,9 +154,10 @@ const handleSubmit = async () => {
         image.value = null
         description.value = ""
         tech_used.value = ""
+        developed_for.value = ""
+        developed_for_link.value = ""
         github_link.value = ""
         website_link.value = ""
-        
     }
 }
 </script>

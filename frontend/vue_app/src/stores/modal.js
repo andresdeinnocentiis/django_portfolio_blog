@@ -22,7 +22,7 @@ export const useModalStore = defineStore('modal', () => {
         } else {
             hiddenClass.value = "hidden"
         }
-        console.log(hiddenClass.value);
+
     }
 
     return { isProjectModalOpen, hiddenClass, toggleProjectModal }

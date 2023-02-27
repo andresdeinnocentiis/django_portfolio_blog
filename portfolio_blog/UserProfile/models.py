@@ -1,6 +1,7 @@
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 from django.db import models
+import uuid
 
 
 # Create your models here.
@@ -13,7 +14,7 @@ class UserProfile(models.Model):
     
 class AnonymousUser(models.Model):
     username = models.CharField(max_length=100, blank=True)
-    anonymous_identifier = models.CharField(max_length=255, unique=True)
+    anonymous_identifier = models.UUIDField(default = uuid.uuid4, unique=True)
     
     def save(self, *args, **kwargs):
         self.username = self.username.lower()
@@ -24,5 +25,5 @@ class AnonymousUser(models.Model):
         if self.username:
             return self.username
         else:
-            return self.anonymous_identifier
+            return str(self.anonymous_identifier)
 

@@ -1,9 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import PostsView from '../views/PostsView.vue' 
-import HomeView from '../views/HomeView.vue'
-import LoginView from '../views/LoginView.vue'
-import RegisterView from '../views/RegisterView.vue'
-import ProjectView from '../views/ProjectView.vue'
 import { useUserLoggedStore } from '../stores/userLogged'
 
 const router = createRouter({
@@ -12,12 +7,12 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component:  () => import('../views/HomeView.vue'),
     },
     {
       path: '/login/',
       name: 'login',
-      component: LoginView,
+      component: () => import('../views/LoginView.vue'),
       beforeEnter: async (to, from, next) => {
         const userLoggedStore = useUserLoggedStore()
         const { isUserLogged } = userLoggedStore
@@ -34,28 +29,28 @@ const router = createRouter({
     {
       path: '/register/',
       name: 'register',
-      component: RegisterView
+      component: () => import('../views/RegisterView.vue')
     },
     {
       path: '/posts/',
       name: 'posts',
-      component: PostsView
+      component: () => import('../views/PostsView.vue'),
     },
     {
       path: '/posts/:id',
       name: 'project',
-      component: ProjectView,
+      component:  () => import('../views/ProjectView.vue'),
       props: true
     },
     {
       path: '/about/',
       name: 'about',
-      component: PostsView
+      component:  () => import('../views/PostsView.vue'),
     },
     {
       path: '/contact/',
       name: 'contact',
-      component: PostsView
+      component:  () => import('../views/PostsView.vue'),
     },
   ]
 })

@@ -1,4 +1,4 @@
-@import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css);
+
 
 .star-rating-container {
     display: flex;
@@ -7,27 +7,12 @@
     
 }
 
-.rating-wrap {
-    padding: 15px;
-    
-}
+.star-rating {
+    display: inline-block;
+    font-size: 1.5vw;
+    cursor: pointer;
+  }
 
-#rating-value {
 
-}
-
-.rating {
-    border: none;
-    float: left;
-}
-
-.rating > input {
-    display: none;
-}
-
-.rating > label::before {
-    content:"\f005";
-    font-family: FontAwesome;
-}
 
 

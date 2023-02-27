@@ -89,9 +89,7 @@
     background-color: rgb(226, 210, 179);
     color: rgb(105, 90, 90);
 }
-.img-overlay-description-dark a {
-    
-}
+
 
 
 .img-overlay-description-light {
@@ -137,7 +135,17 @@
 }
 
 
-
+.single-project-link.github-link {
+    width: fit-content;
+}
+.single-project-link a {
+    word-break: break-all;
+    font-size: 3vw !important;
+}
+.single-project-link.github-link a {
+    word-break: break-all;
+    font-size: 3vw !important;
+}
 
 .hashtag-text-project div {
     background-color: var(--backgroundSecondary);
@@ -157,6 +165,8 @@
 .dark-span {
     color: var(--colorDarkGrey);
 }
+
+
 
 @media (min-width: 900px) {
 
@@ -327,9 +337,25 @@
 
     .single-project-link {
         font-weight: 500;
+        display: flex;
+        flex-wrap: wrap;
+
+    }
+    .single-project-link.github-link {
+        font-weight: 500;
+        display: flex;
+        flex-wrap: wrap !important;
+
     }
     .single-project-link a {
         font-weight: 300;
+        word-break: break-all;
+        font-size: 1vw !important;
+    }
+
+    .single-project-link.github-link a {
+        word-break: break-all;
+        font-size: 1vw !important;
     }
 
     .img-overlay-description-light .single-project-link a {
@@ -402,13 +428,26 @@
 
     .post-user-actions-container {
         display: flex;
-        align-items: space-between;
+        align-items: center;
+        justify-content: center;
         padding: 2vh;
         border-radius: 10px;
         position: relative;
         top: -26vh;
         right: -15vh;
         gap: 2vh;
+    }
+
+    .like-icon-div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: fit-content;
+    }
+
+    .like-action {
+        font-size: 1.5vw;
+        color: var(--textDanger);
     }
 
     .post-user-actions-container.img-overlay-description-light {

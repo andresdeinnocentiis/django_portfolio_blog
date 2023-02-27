@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
+import { v4 as uuidv4 } from 'uuid'
 import { useUserLoggedStore } from './userLogged'
 import { getAPI } from '../axios-api';
 
@@ -10,6 +11,7 @@ export const usePostsStore = defineStore("getPosts", () => {
 
     const listPosts = ref([{}]) 
     const currentPost = ref({})
+
 
     const isPostLikedByUser = ref(false)
 
@@ -47,6 +49,7 @@ export const usePostsStore = defineStore("getPosts", () => {
             if (response.data) {
             // Update the store state with the posts' information
                 const post = response.data
+
                 currentPost.value = post
                 // Save the post info to local storage
                 localStorage.setItem('currentPost', JSON.stringify(post))
@@ -62,30 +65,57 @@ export const usePostsStore = defineStore("getPosts", () => {
         } catch(error) { 
             console.error("ERROR: ", error);
 
-            
         } 
 
     }
 
-    const getIsPostLikedByUser = async (postId, identifier) => {
-        try {
-            const response = await getAPI.get(`/api/posts/${postId}/is_liked/user/${identifier}/`, {})
-            const likeArray = response.data
-            let isLiked = false
-            
-            if (likeArray.length > 0) {
-                const like = likeArray[0]
+    const getIsPostLikedByUser = async (postId, user) => {
+        let isLiked = false
+        let identifier
 
-                if(like.post == postId && (like.user == identifier || like.anonymous_identifier == identifier)) {
-                    isLiked = true
+        if (user.value.anonymousIdentifier) {
+            identifier = user.value.anonymousIdentifier
+            try {
+                const response = await getAPI.get(`/api/posts/${postId}/is_liked/anonymous_user/${identifier}/`, {})
+                const likeArray = response.data
+                
+                if (likeArray.length > 0) {
+                    const like = likeArray[0]
+    
+                    if(like.post == postId && (like.anonymous_identifier == identifier)) {
+                        isLiked = true
+                    }
+                } else {
+                    isLiked = false
                 }
-            } else {
-
+                
+                isPostLikedByUser.value = isLiked        
+            } catch(error) {
+                console.log(error);
             }
-            
-            isPostLikedByUser.value = isLiked        
-        } catch(error) {
-            console.log(error);
+        } else {
+
+            identifier = user.value.id
+
+            try {
+                const response = await getAPI.get(`/api/posts/${postId}/is_liked/user/${identifier}/`, {})
+                const likeArray = response.data
+  
+                if (likeArray.length > 0) {
+                    const like = likeArray[0]
+    
+                    if(like.post == postId && (like.user == identifier)) {
+                        isLiked = true
+                        isPostLikedByUser.value = isLiked 
+                    }
+                } else {
+                    isLiked = false
+                }
+                
+                isPostLikedByUser.value = isLiked        
+            } catch(error) {
+                console.log(error);
+            }
         }
     }
     
@@ -99,16 +129,19 @@ export const usePostsStore = defineStore("getPosts", () => {
                 Authorization: `Bearer ${userInfo.value.token}`
             }
             });
-            
+
             // Now we update the PostsView:
             getPosts()
 
             return true
-        } catch (error) {   
+        } catch (error) { 
+            console.log(error);
             console.error(error);
             return false
         }
     }
+
+
   
   return { listPosts, currentPost, getPosts, getPostDetails, postPost, getIsPostLikedByUser, isPostLikedByUser }
 });

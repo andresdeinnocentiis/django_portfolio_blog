@@ -1,115 +1,62 @@
 <template>
-    <div class="star-rating-container">
-        <div class="rating-wrap">
-            <span class="star-hover star-hover1" ref="halfStar1" @click="handleClick($event)">
-                <font-awesome-icon v-if="value >=1" icon="fa-solid fa-star fullStar star-icon" />
-                <font-awesome-icon v-else-if="value>=0.5" icon="fa-regular fa-star-half-stroke halfStar star-icon" />
-                <font-awesome-icon v-else icon="fa-regular fa-star emptyStar star-icon" />   
-            </span>
-            <span class="star-hover star-hover2">
-                <font-awesome-icon v-if="value >=2" icon="fa-solid fa-star fullStar star-icon" />
-                <font-awesome-icon v-else-if="value>=1.5" icon="fa-regular fa-star-half-stroke halfStar star-icon" />
-                <font-awesome-icon v-else icon="fa-regular fa-star emptyStar star-icon" />   
-            </span>
-            <span class="star-hover star-hover3">
-                <font-awesome-icon v-if="value >=3" icon="fa-solid fa-star fullStar star-icon" />
-                <font-awesome-icon v-else-if="value>=2.5" icon="fa-regular fa-star-half-stroke halfStar star-icon" />
-                <font-awesome-icon v-else icon="fa-regular fa-star emptyStar star-icon" />   
-            </span>
-            <span class="star-hover star-hover4">
-                <font-awesome-icon v-if="value >=4" icon="fa-solid fa-star fullStar star-icon" />
-                <font-awesome-icon v-else-if="value>=3.5" icon="fa-regular fa-star-half-stroke halfStar star-icon" />
-                <font-awesome-icon v-else icon="fa-regular fa-star emptyStar star-icon" />   
-            </span>
-            <span class="star-hover star-hover5">
-                <font-awesome-icon v-if="value >=5" icon="fa-solid fa-star fullStar star-icon" />
-                <font-awesome-icon v-else-if="value>=4.5" icon="fa-regular fa-star-half-stroke halfStar star-icon" />
-                <font-awesome-icon v-else icon="fa-regular fa-star emptyStar star-icon" />   
-            </span>
-        </div>
+    <div class="star-rating">
+      <span :style="{'color':color}" v-for="i in 5" :key="i" :data-index="i" @mousemove="handleMouseMove" @mouseleave="handleMouseLeave" @click="handleClick">
+        <font-awesome-icon icon="fa-regular fa-star-half-stroke halfStar star-icon" v-if="(value == (i -1) + 0.5) && value > 0" />
+        <font-awesome-icon icon="fa-solid fa-star fullStar star-icon" v-else-if="value >= i" />
+        <font-awesome-icon icon="fa-regular fa-star emptyStar star-icon" v-else />
+      </span>
     </div>
-</template>
+  </template>
+  
+  <script setup>
+  import { ref, defineEmits } from 'vue';
+  
+  const value = ref(0);
+  const clicked = ref(false)
 
-<script setup>
-import { ref, onMounted, defineProps } from 'vue';
+  const starWidth = ref(0)
 
-const props = defineProps({
-    color: String
-})
+  const props = defineProps({
+    color: String,
+  })
 
-const value = ref(0)
-const halfStar1 = ref('halfStar1');
+  // I define the emit event for updating this value and passing it up to its parent component
+  const emits = defineEmits(["update:value"]);
+  
+  const handleMouseMove = (event) => {
 
+    const element = document.querySelector('.star-rating');
 
+    const elementLength = element.offsetWidth;
 
-const handleClick = (e) => {
-    console.log("TARGET: ", e.target);
-    if(e.target.classList.contains('star-hover1') && e.target.before) {
-            value.value = 0.5
-    } else if(e.target.classList.contains('star-hover1') && !e.target.before) {
-            value.value = 1
+    const index = event.currentTarget.dataset.index;
+
+    starWidth.value = elementLength / 5;
+
+    const offsetX = event.offsetX;
+
+    if (offsetX >= (starWidth.value / 2)) {
+      value.value = index
+    } else if (offsetX < (starWidth.value / 2)) {
+      value.value = index - 0.5
     }
 
-    console.log(value.value);
-}
+  };
+  
+  const handleMouseLeave = () => {
+    if (!clicked.value) {
+      value.value = 0;
+    }
+  };
 
+  const handleClick = () => {
+    clicked.value = !clicked.value
+    if (!clicked.value) {
+      value.value = 0
+    }
+    // Here I emit an event to update the value on the parent component so that I can get the value and do whatever I need with it
+    emits("update:value", value.value)
+  }
+  </script>
 
-</script>
-
-<style>
-.star-hover:hover, .star-hover:focus {
-    cursor: pointer;
-}
-
-.star-hover1,.star-hover2,.star-hover3,.star-hover4,.star-hover5 {
-    position: relative;
-}
-
-.star-hover1::before {
-    content:" ";
-    width: 50%;
-    height: 100%;
-    position: absolute;
-    background-color: red;
-    left: 0;
-}
-
-.star-hover2::before {
-    content:" ";
-    width: 50%;
-    height: 100%;
-    position: absolute;
-    background-color: red;
-    left: 0;
-}
-
-.star-hover3::before {
-    content:" ";
-    width: 50%;
-    height: 100%;
-    position: absolute;
-    background-color: red;
-    left: 0;
-}
-
-.star-hover4::before {
-    content:" ";
-    width: 50%;
-    height: 100%;
-    position: absolute;
-    background-color: red;
-    left: 0;
-}
-
-.star-hover5::before {
-    content:" ";
-    width: 50%;
-    height: 100%;
-    position: absolute;
-    background-color: red;
-    left: 0;
-}
-
-
-
-</style>
+  

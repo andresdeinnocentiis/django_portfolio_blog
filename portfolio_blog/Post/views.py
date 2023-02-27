@@ -59,14 +59,41 @@ class GetSinglePostAPIView(RetrieveAPIView):
 
 
 class GetIsPostLikedByUserView(ListAPIView):
+    
     serializer_class = LikeSerializer
-    def get(self, request, pk, identifier, *args, **kwargs):
-        print("REQUEST: ", request)
-        print(f"Identifier: {identifier}")
-        likes = Like.objects.filter(post=pk)
+    
+    queryset = Like.objects.all()
+
+    def get_queryset(self):
+        pk = self.kwargs['pk']
+        identifier = self.kwargs['identifier']
+        print("IDENTIFIER: ", identifier)
+        likes = self.queryset.filter(post=pk)
         if identifier:
-            likes = likes.filter(Q(user__id=identifier) | Q(anonymous_identifier=identifier))
-        serialized_likes = self.serializer_class(likes, many=True)
+            likes = likes.filter(Q(user__id=identifier))
+            return likes
+    
+
+class GetIsPostLikedByAnonymousUserView(ListAPIView):
+    
+    serializer_class = LikeSerializer
+    
+    queryset = Like.objects.all()
+
+    def get_queryset(self):
+        pk = self.kwargs['pk']
+        identifier = self.kwargs['identifier']
+        print("IDENTIFIER: ", identifier)
+        likes = self.queryset.filter(post=pk)
+        if identifier:
+                
+            likes = likes.filter(Q(anonymous_identifier=identifier))
+            return likes
+        
+        
+    def get(self, request, pk, identifier, *args, **kwargs):
+        queryset = self.get_queryset()
+        serialized_likes = self.serializer_class(queryset, many=True)
         return Response(serialized_likes.data)
         
         

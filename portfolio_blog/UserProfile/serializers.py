@@ -8,14 +8,18 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 class UserSerializer(serializers.ModelSerializer):
     isAdmin = serializers.SerializerMethodField(read_only=True)
-
+    token = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = User
-        fields = ['id', 'username','password', 'email', 'first_name', 'last_name', 'isAdmin']
+        fields = ['id', 'username','password', 'email', 'first_name', 'last_name', 'isAdmin', 'token']
 
 
     def get_isAdmin(self, obj):
         return obj.is_staff
+    
+    def get_token(self, obj):
+        token = RefreshToken.for_user(obj)
+        return str(token.access_token)
 
 class UserProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()

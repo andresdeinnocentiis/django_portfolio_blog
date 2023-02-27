@@ -143,9 +143,7 @@ class GetAnonymousUserAPIView(ListAPIView):
     '''
     queryset = AnonymousUser.objects.all()
     serializer_class = AnonymousUserSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    authentication_classes = [JWTAuthentication]
+    
     
 class GetSingleAnonymousUserAPIView(ListAPIView):
     __doc__ = f'''
@@ -165,8 +163,8 @@ class GetSingleAnonymousUserAPIView(ListAPIView):
         el User del ID solicitado.  
         '''
         try:
-            pk = self.kwargs['pk']
-            queryset = AnonymousUser.objects.filter(pk=pk)
+            anonymous_identifier = self.kwargs['anonymous_identifier']
+            queryset = AnonymousUser.objects.filter(anonymous_identifier=anonymous_identifier)
             return queryset
         
         except Exception as error:
@@ -179,9 +177,7 @@ class RegisterAnonymousUserAPIView(CreateAPIView):
     '''
     queryset = AnonymousUser.objects.all()
     serializer_class = AnonymousUserSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    authentication_classes = [JWTAuthentication]
+    
     
 class UpdateAnonymousUserAPIView(UpdateAPIView):
     __doc__ = f'''
@@ -190,9 +186,7 @@ class UpdateAnonymousUserAPIView(UpdateAPIView):
     '''
     queryset = AnonymousUser.objects.all()
     serializer_class = AnonymousUserSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    authentication_classes = [JWTAuthentication]
+    
 
 class DestroyAnonymousUserAPIView(DestroyAPIView):
     __doc__ = f'''
@@ -201,6 +195,3 @@ class DestroyAnonymousUserAPIView(DestroyAPIView):
     '''
     queryset = AnonymousUser.objects.all()
     serializer_class = AnonymousUserSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser] 
-    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    authentication_classes = [JWTAuthentication]
