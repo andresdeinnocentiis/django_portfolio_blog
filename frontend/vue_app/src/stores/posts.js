@@ -1,11 +1,12 @@
 import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { v4 as uuidv4 } from 'uuid'
+import { useRouter } from 'vue-router'
 import { useUserLoggedStore } from './userLogged'
 import { getAPI } from '../axios-api';
 
 export const usePostsStore = defineStore("getPosts", () => {
     
+    const router = useRouter()
     const userLoggedStore = useUserLoggedStore()
     const { userInfo } = storeToRefs(userLoggedStore)
 
@@ -15,6 +16,7 @@ export const usePostsStore = defineStore("getPosts", () => {
 
     const isPostLikedByUser = ref(false)
 
+    // GET Method to retrieve all the Projects/Posts
     const getPosts = async () => {
 
         try {
@@ -29,7 +31,7 @@ export const usePostsStore = defineStore("getPosts", () => {
 
             } else {
                 // Handle failure
-                listPosts.value = []
+                listPosts.value = [{}]
                 // Throw an error or display an error message to the user
                 throw new Error('Failed getting the posts. Please try again.')
 
@@ -41,6 +43,7 @@ export const usePostsStore = defineStore("getPosts", () => {
 
     }
 
+    // GET Method to retrieve a SINGLE Project/Post
     const getPostDetails = async (id) => {
 
         try {
@@ -69,6 +72,7 @@ export const usePostsStore = defineStore("getPosts", () => {
 
     }
 
+    // GET Method to retrieve whether a project/post is liked by a particular user or not
     const getIsPostLikedByUser = async (postId, user) => {
         let isLiked = false
         let identifier
@@ -98,7 +102,7 @@ export const usePostsStore = defineStore("getPosts", () => {
             identifier = user.value.id
 
             try {
-                const response = await getAPI.get(`/api/posts/${postId}/is_liked/user/${identifier}/`, {})
+                const response = await getAPI.get(`/api/posts/${postId}/is_liked/user/${identifier}/get/`, {})
                 const likeArray = response.data
   
                 if (likeArray.length > 0) {
@@ -120,10 +124,56 @@ export const usePostsStore = defineStore("getPosts", () => {
     }
     
         
-
+    // POST Method to insert a new Project/Post on the Database
     const postPost = async (project) => {
         try {
-            const response = await getAPI.post('api/posts/post/', project, {
+            const response = await getAPI.post('/api/posts/post/', project, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${userInfo.value.token}`
+            }
+            });
+
+            // Now we update the PostsView:
+            getPosts()
+
+            return true
+        } catch (error) { 
+            console.log(error);
+            console.error(error);
+            return false
+        }
+    }
+
+    const deletePost = async (postId) => {
+        try {
+            const response = await getAPI.delete(`/api/posts/${postId}/delete/`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${userInfo.value.token}`
+                }
+            })
+
+            // Now we update the PostsView:
+            getPosts()
+
+            // We redirect to the Projects section:
+            setTimeout(() => {
+                router.push({name: 'posts'})
+            }, 2000)
+            
+
+            return true
+        } catch (error) {
+            console.log(error);
+ 
+            return false
+        }
+    }
+
+    const updatePost = async (id, project) => {
+        try {
+            const response = await getAPI.put(`/api/posts/${id}/update/`, project, {
             headers: {
                 'Content-Type': 'multipart/form-data',
                 Authorization: `Bearer ${userInfo.value.token}`
@@ -143,5 +193,5 @@ export const usePostsStore = defineStore("getPosts", () => {
 
 
   
-  return { listPosts, currentPost, getPosts, getPostDetails, postPost, getIsPostLikedByUser, isPostLikedByUser }
+  return { listPosts, currentPost, getPosts, getPostDetails, postPost, getIsPostLikedByUser, isPostLikedByUser, deletePost, updatePost }
 });

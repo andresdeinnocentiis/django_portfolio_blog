@@ -10,25 +10,43 @@ class Post(models.Model):
     caption = models.TextField()
     image = models.ImageField(null=True, blank=True, upload_to=f'posts_images')
     description = models.TextField()
-    rating = models.FloatField(default=0.0)
     tech_used = models.TextField()
     developed_for = models.CharField(max_length=100, null=True, blank=True, default="")
     developed_for_link = models.CharField(max_length=100, null=True, blank=True, default="")
-    num_reviews = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=25, default="Completed")
     updated_at = models.DateTimeField(auto_now=True)
     github_link = models.CharField(max_length=100, null=True, blank=True)
     website_link = models.CharField(max_length=100, null=True, blank=True)
-    #likes = models.IntegerField(default=0)
+    
+    # Here I add calculated fields (likes, num_reviews, rating):
     
     def get_likes_count(self):
         return Like.objects.filter(post=self).count()
-
     @property
     def likes(self):
         return self.get_likes_count()
+    
+    def get_reviews_count(self):
+        return Review.objects.filter(post=self).count()
+    @property
+    def num_reviews(self):
+        return self.get_reviews_count()
+    
+    def get_average_rating(self):
+        reviews = Review.objects.filter(post=self)
+        count = reviews.count()
+        if count == 0:
+            return 0
+        total_rating = sum([r.rating for r in reviews])
+        return total_rating / count
+    @property
+    def rating(self):
+        return self.get_average_rating()
 
     likes.fget.short_description = 'Likes'
+    num_reviews.fget.short_description = 'Reviews'
+    rating.fget.short_description = 'Rating'
     
     def __str__(self) -> str:
         return self.title

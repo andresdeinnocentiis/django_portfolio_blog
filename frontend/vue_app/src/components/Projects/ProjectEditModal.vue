@@ -1,16 +1,10 @@
 <template>
-    <div class="modal-project-add-overlay" :class="hiddenClass">
+    <div class="modal-project-add-overlay" :class="editHiddenClass">
         <div class="modal-project-add">
-            <font-awesome-icon icon="fa-solid fa-xmark" class="close-modal" @click.prevent="handleCloseModal"/>
+            <font-awesome-icon icon="fa-solid fa-xmark" class="close-modal" @click.prevent="handleCloseEdit"/>
             <div class="form-modal-container">
-                <h3 class="form-title light-theme-text">Add a new Project</h3>
+                <h3 class="form-title light-theme-text">Edit Project</h3>
                 <form class="form-modal">
-                    <transition name="fade">
-                        <Message class="modal-message" v-if="errorMsg" :variant="'danger'" :message="errorMsg" />
-                    </transition>
-                    <transition name="fade">    
-                        <Message class="modal-message" v-if="successMsg" :variant="'success'" :message="successMsg" />
-                    </transition>
                     <div class="inputs-container inputs-container-modal">
                         <label class="custom-field input-form-dark" aria-label="Enter title">
                             <input class="input-form-dark" v-model="title" type="text" required placeholder="&nbsp;"/>
@@ -65,12 +59,21 @@
                             type="submit"
                             class="form-btn" 
                             @click.prevent="handleSubmit()"    
-                        >Add Project</button>
+                        >Confirm Edit</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
+  
+    <TransactionModal 
+        :variant="editModalMsg.variant" 
+        :title="editModalMsg.title" 
+        :message="editModalMsg.msg" 
+        :success="editModalMsg.success"
+    />
+
 </template>
 
 <script setup>
@@ -78,70 +81,42 @@ import { storeToRefs } from 'pinia';
 import { ref } from 'vue'
 import { useModalStore } from '../../stores/modal';
 import { usePostsStore } from "../../stores/posts"
-import Message from '../Elements/Message.vue';
 
 
 const modalStore = useModalStore()
-const { hiddenClass } = storeToRefs(modalStore)
-const { toggleProjectModal } = modalStore
+const { editHiddenClass } = storeToRefs(modalStore)
+const { toggleEditProjectModal } = modalStore
 
 
 const postsStore = usePostsStore()
-const { postPost }  = postsStore
+const { updatePost, getPostDetails }  = postsStore
+const { currentPost } = storeToRefs(postsStore)
 
-const errorMsg = ref("");
 
-const successMsg = ref("")
 
-let title = ref("")
-let caption = ref("")
-let image = ref(null)
-let description = ref("")
-let tech_used = ref("")
-let developed_for = ref("")
-let developed_for_link = ref("")
-let status = ref("")
-let github_link = ref("")
-let website_link = ref("")
+
+const editModalMsg = ref({
+    title: "",
+    msg: "",
+    variant: "",
+    success: false
+})
+
+let title = ref(currentPost.value.title)
+let caption = ref(currentPost.value.caption)
+let image = ref(currentPost.value.image)
+let description = ref(currentPost.value.description)
+let tech_used = ref(currentPost.value.tech_used)
+let developed_for = ref(currentPost.value.developed_for)
+let developed_for_link = ref(currentPost.value.developed_for_link)
+let status = ref(currentPost.value.status)
+let github_link = ref(currentPost.value.github_link)
+let website_link = ref(currentPost.value.website_link)
 
 const setImage = (e) => {
     image.value = e.target.files[0]
 }
 
-const showSuccess = (success) => {
-    
-    if (success) {
-        successMsg.value = "The Project has been added successfully!"
-    
-        setTimeout(() => {
-                successMsg.value = ""
-                toggleProjectModal()
-            }, 2000)
-    } else {
-        errorMsg.value = "There was a problem adding the Project. Please try again."
-    
-        setTimeout(() => {
-                errorMsg.value = ""
-            }, 2000)
-    }
-    
-    
-}
-
-// If we close the Modal before adding the project, it should clean the fields for future inputs
-const handleCloseModal = () => {
-    title.value = "" 
-    caption.value = "" 
-    image.value = "" 
-    description.value = "" 
-    tech_used.value = "" 
-    developed_for.value = "" 
-    developed_for_link.value = "" 
-    status.value = "" 
-    github_link.value = "" 
-    website_link = ""
-    toggleProjectModal()
-}
 
 
 const handleSubmit = async () => {   
@@ -163,26 +138,55 @@ const handleSubmit = async () => {
     
 
     try {
-        const success = await postPost(formData)
+        const success = await updatePost(currentPost.value.id, formData)
         if (success) {
-            showSuccess(success)
+            editModalMsg.value.success = true
+            editModalMsg.value.variant = "success"
+            editModalMsg.value.title = "Success!"
+            editModalMsg.value.msg = "The project was updated successfully!"
+
+            getPostDetails(currentPost.value.id)
+
+            setTimeout(() => {
+                toggleEditProjectModal()
+                editModalMsg.value.success = false
+                editModalMsg.value.variant = ""
+                editModalMsg.value.title = ""
+                editModalMsg.value.msg = ""
+            }, 2000)
         } else { 
-            showSuccess(success)
+            editModalMsg.value.success = false
+            editModalMsg.value.variant = "danger"
+            editModalMsg.value.title = "Error."
+            editModalMsg.value.msg = "There was a problem updating the Project. Please try again."
+
+            setTimeout(() => {
+                toggleEditProjectModal()
+                editModalMsg.value.success = false
+                editModalMsg.value.variant = ""
+                editModalMsg.value.title = ""
+                editModalMsg.value.msg = ""
+            }, 2000)
         }
 
     } catch(error) {
         console.log(error);
-    } finally {
-        title.value = ""
-        caption.value = ""
-        image.value = null
-        description.value = ""
-        tech_used.value = ""
-        developed_for.value = ""
-        developed_for_link.value = ""
-        github_link.value = ""
-        website_link.value = ""
-    }
+    } 
+}
+
+// When I close the modal if I did any modifications without confirming, the data should be back to it's original state
+const handleCloseEdit = () => {
+    toggleEditProjectModal()
+    title = currentPost.value.title
+    caption = currentPost.value.caption
+    image = currentPost.value.image
+    description = currentPost.value.description
+    tech_used = currentPost.value.tech_used
+    developed_for = currentPost.value.developed_for
+    developed_for_link = currentPost.value.developed_for_link
+    status = currentPost.value.status
+    github_link = currentPost.value.github_link
+    website_link = currentPost.value.website_link
 }
 </script>
 

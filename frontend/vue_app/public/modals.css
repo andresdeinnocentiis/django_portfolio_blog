@@ -1,7 +1,7 @@
 @import "./variables.css";
 
 
-.modal-project-add-overlay {
+.modal-project-add-overlay, .is-sure-modal {
     position:fixed;
     top: 0;
     left: 0;
@@ -72,6 +72,149 @@ input[type=image]{
     margin-bottom: 1rem;
 }
 
+
+/* ==================== TRANSACTION MODAL ===================== */
+
+.transaction-modal {
+    position:fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    z-index: 9999; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.transaction-modal-container {
+    background-color: var(--colorWhite);
+    height: fit-content;
+    width: 40%;
+    max-height: calc(100vh - 40px); /* adjust the value as needed */
+    overflow-y: auto;
+    border-radius: 10px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-tsx-content-container {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2vmin;
+    margin-bottom: 2rem;
+}
+
+.transaction-modal-icon {
+    font-size: 6vw;
+}
+
+.transaction-modal-icon-success {
+    color: var(--colorSpringGreen);
+}
+
+.transaction-modal-icon-danger {
+    color: var(--textDanger);
+}
+
+.transaction-modal-title {
+    font-size: 2vw;
+    color: var(--colorGreyBlue) !important;
+}
+
+.transaction-modal-message {
+    font-size: 1.5vw;
+    color: var(--colorGreyBlue) !important;
+}
+
+
+.close-modal-tsx {
+    color: var(--colorGreyBlue);
+    font-size: 6vmin;
+    align-self: flex-end;
+    
+}
+
+.close-modal-tsx:hover, .close-modal-tsx:focus {
+    cursor: pointer;
+}
+
+
+
+/* ============================ ARE YOU SURE MODAL ================================ */
+
+.is-sure-modal-container {
+    background-color: var(--colorWhite);
+    height: fit-content;
+    width: 30%;
+    max-height: calc(100vh - 40px); /* adjust the value as needed */
+    overflow-y: auto;
+    border-radius: 10px;
+    padding: 1.7rem 2rem 3rem 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-sure-content-container {
+    display: flex;
+    flex-direction: column;
+    gap: 4vmin;
+    color: var(--colorGreyBlue);
+    text-align: center;
+}
+
+.is-sure-modal-title {
+    font-size: 2.5vmin;
+    margin-top: 2rem;
+    
+}
+
+.is-sure-btns {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 5rem;
+}
+
+.btn-no {
+    background-color: var(--textDanger);
+    color: var(--colorWhite);
+    padding: 1rem 1.5rem;
+    font-size: 2vmin;
+    border-radius: 10px;
+}
+
+.btn-yes {
+    background-color: var(--colorEmerald);
+    color: var(--colorWhite);
+    padding: 1rem 1.5rem;
+    font-size: 2vmin;
+    border-radius: 10px;
+}
+
+.btn-no:hover, .btn-no:focus, .btn-yes:hover, .btn-yes:focus {
+    cursor: pointer;
+}
+
+
+.close-modal-sure {
+    color: var(--colorSpringGreen);
+    font-size: 6vmin;
+    align-self: flex-end;
+    
+}
+
+.close-modal-sure:hover, .close-modal-sure:focus {
+    cursor: pointer;
+}
+
+
 @media (min-width: 900px) {
     input[type=image]::placeholder{
         color:white;
@@ -105,5 +248,142 @@ input[type=image]{
         position: relative;
         top: 0rem;
         left: 45vmin;
+    }
+
+    .transaction-modal {
+        position:fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); 
+        z-index: 9999; 
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .transaction-modal-container {
+        background-color: var(--colorWhite);
+        height: fit-content;
+        width: 40%;
+        max-height: calc(100vh - 40px); /* adjust the value as needed */
+        overflow-y: auto;
+        border-radius: 10px;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .modal-tsx-content-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2vmin;
+        margin-bottom: 2rem;
+    }
+    
+    .transaction-modal-icon {
+        font-size: 6vw;
+    }
+    
+    .transaction-modal-icon-success {
+        color: var(--colorSpringGreen);
+    }
+    
+    .transaction-modal-icon-danger {
+        color: var(--textDanger);
+    }
+    
+    .transaction-modal-title {
+        font-size: 2vw;
+        color: var(--colorGreyBlue);
+    }
+    
+    .transaction-modal-message {
+        font-size: 1.5vw;
+        color: var(--colorGreyBlue);
+    }
+    
+    
+    .close-modal-tsx {
+        color: var(--colorGreyBlue);
+        font-size: 6vmin;
+        align-self: flex-end;
+        
+    }
+    
+    .close-modal-tsx:hover, .close-modal-tsx:focus {
+        cursor: pointer;
+    }
+    
+    
+    
+    /* ============================ ARE YOU SURE MODAL ================================ */
+    
+    .is-sure-modal-container {
+        background-color: var(--colorWhite);
+        height: fit-content;
+        width: 30%;
+        max-height: calc(100vh - 40px); /* adjust the value as needed */
+        overflow-y: auto;
+        border-radius: 10px;
+        padding: 1.7rem 2rem 3rem 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .modal-sure-content-container {
+        display: flex;
+        flex-direction: column;
+        gap: 4vmin;
+    }
+    
+    .is-sure-modal-title {
+        font-size: 2.5vmin;
+        margin-top: 2rem;
+    }
+    
+    .is-sure-btns {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 5rem;
+    }
+    
+    .btn-no {
+        background-color: var(--textDanger);
+        color: var(--colorWhite);
+        padding: 1rem 1.5rem;
+        font-size: 2vmin;
+        border-radius: 10px;
+    }
+    
+    .btn-yes {
+        background-color: var(--colorEmerald);
+        color: var(--colorWhite);
+        padding: 1rem 1.5rem;
+        font-size: 2vmin;
+        border-radius: 10px;
+    }
+    
+    .btn-no:hover, .btn-no:focus, .btn-yes:hover, .btn-yes:focus {
+        cursor: pointer;
+    }
+    
+    
+    .close-modal-sure {
+        color: var(--colorSpringGreen);
+        font-size: 6vmin;
+        align-self: flex-end;
+        
+    }
+    
+    .close-modal-sure:hover, .close-modal-sure:focus {
+        cursor: pointer;
     }
 }

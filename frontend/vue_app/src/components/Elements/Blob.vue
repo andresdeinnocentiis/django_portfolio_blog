@@ -19,14 +19,14 @@
         </div>
     </transition>
     
-    <div v-else class="blob-container">
+    <div v-else class="blob-container" :class="`blob-container-${blobClassName}`">
         <div 
             
             class="blob"
             :class="`${blobClassName}-blob`"
             :style="{
-                'background': `${background}`, 
-                'border-radius': `${topLeft[0]}%` `${topRight[0]}%` `${bottomRight[0]}%` `${bottomLeft[0]}%` / `${topLeft[1]}%` `${topRight[1]}%` `${bottomRight[1]}%` `${bottomLeft[1]}%`,
+                'background': background, 
+                'border-radius': `${topLeft[0]}% ${topRight[0]}% ${bottomRight[0]}% ${bottomLeft[0]}% / ${topLeft[1]}% ${topRight[1]}% ${bottomRight[1]}% ${bottomLeft[1]}%`,
                 'width': `${width}rem`,
                 'height': `${height}rem`,
             }"

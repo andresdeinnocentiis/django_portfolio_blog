@@ -19,7 +19,7 @@ import { useUserLoggedStore } from "../stores/userLogged";
 import { useDarkModeStore } from '../stores/darkMode';
 
 
-
+// I imported it like this so that it would do a lazy loading
 const ProjectViewMain = defineAsyncComponent(() => 
     import('../components/Projects/ProjectViewMain.vue')
 )
@@ -43,3 +43,4 @@ const props = defineProps({
 
 
 </script>
+

@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.http import Http404
 from django.db.models import Q
+from .permissions import CanDelete, CanUpdate
 
 # Para Autenticar con JWT Token:
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -67,7 +68,7 @@ class GetIsPostLikedByUserView(ListAPIView):
     def get_queryset(self):
         pk = self.kwargs['pk']
         identifier = self.kwargs['identifier']
-        print("IDENTIFIER: ", identifier)
+
         likes = self.queryset.filter(post=pk)
         if identifier:
             likes = likes.filter(Q(user__id=identifier))
@@ -83,7 +84,7 @@ class GetIsPostLikedByAnonymousUserView(ListAPIView):
     def get_queryset(self):
         pk = self.kwargs['pk']
         identifier = self.kwargs['identifier']
-        print("IDENTIFIER: ", identifier)
+
         likes = self.queryset.filter(post=pk)
         if identifier:
                 
@@ -150,9 +151,6 @@ class GetSingleReviewAPIView(RetrieveAPIView):
     This API view returns a single review.
     '''
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    authentication_classes = [JWTAuthentication]
 
     def get_object(self):
         try:
@@ -163,7 +161,50 @@ class GetSingleReviewAPIView(RetrieveAPIView):
             raise Http404
         except Exception as error:
             return {'error': f'The following error has occurred: {error}'}
+
+
+class GetReviewsForPostAPIView(ListAPIView):
+    __doc__ = f'''
+    `[GET]`
+    This API view returns a all the reviews for a determined post.
+    '''
+    serializer_class = ReviewSerializer
+    
+    queryset = Review.objects.all()
+
+    def get_queryset(self):
+        postId = self.kwargs['postId']
+
+
+        reviews = self.queryset.filter(post=postId)
         
+        return reviews
+
+class GetUserReviewForPostAPIView(ListAPIView):
+    __doc__ = f'''
+    `[GET]`
+    This API view returns a all the reviews for a determined post.
+    '''
+    serializer_class = ReviewSerializer
+    
+    queryset = Review.objects.all()
+
+    def get_queryset(self):
+        try:
+            postId = self.kwargs['postId']
+            userId = self.kwargs['userId']
+
+            reviews_x_post = self.queryset.filter(post=postId)
+            user_reviews_x_post = reviews_x_post.filter(user=userId)
+            
+            return user_reviews_x_post
+
+        except Review.DoesNotExist:
+            raise Http404
+        except Exception as error:
+            return {'error': f'The following error has occurred: {error}'}
+    
+      
 class PostReviewAPIView(CreateAPIView):
     __doc__ = f'''
     `[POST]`
@@ -182,6 +223,7 @@ class UpdateReviewAPIView(UpdateAPIView):
     '''
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+    permission_classes=[CanUpdate]
     # permission_classes = [IsAuthenticated, IsAdminUser] # Lo dejo comentado porque supongo que todos los usuarios deben poder editar sus reviews
     # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
     # authentication_classes = [JWTAuthentication] # Lo dejo comentado porque supongo que todos los usuarios deben poder editar sus reviews
@@ -193,6 +235,7 @@ class DestroyReviewAPIView(DestroyAPIView):
     '''
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+    permission_classes=[CanDelete]
     # permission_classes = [IsAuthenticated, IsAdminUser] # Lo dejo comentado porque supongo que todos los usuarios deben poder eliminar sus reviews
     # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
     # authentication_classes = [JWTAuthentication] # Lo dejo comentado porque supongo que todos los usuarios deben poder eliminar sus reviews

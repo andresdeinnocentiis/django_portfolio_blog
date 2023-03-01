@@ -37,7 +37,7 @@ const darkModeStore = useDarkModeStore()
 const { isDarkMode } = storeToRefs(darkModeStore)
 
 const dexterities = [
-    {id:1,title:"FullStack Developer",desc:"With a track record of delivering high quality code, well-versed on Python, Django, Django REST Framework, React.js and Vue.js I bring a diverse skillset and experience to any team or project.",icon:"fa-solid fa-layer-group"},
+    {id:1,title:"FullStack Developer",desc:"With a track record of delivering high quality code, well-versed on Python, Django, Django REST Framework, React.js, Vue.js and Javascript, I bring a diverse skillset and experience to any team or project.",icon:"fa-solid fa-layer-group"},
 
     {id:2,title:"Data Engineer",desc:"Specialized in Python (including numpy, pandas, dask, parallel computing, and asynchronous programming), I work seamlessly with Google Cloud Platform to deliver efficient and scalable solutions for complex data challenges.",icon:"fa-solid fa-database"},
 

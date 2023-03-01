@@ -66,7 +66,11 @@ const handleLogin = async () => {
                 username.value = ""
                 password.value = ""
                 error.value = ""
+
+                
                 router.push({name: 'home'})
+            
+                
 
             } else {
                 

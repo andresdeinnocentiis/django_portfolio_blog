@@ -12,7 +12,7 @@
                 <div class="project-tech-used" :class="{'light-theme-text': isDarkMode, 'dark-theme-text': !isDarkMode}"><Hashtag :hashtagsArray="arr_tech_used" /></div>
                 
                 
-                <div class="project-rating"><StarRating :value="project.rating" color='#00FF9D' /></div>
+                <div class="project-rating"><StarRating :value="Number(project.rating)" color='#00FF9D' /></div>
                     
                 
 
