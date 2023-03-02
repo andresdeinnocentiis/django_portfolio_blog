@@ -171,7 +171,7 @@ export const useUserLoggedStore = defineStore("userLogged", () => {
   const getAnonymousUser = async (anonymous_identifier) => {
 
     try {
-      const response = await getAPI.get(`/api/anonymous_users/${anonymous_identifier}/get`)
+      const response = await getAPI.get(`/api/anonymous_users/${anonymous_identifier}/get/`)
       if (response.data) {
         const anon_user = response.data
         anonymousUserInfo.value = anon_user
@@ -179,9 +179,9 @@ export const useUserLoggedStore = defineStore("userLogged", () => {
         localStorage.setItem('anonymousUserInfo', JSON.stringify(anon_user))
       } else {
          // Handle failure
-         anonymousUserInfo.value = {}
-         // Throw an error or display an error message to the user
-         throw new Error('Failed getting the Anonymous User. Please try again.')
+         // If it doesn't exist in the database, we populate his info from the localStorage (because when the user is not logged, automatically gets stored there an anon user)
+         anonymousUserInfo.value = localStorage.getItem('anonymousUserInfo')
+         
       }
     } catch(error) {
       console.log(error)

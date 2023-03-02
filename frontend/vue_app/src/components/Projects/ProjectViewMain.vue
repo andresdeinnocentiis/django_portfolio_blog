@@ -25,7 +25,8 @@
             <div class="main-division__first__bottom">
                 <div class="post-user-actions-container"  :class="{'img-overlay-description-dark': isDarkMode, 'img-overlay-description-light': !isDarkMode}">
                     <p :class="{'dark-span': isDarkMode, 'light-span': !isDarkMode}">
-                        <StarRatingAction :color="isDarkMode ? '#27D49F' : '#00FF9D'" @update:value="handleUpdateValue"/>
+                        <!--<StarRatingAction :color="isDarkMode ? '#27D49F' : '#00FF9D'" @update:value="handleUpdateValue"/>-->
+                        <StarRatingVue :color="'#27D49F'" :value="userRating" :className="'user-rating'"/>
                     </p>
                     <div class="like-icon-div" @click.prevent="handleLikeClick">
                         <font-awesome-icon class="like-action" v-if="isPostLikedByUser" icon="fa-solid fa-heart" :class="{'dark-span': isDarkMode, 'light-span': !isDarkMode}" />
@@ -99,16 +100,18 @@
 import { defineProps, computed, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { usePostsStore } from '../../stores/posts';
+import { useReviewsStore } from '../../stores/reviews';
+import { useLikesStore } from '../../stores/likes';
 import { useUserLoggedStore } from "../../stores/userLogged";
 import { useDarkModeStore } from '../../stores/darkMode';
 import { useModalStore } from '../../stores/modal';
 import Hashtag from '../Elements/Hashtag.vue';
-import StarRatingAction from '../Elements/StarRatingAction.vue';
+import StarRatingVue from '../Elements/StarRating.vue';
 import AreYouSureModal from '../Elements/AreYouSureModal.vue';
 import ProjectEditModal from './ProjectEditModal.vue'
 import TransactionModal from '@/components/Elements/TransactionModal.vue';
 import Tilt from 'vanilla-tilt-vue'
-import Blob from '@/components/Elements/Blob.vue'
+
 
 
 const darkModeStore = useDarkModeStore()
@@ -116,9 +119,18 @@ const { isDarkMode } = storeToRefs(darkModeStore)
 
 const postsStore = usePostsStore()
 const { getPostDetails, getIsPostLikedByUser, deletePost } = postsStore
-const { currentPost, isPostLikedByUser, listPosts } = storeToRefs(postsStore)
+const { currentPost, isPostLikedByUser } = storeToRefs(postsStore)
+
+const reviewsStore = useReviewsStore()
+const { getUserReviewsForPost, getReviews } = reviewsStore
+const { userReviewsForPost, reviewsList } = storeToRefs(reviewsStore)
+
+const likesStore = useLikesStore()
+const { getLikes, postLike, deleteLike, getUserLikeForPost } = likesStore
+const { likesList, currentPostLikeId } = storeToRefs(likesStore)
 
 const userLoggedStore = useUserLoggedStore()
+const { isUserLogged } = userLoggedStore
 const { isUserAdmin, userInfo, anonymousUserInfo } = storeToRefs(userLoggedStore)
 
 const modalStore = useModalStore()
@@ -135,6 +147,8 @@ const tsxModalMsg = ref({
 
 const rating = ref(0)
 
+let userRating = 0
+
 const props = defineProps({
     id: {
         type: String,
@@ -143,15 +157,72 @@ const props = defineProps({
 })
 
 
-
 // HANDLE FUNCTIONS:
 // Function to get the value from the child component StarRatingAction
 const handleUpdateValue = (value) => {
     rating.value = value
 }
 
-const handleLikeClick = () => {
-    isPostLikedByUser.value = !isPostLikedByUser.value
+const handleLikeClick = async () => {
+
+    // Create the Like Object that would be sent if the request is POST
+    const likeObj = {
+        user: userInfo.value ? userInfo.value.id : null,
+        anonymous_identifier: anonymousUserInfo.value ? anonymousUserInfo.value.anonymousIdentifier : null,
+        post: currentPost.value.id 
+    }
+    // If it's a logged user:
+    if(userInfo.value) {
+        try {
+            // If the post is already liked and the user clicked it, then it has to be deleted
+            if (isPostLikedByUser.value) {
+                await deleteLike(currentPostLikeId.value)
+                // Update everything in the page to see the changes in real time
+                isPostLikedByUser.value = false
+                await getPostDetails(Number(props.id))
+                await getLikes()
+                await getUserLikeForPost(Number(props.id), userInfo)
+            // If the post is not yet liked and the user clicked it, then it has to be created
+            } else {
+                await postLike(likeObj)
+                // Update everything in the page to see the changes in real time
+                isPostLikedByUser.value = !isPostLikedByUser.value
+                await getPostDetails(Number(props.id))
+                await getLikes()
+                await getUserLikeForPost(Number(props.id), userInfo)
+    
+            }
+        } catch(error) {
+            console.error(error);
+        }
+    // If it's an unregistered user:    
+    } else {
+        try {
+            // If the post is already liked and the user clicked it, then it has to be deleted
+            if (isPostLikedByUser.value) {
+                await deleteLike(currentPostLikeId.value)
+                // Update everything in the page to see the changes in real time
+                isPostLikedByUser.value = false
+                await getPostDetails(Number(props.id))
+                await getLikes()
+                await getUserLikeForPost(Number(props.id), anonymousUserInfo)
+
+            // If the post is not yet liked and the user clicked it, then it has to be created
+            } else {
+                await postLike(likeObj)
+                // Update everything in the page to see the changes in real time
+                isPostLikedByUser.value = !isPostLikedByUser.value
+                await getPostDetails(Number(props.id))
+                await getLikes()
+                await getUserLikeForPost(Number(props.id), anonymousUserInfo)
+    
+            } 
+        } catch(error) {
+            console.error(error);
+        }
+        
+    }
+
 }
 
 const handleDeleteProject = async () => {
@@ -188,7 +259,7 @@ const handleDeleteProject = async () => {
     }
 }
 
-
+// Create an array of all the tech I used for the project so I can style each of them individually
 let arr_tech_used
 arr_tech_used = computed(() => {
 
@@ -213,6 +284,7 @@ createdAtFormatted = computed(() => {
     }
 })
 
+
 await getPostDetails(Number(props.id))
 
 const isPostLiked = async () => {
@@ -225,10 +297,36 @@ const isPostLiked = async () => {
     }
 }
 
+const getUserOrAnonUserId = () => {
+    let id
+    if(isUserLogged()) {
+        id = userInfo.value.id
+    } else {
+        id = anonymousUserInfo.value.id
+    }
+
+    return id
+}
+
+ 
+
 await isPostLiked()
+if (userInfo.value || anonymousUserInfo.value.id) {
+    await getUserReviewsForPost(currentPost.value.id, getUserOrAnonUserId(), isUserLogged())
+}
+await getLikes()
 
 
+if (userReviewsForPost.value) {
+    userRating = userReviewsForPost.value.rating // I had to do this in order to pass it as prop to the <StarRating /> component
+}
 
+
+if (userInfo.value) {
+    await getUserLikeForPost(Number(props.id), userInfo)
+} else if (anonymousUserInfo.value) {
+    await getUserLikeForPost(Number(props.id), anonymousUserInfo)
+}
 
 
 </script>

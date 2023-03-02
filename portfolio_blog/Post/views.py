@@ -133,7 +133,7 @@ class DestroyPostAPIView(DestroyAPIView):
     # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
     authentication_classes = [JWTAuthentication]
 
-#NOTE: REVIEW VIEWS:
+#NOTE: REVIEW VIEWS: =======================================================================================================================
 class GetReviewsAPIView(ListAPIView):
     __doc__ = f'''
     `[GET]`
@@ -141,9 +141,7 @@ class GetReviewsAPIView(ListAPIView):
     '''
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    # permission_classes = [IsAuthenticated, IsAdminUser]  # Lo dejo comentado porque supongo que todos los usuarios deben poder ver las reviews
-    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    # authentication_classes = [JWTAuthentication] # Lo dejo comentado porque supongo que todos los usuarios deben poder ver las reviews
+    
     
 class GetSingleReviewAPIView(RetrieveAPIView):
     __doc__ = f'''
@@ -196,6 +194,30 @@ class GetUserReviewForPostAPIView(ListAPIView):
 
             reviews_x_post = self.queryset.filter(post=postId)
             user_reviews_x_post = reviews_x_post.filter(user=userId)
+            
+            return user_reviews_x_post
+
+        except Review.DoesNotExist:
+            raise Http404
+        except Exception as error:
+            return {'error': f'The following error has occurred: {error}'}
+
+class GetAnonymousUserReviewForPostAPIView(ListAPIView):
+    __doc__ = f'''
+    `[GET]`
+    This API view returns a all the reviews for a determined post.
+    '''
+    serializer_class = ReviewSerializer
+    
+    queryset = Review.objects.all()
+
+    def get_queryset(self):
+        try:
+            postId = self.kwargs['postId']
+            anonymousUserId = self.kwargs['userId']
+
+            reviews_x_post = self.queryset.filter(post=postId)
+            user_reviews_x_post = reviews_x_post.filter(anonymous_user=anonymousUserId)
             
             return user_reviews_x_post
 
@@ -305,7 +327,9 @@ class DestroyCommentAPIView(DestroyAPIView):
     # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
     # authentication_classes = [JWTAuthentication] # Lo dejo comentado porque supongo que todos los usuarios deben poder eliminar sus comments
 
-#NOTE: LIKE VIEWS:
+
+
+#NOTE: LIKE VIEWS: ====================================================================================================================
 class GetLikesAPIView(ListAPIView):
     __doc__ = f'''
     `[GET]`
@@ -314,6 +338,53 @@ class GetLikesAPIView(ListAPIView):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
 
+class GetUserLikeForPostAPIView(ListAPIView):
+    __doc__ = f'''
+    `[GET]`
+    This API view returns the user like for a determined post.
+    '''
+    serializer_class = LikeSerializer
+    
+    queryset = Like.objects.all()
+
+    def get_queryset(self):
+        try:
+            postId = self.kwargs['postId']
+            identifier = self.kwargs['identifier']
+
+            likes_x_post = self.queryset.filter(post=postId)
+            user_like_x_post = likes_x_post.filter(user=identifier)
+            
+            return user_like_x_post
+
+        except Like.DoesNotExist:
+            raise Http404
+        except Exception as error:
+            return {'error': f'The following error has occurred: {error}'}
+
+class GetAnonUserLikeForPostAPIView(ListAPIView):
+    __doc__ = f'''
+    `[GET]`
+    This API view returns the anonymous user like for a determined post.
+    '''
+    serializer_class = LikeSerializer
+    
+    queryset = Like.objects.all()
+
+    def get_queryset(self):
+        try:
+            postId = self.kwargs['postId']
+            identifier = self.kwargs['identifier']
+
+            likes_x_post = self.queryset.filter(post=postId)
+            user_like_x_post = likes_x_post.filter(anonymous_identifier=identifier)
+            
+            return user_like_x_post
+
+        except Like.DoesNotExist:
+            raise Http404
+        except Exception as error:
+            return {'error': f'The following error has occurred: {error}'}
     
 class GetSingleLikeAPIView(RetrieveAPIView):
     __doc__ = f'''

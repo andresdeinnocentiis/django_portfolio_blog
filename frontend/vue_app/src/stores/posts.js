@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { useUserLoggedStore } from './userLogged'
 import { getAPI } from '../axios-api';
 
-export const usePostsStore = defineStore("getPosts", () => {
+export const usePostsStore = defineStore("postsStore", () => {
     
     const router = useRouter()
     const userLoggedStore = useUserLoggedStore()
@@ -80,7 +80,7 @@ export const usePostsStore = defineStore("getPosts", () => {
         if (user.value.anonymousIdentifier) {
             identifier = user.value.anonymousIdentifier
             try {
-                const response = await getAPI.get(`/api/posts/${postId}/is_liked/anonymous_user/${identifier}/`, {})
+                const response = await getAPI.get(`/api/posts/${postId}/is_liked/anonymous_user/${identifier}/get/`, {})
                 const likeArray = response.data
                 
                 if (likeArray.length > 0) {
@@ -193,5 +193,9 @@ export const usePostsStore = defineStore("getPosts", () => {
 
 
   
-  return { listPosts, currentPost, getPosts, getPostDetails, postPost, getIsPostLikedByUser, isPostLikedByUser, deletePost, updatePost }
+  return { listPosts, currentPost, 
+    getPosts, getPostDetails, 
+    postPost, getIsPostLikedByUser, 
+    isPostLikedByUser, 
+    deletePost, updatePost }
 });

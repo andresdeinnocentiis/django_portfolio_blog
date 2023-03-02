@@ -8,10 +8,10 @@ export const useReviewsStore = defineStore('reviewsStore', () => {
     const userLoggedStore = useUserLoggedStore()
     const { userInfo } = storeToRefs(userLoggedStore)
 
-    const reviewsList = ref([{}]) 
-    const currentPostReviews = ref([{}])
+    const reviewsList = ref(null) 
+    const currentPostReviews = ref(null)
 
-    const userReviewsForPost = ref([{}])
+    const userReviewsForPost = ref(null)
 
 
 
@@ -96,22 +96,29 @@ export const useReviewsStore = defineStore('reviewsStore', () => {
     }
 
     // GET Method to retrieve all the User Reviews for a specific Post:
-    const getUserReviewsForPost = async (postId, userId) => {
-
+    const getUserReviewsForPost = async (postId, userId, isUser) => {
+        let response
         try {
-
-            const response = await getAPI.get(`/api/reviews/post/${postId}/user/${userId}/get/`)
+            if (isUser) {
+                // If there's a user logged in, check for the user's review for the postId
+                response = await getAPI.get(`/api/reviews/post/${postId}/user/${userId}/get/`)
+            } else if (userId) {
+                // If there's not a user logged in, but we have a userId, it means that the anonymous_user is in the database
+                // so we check with its userId for his review for the postId
+                response = await getAPI.get(`/api/reviews/post/${postId}/anonymous_user/${userId}/get/`)
+            }
 
             if (response.data) {
-                const userReview = response.data
-
+                const userReview = response.data[0]
+                
                 userReviewsForPost.value = userReview
 
                 // Save the user review info to local storage
-                localStorage.setItem('userReview', JSON.stringify(userReviewsForPost))
+                localStorage.setItem('userReview', JSON.stringify(userReviewsForPost.value))
 
                 return true
             } else {
+                // There wasn't a user logged in nor an anon user saved in the database
                 // Handle failure
                 userReviewsForPost.value = [{}]
                 // Throw an error or display an error message to the user

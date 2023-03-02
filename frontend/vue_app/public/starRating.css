@@ -11,8 +11,11 @@
     display: inline-block;
     font-size: 1.5vw;
     cursor: pointer;
-  }
+}
 
+.user-rating {
+    font-size: 1.4vw;
+}
 
 
 

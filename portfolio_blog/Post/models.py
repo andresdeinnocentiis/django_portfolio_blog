@@ -72,6 +72,9 @@ class Review(models.Model):
     def __str__(self) -> str:
         return str(self.id)
     
+    class Meta:
+        unique_together = ('post', 'user') # I added this so that a user could leave a single review for each post.
+    
 
 class Comment(models.Model):
     review = models.ForeignKey(Review, null=True, blank=True, on_delete=models.CASCADE)

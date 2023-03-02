@@ -7,6 +7,12 @@
                 <p>Loading...</p>
             </template>
         </Suspense>
+        <Suspense>
+            <ProjectViewReviewSection :id="props.id" />
+            <template #fallback>
+                <p>Loading...</p>
+            </template>
+        </Suspense>
     </div>
     
 </template>
@@ -22,6 +28,10 @@ import { useDarkModeStore } from '../stores/darkMode';
 // I imported it like this so that it would do a lazy loading
 const ProjectViewMain = defineAsyncComponent(() => 
     import('../components/Projects/ProjectViewMain.vue')
+)
+
+const ProjectViewReviewSection = defineAsyncComponent(() => 
+    import('../components/Projects/ProjectViewReviewSection.vue')
 )
 
 const darkModeStore = useDarkModeStore()

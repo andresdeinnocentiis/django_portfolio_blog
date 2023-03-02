@@ -1,5 +1,5 @@
 <template>
-    <div class="rating">
+    <div :class="`rating ${className}`">
         <span :style="{'color':color}">
             <font-awesome-icon v-if="value >=1" icon="fa-solid fa-star" />
             <font-awesome-icon v-else-if="value>=0.5" icon="fa-regular fa-star-half-stroke" />
@@ -34,6 +34,9 @@ import { defineProps } from 'vue';
 
 const props = defineProps({
     value: Number,
-    color: String
+    color: String,
+    className: String
 })
+
+
 </script>
