@@ -3,8 +3,11 @@
         <div class="reviews-container">
             <div v-for="(review, index) in currentPostReviews" :key="index" class="review">
                 <div class="review-header">
-                    <StarRating :color="'#27D49F'" :value="review.rating" />
-                    <p v-if="review.user">{{review.user.username}}</p>
+                    <StarRating :color="'#27D49F'" :value="review.rating" :className="'single-review'"/>
+                    <div v-if="review.user" class="user-verified-container">
+                        <p>{{review.user.username}}</p>
+                        <font-awesome-icon icon="fa-solid fa-circle-check" />
+                    </div>
                     <p v-else>{{review.anonymous_user.username}}</p>
                 </div>
                 <p>{{review.content}}</p>

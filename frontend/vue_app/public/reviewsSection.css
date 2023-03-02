@@ -1,0 +1,45 @@
+@import "./variables.css";
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.reviews-section-container {
+    width: 100%;
+    margin-left: 8vmin;
+}
+
+.reviews-container {
+    display: flex;
+    flex-direction: column;
+    gap: 3vw;
+}
+
+.review {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 30%;
+    word-break: break-all;
+    padding: 2rem;
+    box-shadow: 13px 13px 40px -21px rgba(40,67,125,0.75);
+    -webkit-box-shadow: 13px 13px 40px -21px rgba(40,67,125,0.75);
+    -moz-box-shadow: 13px 13px 40px -21px rgba(40,67,125,0.75);
+    border-radius: 40px;
+}
+
+.review-header {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.user-verified-container {
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+    text-align: center;
+}
