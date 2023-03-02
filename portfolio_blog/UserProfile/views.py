@@ -64,8 +64,8 @@ class GetUserAPIView(ListAPIView):
     `[GET]`
     This API view returns all the Users.
     '''
-    queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
     # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
     authentication_classes = [JWTAuthentication]
@@ -75,7 +75,7 @@ class GetSingleUserAPIView(ListAPIView):
     `[GET]`
     This API view returns a single User.
     '''
-    serializer_class = UserProfileSerializer
+    serializer_class = UserSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
     # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
     authentication_classes = [JWTAuthentication]
@@ -89,7 +89,7 @@ class GetSingleUserAPIView(ListAPIView):
         '''
         try:
             pk = self.kwargs['pk']
-            queryset = UserProfile.objects.filter(pk=pk)
+            queryset = User.objects.filter(pk=pk)
             return queryset
         
         except Exception as error:

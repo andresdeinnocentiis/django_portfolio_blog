@@ -26,8 +26,7 @@ class ReviewAdmin(admin.ModelAdmin):
     def user_username(self, obj):
         if obj.user:
             return obj.user.username
-        elif obj.anonymous_user:
-            return obj.anonymous_user.name
+        
     
     def anonymoususer_username(self, obj):
         return obj.anonymous_user.username if obj.anonymous_user else '-'

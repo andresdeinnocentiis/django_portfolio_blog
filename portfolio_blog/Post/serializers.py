@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import Post, Review, Comment, Like
+from UserProfile.models import UserProfile
+from UserProfile.serializers import UserProfileSerializer, UserSerializer
 
 class PostSerializer(serializers.ModelSerializer):
     likes = serializers.IntegerField(source='get_likes_count', read_only=True)
@@ -17,14 +19,56 @@ class PostSerializer(serializers.ModelSerializer):
         return obj.rating
 
 class ReviewSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    anonymous_user = serializers.SerializerMethodField()
+    likes = serializers.IntegerField(source='get_likes_count', read_only=True)
     class Meta:
         model = Review
-        fields = '__all__'
-
+        fields = ['user', 'anonymous_user','likes', 'content', 'rating']
+    
+    def get_user(self, obj):
+        if obj.user:
+            return obj.user
+        else:     
+            return None
+        
+    
+    def get_anonymous_user(self, obj):
+        if obj.anonymous_user:
+            return {
+                'id': obj.anonymous_user.id,
+                'anonymous_identifier': obj.anonymous_user.anonymous_identifier,
+                'username': obj.anonymous_user.username
+            }
+        return None
+    
 class CommentSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+    anonymous_user = serializers.SerializerMethodField()
+    likes = serializers.IntegerField(source='get_likes_count', read_only=True)
     class Meta:
         model = Comment
         fields = '__all__'
+        
+    def get_user(self, obj):
+        if obj.user:
+            return {
+                'id': obj.user.id,
+                'username': obj.user.username,
+                'linkedin': obj.user.linkedin,
+                'image': obj.user.image if obj.user.image else None
+                
+            }
+        return None
+    
+    def get_anonymous_user(self, obj):
+        if obj.anonymous_user:
+            return {
+                'id': obj.anonymous_user.id,
+                'anonymous_identifier': obj.anonymous_user.identifier,
+                'username': obj.anonymous_user.username
+            }
+        return None
 
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:

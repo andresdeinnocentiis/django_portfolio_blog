@@ -80,7 +80,7 @@ export const useReviewsStore = defineStore('reviewsStore', () => {
                 currentPostReviews.value = postReviews
 
                 // Save the reviews info to local storage
-                localStorage.setItem('reviewsList', JSON.stringify(reviews))
+                localStorage.setItem('reviewsList', JSON.stringify(postReviews))
 
                 return true
             } else {

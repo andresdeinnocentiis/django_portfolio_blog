@@ -6,6 +6,10 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.contrib.auth.models import User
+from UserProfile.models import UserProfile
 
 @receiver(post_save, sender=User)
 def send_welcome_email(sender, instance, created, **kwargs):
@@ -22,3 +26,8 @@ def send_welcome_email(sender, instance, created, **kwargs):
         
         email.attach_alternative(html_message, 'text/html')
         email.send()
+        
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
