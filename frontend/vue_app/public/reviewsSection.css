@@ -166,3 +166,14 @@
     border-left: 1px solid var(--colorGreyBlue);
     padding-left: 1rem;
 }
+
+.user-date {
+    display: flex;
+    flex-direction: column;
+    gap: .1vw;
+}
+
+.review-datetime {
+    font-size: .6vw;
+    align-self: flex-start;
+}

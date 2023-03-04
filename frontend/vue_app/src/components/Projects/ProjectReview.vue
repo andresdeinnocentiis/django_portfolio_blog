@@ -13,15 +13,18 @@
                         <p v-else class="review-username">{{review.user.username}}</p>
                         <font-awesome-icon icon="fa-solid fa-circle-check" />
                     </div>
-                    <p>{{createdAtFormatted}}</p>
+                    <p class="review-datetime">{{ formattedDate }}</p>
                 </div>
             </div>
             <div v-else class="user-verified-container">
                 <div class="user-verified-img">
                     <font-awesome-icon icon="fa-solid fa-user" />
                 </div>
-                <div class="user-verified-data">
-                    <p class="review-username">{{review.anonymous_user.username}}</p>
+                <div class="user-date">
+                    <div class="user-verified-data">
+                        <p class="review-username">{{review.anonymous_user.username}}</p>
+                    </div>
+                    <p class="review-datetime">{{ formattedDate }}</p>
                 </div>
             </div>
             <StarRating :color="'#27D49F'" :value="review.rating" :className="'single-review'"/>
@@ -82,7 +85,6 @@ const { currentReviewLike, isReviewLikedByUser } = storeToRefs(likesStore)
 
 const isLiked = ref(false)
 
-
 let createdAtFormatted
 createdAtFormatted = computed(() => { 
     if (props.review.created_at) {
@@ -91,9 +93,10 @@ createdAtFormatted = computed(() => {
         const [year, month, day] = datePart.split('-').map(Number);
         const [hours, minutes, seconds] = timePart.slice(0, -1).split(':').map(Number);
         const newDate = new Date(year, month - 1, day, hours, minutes, seconds);
-        return newDate.toLocaleDateString('en-GB', { hour:'2-digit', day: '2-digit', month: '2-digit', year: 'numeric' });
+        return newDate.toLocaleDateString('en-GB', { hours:'2-digit', minutes: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' });
     }
 })
+
 
 let isUserOwner 
 
@@ -167,8 +170,21 @@ const handleReviewLikeClick = async (reviewId) => {
 if (userInfo.value) {
     await getUserLikeForReview(props.review.id, userInfo.value)
     isLiked.value = isReviewLikedByUser.value
+
 } else {
     await getUserLikeForReview(props.review.id, anonymousUserInfo.value)
     isLiked.value = isReviewLikedByUser.value
 }
+
+const date = new Date("2023-02-06T03:19:47.315908Z");
+const options = {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+  hour: "numeric",
+  minute: "2-digit",
+  hour12: true
+};
+const formattedDate = date.toLocaleDateString("en-US", options).replace('AM', 'a.m.').replace('PM', 'p.m.');
+
 </script>

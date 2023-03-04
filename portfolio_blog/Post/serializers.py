@@ -25,7 +25,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     comments = serializers.IntegerField(source='get_comments_count', read_only=True)
     class Meta:
         model = Review
-        fields = ['id', 'user', 'anonymous_user','likes', 'comments', 'content', 'rating']
+        fields = ['id', 'user', 'anonymous_user','likes', 'comments', 'content', 'rating', 'created_at']
     
     def get_user(self, obj):
         if obj.user:
