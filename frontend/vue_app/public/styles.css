@@ -213,7 +213,7 @@ ul {
 .nav-link {
     letter-spacing: 3px;
     font-weight: 400;
-    font-size: 1.1rem;
+    font-size: 1vw;
     flex-shrink: 1;
 }
 
@@ -1440,7 +1440,7 @@ opacity: 1;
     }
 
     .container-main-blob-image {
-        width: 45rem;
+        width: 37.5vw;
         position: absolute;
         top: 0;
         bottom: 0;
@@ -1467,15 +1467,15 @@ opacity: 1;
     }
 
     .home-hero__title {
-        font-size: 6rem;
+        font-size: 5vw;
         letter-spacing: 2px;
         text-shadow: none;
         text-align: left;
-        line-height: 6rem;
+        line-height: 6vw;
     }
 
     .home-hero__text {
-        font-size: 1.5rem;
+        font-size: 1.5vw;
         font-weight: 400;
         letter-spacing: 4px;
         width: 80%;
@@ -1565,7 +1565,7 @@ opacity: 1;
     .sec-sect-title {
         margin: 10rem 10rem 10rem 10rem ;
         width: fit-content;
-        font-size: 4rem;
+        font-size: 3.5vw;
         color: var(--colorWhite);
         position: relative;
     }
@@ -1600,7 +1600,7 @@ opacity: 1;
     }
     
     .dex-title {
-        font-size: 1.5rem;
+        font-size: 1.7vw;
         margin: 0 0 2rem 0;
         position: relative;
     }
@@ -1622,7 +1622,7 @@ opacity: 1;
         width: 90%;
         line-height: 2rem;
         margin-top: 1rem;
-        font-size: 1.1rem;
+        font-size: 1.2vw;
         letter-spacing: 1px;
         margin-bottom: 2rem;
     }

@@ -15,7 +15,7 @@ class CanDelete(permissions.BasePermission):
         # Check if the request method is DELETE
         if request.method == 'DELETE':
             # Check if the user is the owner
-            if obj.user == request.user or obj.anonymous_user == request.user:
+            if obj.user == request.user or obj.anonymous_user == request.user or request.user.isAdmin:
                 return True
 
             else:

@@ -7,6 +7,8 @@ export const useLikesStore = defineStore("likesStore", () => {
  
     const likesList = ref(null) 
     const currentPostLikeId = ref(null)
+    const currentReviewLike = ref(null)
+    const isReviewLikedByUser = ref(false)
 
     const getLikes = async () => {
 
@@ -29,6 +31,8 @@ export const useLikesStore = defineStore("likesStore", () => {
             console.log(error)
         }
     }
+
+
 
     const getUserLikeForPost = async (postId, user) => {
         let likeId = false
@@ -73,7 +77,70 @@ export const useLikesStore = defineStore("likesStore", () => {
                 }
                 
                 currentPostLikeId.value = likeId        
-                console.log("CURRENT LIKE ID: ", currentPostLikeId.value);
+
+            } catch(error) {
+                console.log(error);
+            }
+        }
+    }
+
+    const getUserLikeForReview = async(reviewId, user) => {
+        let likeResult = {}
+        let identifier
+
+        if (user.anonymousIdentifier) {
+            identifier = user.anonymousIdentifier
+            try {
+                const response = await getAPI.get(`/api/likes/review/${reviewId}/anonymous_user/${identifier}/get/`, {})
+                const likeArray = response.data
+                
+                if (likeArray.length > 0) {
+                    const likeObj = likeArray[0]
+                    if(likeObj.review == reviewId && (likeObj.anonymous_identifier == identifier)) {
+                        likeResult = likeObj
+                        isReviewLikedByUser.value = true
+                        
+                    } else {
+                        isReviewLikedByUser.value = false
+                        
+                    }
+                } else {
+                    likeResult = {}
+                    isReviewLikedByUser.value = false
+                    
+                }
+                
+                currentReviewLike.value = likeResult        
+            } catch(error) {
+                console.log(error);
+            }
+        } else {
+
+            identifier = user.id
+
+            try {
+                const response = await getAPI.get(`/api/likes/review/${reviewId}/user/${identifier}/get/`, {})
+                const likeArray = response.data
+  
+                if (likeArray.length > 0) {
+                    const likeObj = likeArray[0]
+                    if(likeObj.review == reviewId && (likeObj.user == identifier)) {
+                        likeResult = likeObj
+                        isReviewLikedByUser.value = true
+                        
+                    } else {
+                        isReviewLikedByUser.value = false
+                        
+                    }
+                } else {
+                    likeResult = {}
+                    isReviewLikedByUser.value = false
+                    
+                    
+                }
+                
+                currentReviewLike.value = likeResult       
+                
             } catch(error) {
                 console.log(error);
             }
@@ -123,5 +190,5 @@ export const useLikesStore = defineStore("likesStore", () => {
         }
     }
 
-    return { likesList, getLikes, postLike, deleteLike, getUserLikeForPost, currentPostLikeId }
+    return { likesList, getLikes, postLike, deleteLike, getUserLikeForPost, currentPostLikeId, getUserLikeForReview, currentReviewLike, isReviewLikedByUser }
 })

@@ -198,7 +198,9 @@ STATICFILES_DIRS = [
     
 ]
 
-MEDIA_URL = '/media/'
+#MEDIA_URL = '/media/'
+MEDIA_URL = 'http://127.0.0.1:8000/static/media/' # I changed it and added this so I can get the images from the frontend
+# If not, Vue was trying to access the images from 'http://localhost:5173/posts/media/profile_images/image.jpg' instead of the Django port:8000
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static', 'media')
 
@@ -209,7 +211,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 CORS_ALLOW_ALL_ORIGINS = True
-
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+    
+]
 
 # CONFIGURACIÓN PARA EL ENVÍO DE MAILS A NUEVOS USERS:
 from dotenv import load_dotenv

@@ -43,6 +43,7 @@ class Post(models.Model):
     @property
     def rating(self):
         return self.get_average_rating()
+    
 
     likes.fget.short_description = 'Likes'
     num_reviews.fget.short_description = 'Reviews'
@@ -60,7 +61,6 @@ class Review(models.Model):
     content = models.TextField()
     rating = models.FloatField(default=0.0)
     created_at = models.DateTimeField(auto_now_add=True)
-    likes = models.IntegerField(default=0)
     
     def get_likes_count(self):
         return Like.objects.filter(review=self).count()
@@ -68,6 +68,16 @@ class Review(models.Model):
     @property
     def likes(self):
         return self.get_likes_count()
+    
+    def get_comments_count(self):
+        return Comment.objects.filter(review=self).count()
+
+    @property
+    def comments(self):
+        return self.get_comments_count()
+    
+    likes.fget.short_description = 'Likes'
+    comments.fget.short_description = 'Comments'
     
     def __str__(self) -> str:
         return str(self.id)
@@ -82,7 +92,6 @@ class Comment(models.Model):
     anonymous_user = models.ForeignKey(AnonymousUser, on_delete=models.CASCADE, null=True, blank=True)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    likes = models.IntegerField(default=0)
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE) # Esto es para autorreferenciarse y poder ser comentados a sí mismos con el id del comment o review padre
 
     def get_likes_count(self):
@@ -91,7 +100,17 @@ class Comment(models.Model):
     @property
     def likes(self):
         return self.get_likes_count()
+    
+    def get_comments_count(self):
+        return Comment.objects.filter(parent=self).count()
 
+    @property
+    def comments(self):
+        return self.get_comments_count()
+    
+    likes.fget.short_description = 'Likes'
+    comments.fget.short_description = 'Comments'
+    
     def __str__(self) -> str:
         return str(self.id)
 

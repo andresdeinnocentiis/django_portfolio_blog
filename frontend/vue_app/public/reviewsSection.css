@@ -30,10 +30,16 @@
     width: 30%;
     word-break: break-all;
     padding: 2rem;
+    padding-bottom: 1.2rem;
     box-shadow: 13px 13px 40px -21px rgba(40,67,125,0.75);
     -webkit-box-shadow: 13px 13px 40px -21px rgba(40,67,125,0.75);
     -moz-box-shadow: 13px 13px 40px -21px rgba(40,67,125,0.75);
     border-radius: 40px;
+    color: var(--colorGreyBlue);
+}
+
+.review-username {
+    color: var(--colorGreyBlue);
 }
 
 .review-header {
@@ -61,6 +67,9 @@
 
 .review-content {
     margin-left: 1rem;
+    word-break: break-word;
+    word-wrap: break-word;
+    
 }
 
 .review-username {
@@ -89,4 +98,71 @@
     overflow: hidden;
     margin: 5px;
     color: rgb(119, 119, 119);
+}
+
+.review-extra-container {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid var(--colorGreyBlue);
+    padding-top: 1rem;
+    margin-top: 1rem;
+}
+
+.review__icons-div {
+    font-size: 1.1vw;
+    display: flex;
+    flex-direction: row;
+    gap: .4vw;
+}
+
+.icons__like-action {
+    color: var(--textDanger);
+}
+.icons__comment-action {
+    text-align: center;
+    text-justify: center;
+    align-self: center;
+}
+.icons__like-action:hover, .icons__like-action:focus {
+    cursor: pointer;
+}
+.icons__comment-action:hover, .icons__comment-action:focus {
+    cursor: pointer;
+    
+}
+
+.likes-count {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1vw;
+    align-items: center;
+    justify-content: center;
+    border-left: 1px solid var(--colorGreyBlue);
+    padding-left: 1vw;
+}
+
+.amount-likes {
+    font-weight: 700;
+}
+
+.comments-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5vw;
+}
+.comments-action:hover, .comments-action:focus {
+    cursor: pointer;
+}
+
+.fa-angle-down {
+    align-self:last baseline;
+}
+
+.review-admin-actions-container {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    border-left: 1px solid var(--colorGreyBlue);
+    padding-left: 1rem;
 }

@@ -385,6 +385,54 @@ class GetAnonUserLikeForPostAPIView(ListAPIView):
             raise Http404
         except Exception as error:
             return {'error': f'The following error has occurred: {error}'}
+
+class GetUserLikeForReviewAPIView(ListAPIView):
+    __doc__ = f'''
+    `[GET]`
+    This API view returns the user like for a determined review.
+    '''
+    serializer_class = LikeSerializer
+    
+    queryset = Like.objects.all()
+
+    def get_queryset(self):
+        try:
+            reviewId = self.kwargs['reviewId']
+            identifier = self.kwargs['identifier']
+
+            likes_x_review = self.queryset.filter(review=reviewId)
+            user_like_x_review = likes_x_review.filter(user=identifier)
+            
+            return user_like_x_review
+
+        except Like.DoesNotExist:
+            raise Http404
+        except Exception as error:
+            return {'error': f'The following error has occurred: {error}'}
+
+class GetAnonUserLikeForReviewAPIView(ListAPIView):
+    __doc__ = f'''
+    `[GET]`
+    This API view returns the anonymous user like for a determined review.
+    '''
+    serializer_class = LikeSerializer
+    
+    queryset = Like.objects.all()
+
+    def get_queryset(self):
+        try:
+            reviewId = self.kwargs['reviewId']
+            identifier = self.kwargs['identifier']
+
+            likes_x_review = self.queryset.filter(review=reviewId)
+            user_like_x_review = likes_x_review.filter(anonymous_identifier=identifier)
+            
+            return user_like_x_review
+
+        except Like.DoesNotExist:
+            raise Http404
+        except Exception as error:
+            return {'error': f'The following error has occurred: {error}'}
     
 class GetSingleLikeAPIView(RetrieveAPIView):
     __doc__ = f'''
@@ -413,9 +461,7 @@ class PostLikeAPIView(CreateAPIView):
     '''
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
-    # permission_classes = [IsAuthenticated, IsAdminUser] # Lo dejo comentado porque supongo que todos los usuarios deben poder dejar un like
-    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    # authentication_classes = [JWTAuthentication] # Lo dejo comentado porque supongo que todos los usuarios deben poder dejar un like
+
     
 class UpdateLikeAPIView(UpdateAPIView):
     __doc__ = f'''

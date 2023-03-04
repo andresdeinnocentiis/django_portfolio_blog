@@ -7,7 +7,7 @@ class PostAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'caption', 'rating', 'likes', 'num_reviews', 'tech_used', 'developed_for', 'created_at', 'updated_at']
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ['id', 'review_id', 'parent_id', 'user_username', 'likes', 'created_at']
+    list_display = ['id', 'review_id', 'parent_id', 'user_username', 'likes', 'comments', 'created_at']
 
     
     def user_username(self, obj):
@@ -16,7 +16,7 @@ class CommentAdmin(admin.ModelAdmin):
    
 
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ['id', 'post_id', 'post_title', 'user_username', 'anonymoususer_username', 'rating', 'likes', 'created_at']
+    list_display = ['id', 'post_id', 'post_title', 'user_username', 'anonymoususer_username', 'rating', 'likes', 'comments', 'created_at']
     
     def post_title(self, obj):
         return obj.post.title
