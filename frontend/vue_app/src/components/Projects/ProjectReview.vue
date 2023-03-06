@@ -90,6 +90,7 @@ const props = defineProps({
 })
 
 const reviewContent = props.review.content
+const realUserRating = props.review.rating
 const onEdit = ref(false)
 
 const emits = defineEmits(['delete-review'])
@@ -132,6 +133,7 @@ const toggleEditReview = () => {
 const cancelEditReview = () => {
     // If the user made some modifications but didn't want to save the edit, we set the content back to its original value 
     props.review.content = reviewContent
+    props.review.rating = realUserRating
     onEdit.value = false
 }
 
