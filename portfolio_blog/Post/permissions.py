@@ -15,8 +15,13 @@ class CanDelete(permissions.BasePermission):
         # Check if the request method is DELETE
         if request.method == 'DELETE':
             # Check if the user is the owner
-            if obj.user == request.user or obj.anonymous_user == request.user or request.user.isAdmin:
-                return True
+            if request.data['userInfo']:
+                user_info = request.data['userInfo']
+                if user_info.get('anonymousIdentifier') and str(obj.anonymous_user.anonymous_identifier) == user_info.get('anonymousIdentifier'):
+                    # I parsed to string "obj.anonymous_user.anonymous_identifier" because it's a uuid obj.
+                    return True                    
+                elif ((obj.user and obj.user.id) and user_info.get('id') == obj.user.id) or user_info.get('isAdmin'):
+                    return True
 
             else:
                 return False
@@ -33,9 +38,14 @@ class CanUpdate(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         # Check if the request method is PUT
         if request.method == 'PUT':
-            # Check if the user is the owner
-            if obj.user == request.user or obj.anonymous_user == request.user:
-                return True
+            # Check if the user is the owner            
+            if request.data['userInfo']:
+                user_info = request.data['userInfo']
+                if user_info.get('anonymousIdentifier') and str(obj.anonymous_user.anonymous_identifier) == user_info.get('anonymousIdentifier'):
+                    # I parsed to string "obj.anonymous_user.anonymous_identifier" because it's a uuid obj.
+                    return True                    
+                elif ((obj.user and obj.user.id) and user_info.get('id') == obj.user.id):
+                    return True
 
             else:
                 return False

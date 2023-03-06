@@ -177,3 +177,7 @@
     font-size: .6vw;
     align-self: flex-start;
 }
+
+.review-admin-action-btn.edit:hover, .review-admin-action-btn.edit:focus, .review-admin-action-btn.delete:hover, .review-admin-action-btn.delete:focus {
+    cursor: pointer;
+}

@@ -28,17 +28,11 @@ export const useUserLoggedStore = defineStore("userLogged", () => {
       )
 
       const userData = response.data
-      
-      // with the default user data we get the full extended User (Profile User) 
-      const profileUser = await getProfileUser(userData)
 
-      
-
-      // We update the state of userInfo with the data of profileUser
-      userInfo.value = profileUser
-
+      // We update the state of userInfo with the data 
+      userInfo.value = userData
       // We save the full extended User (UserProfile) in localStorage
-      localStorage.setItem('userInfo', JSON.stringify(profileUser))
+      localStorage.setItem('userInfo', JSON.stringify(userData))
 
       isUserAdmin.value = userInfo.value.isAdmin
 
@@ -60,29 +54,6 @@ export const useUserLoggedStore = defineStore("userLogged", () => {
         logging.value = false
     }
     
-  }
-
-  const getProfileUser = async(user) => {
-
-    try {
-      const response = await getAPI.get(`/api/users/${user.id}/get/`, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${user.token}`
-      }
-      })
-      if(response.data) {
-        const userProfile = response.data[0]
-
-        // We destructure the object so that all the keys are at the same level
-        const { user, ...rest } = userProfile;
-        const profileUser = { ...user, ...rest };
-
-        return profileUser
-      }
-    } catch(error) {
-      console.error("ERROR: ", error);
-    }
   }
 
   const logout = () => {
@@ -111,7 +82,7 @@ export const useUserLoggedStore = defineStore("userLogged", () => {
     const userInfoFromLocalStorage = localStorage.getItem('userInfo')
 
     if (userInfoFromLocalStorage) {
-      
+      console.log("USER INFO FROM LOCAL STORAGE: ", userInfoFromLocalStorage);
       userInfo.value = JSON.parse(userInfoFromLocalStorage)
       isUserAdmin.value = userInfo.value.isAdmin
 

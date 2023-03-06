@@ -22,8 +22,5 @@ class AnonymousUser(models.Model):
         return super(AnonymousUser, self).save(*args, **kwargs)
     
     def __str__(self):
-        if self.username:
-            return self.username
-        else:
-            return str(self.anonymous_identifier)
+        return str(self.anonymous_identifier)
 

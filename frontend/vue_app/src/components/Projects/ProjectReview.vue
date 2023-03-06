@@ -47,22 +47,26 @@
             </div>
             <div v-if="userInfo && isUserAdmin || isUserOwner" class="review-admin-actions-container">
                 <font-awesome-icon v-if="isUserOwner" icon="fa-solid fa-pen-to-square" class="review-admin-action-btn edit" @click.prevent="toggleEditReview"/>
-                <font-awesome-icon icon="fa-solid fa-trash" class="review-admin-action-btn delete" @click.prevent="toggleSureModal" />
+                <font-awesome-icon icon="fa-solid fa-trash" class="review-admin-action-btn delete" @click.prevent="handleToggleSureModal" />
             </div>
         </div>
     </div>
-        
+
+    
     
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, defineEmits } from "vue";
 import { storeToRefs } from "pinia";
 import { useReviewsStore } from "../../stores/reviews";
 import { useUserLoggedStore } from "../../stores/userLogged";
 import { useLikesStore } from "../../stores/likes";
+import { useModalStore } from "../../stores/modal";
 import AreYouSureModal from "../Elements/AreYouSureModal.vue";
 import StarRating from '../Elements/StarRating.vue';
+
+
 
 const props = defineProps({
     review: {
@@ -71,31 +75,24 @@ const props = defineProps({
     }
 })
 
+const emits = defineEmits(['delete-review'])
+
 const userLoggedStore = useUserLoggedStore()
 const { isUserLogged } = userLoggedStore
 const { isUserAdmin, userInfo, anonymousUserInfo } = storeToRefs(userLoggedStore)
 
 const reviewsStore = useReviewsStore()
-const { getUserReviewsForPost, getReviews } = reviewsStore
-const { userReviewsForPost, reviewsList } = storeToRefs(reviewsStore)
+const { getUserReviewsForPost, getReviews, updateReview, deleteReview } = reviewsStore
+const { userReviewsForPost, reviewsList, reviewId } = storeToRefs(reviewsStore)
 
 const likesStore = useLikesStore()
 const { postLike, deleteLike, getUserLikeForReview } = likesStore
 const { currentReviewLike, isReviewLikedByUser } = storeToRefs(likesStore)
 
-const isLiked = ref(false)
+const modalStore = useModalStore()
+const { toggleEditProjectModal, toggleTsxModal, toggleSureModal } = modalStore
 
-let createdAtFormatted
-createdAtFormatted = computed(() => { 
-    if (props.review.created_at) {
-        const inputString = props.review.created_at
-        const [datePart, timePart] = inputString.split('T');
-        const [year, month, day] = datePart.split('-').map(Number);
-        const [hours, minutes, seconds] = timePart.slice(0, -1).split(':').map(Number);
-        const newDate = new Date(year, month - 1, day, hours, minutes, seconds);
-        return newDate.toLocaleDateString('en-GB', { hours:'2-digit', minutes: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' });
-    }
-})
+const isLiked = ref(false)
 
 
 let isUserOwner 
@@ -109,7 +106,7 @@ if (userInfo.value) {
 }
 
 const toggleEditReview = () => {}
-const toggleSureModal = () => {}
+
 
 
 const handleReviewLikeClick = async (reviewId) => {
@@ -130,6 +127,7 @@ const handleReviewLikeClick = async (reviewId) => {
                 // Update the like to see the changes in real time
                 await getUserLikeForReview(reviewId, userInfo.value)
                 isLiked.value = false
+                props.review.likes--
     
             // If the review is not yet liked and the user clicked it, then it has to be created
             } else {
@@ -137,6 +135,7 @@ const handleReviewLikeClick = async (reviewId) => {
                 // Update the like to see the changes in real time
                 await getUserLikeForReview(reviewId, userInfo.value)
                 isLiked.value = true
+                props.review.likes++
             }
         } catch(error) {
             console.error(error);
@@ -151,12 +150,14 @@ const handleReviewLikeClick = async (reviewId) => {
                 // Update the like to see the changes in real time
                 await getUserLikeForReview(reviewId, anonymousUserInfo.value)
                 isLiked.value = false
+                props.review.likes--
             // If the review is not yet liked and the user clicked it, then it has to be created
             } else {
                 await postLike(likeObj)
                 // Update the like to see the changes in real time
                 await getUserLikeForReview(reviewId, anonymousUserInfo.value)
                 isLiked.value = true
+                props.review.likes++
             } 
         } catch(error) {
             console.error(error);
@@ -176,7 +177,7 @@ if (userInfo.value) {
     isLiked.value = isReviewLikedByUser.value
 }
 
-const date = new Date("2023-02-06T03:19:47.315908Z");
+const date = new Date(props.review.created_at);
 const options = {
   day: "2-digit",
   month: "2-digit",
@@ -186,5 +187,12 @@ const options = {
   hour12: true
 };
 const formattedDate = date.toLocaleDateString("en-US", options).replace('AM', 'a.m.').replace('PM', 'p.m.');
+
+
+
+const handleToggleSureModal = () => {
+    reviewId.value = props.review.id
+    toggleSureModal()
+}
 
 </script>
