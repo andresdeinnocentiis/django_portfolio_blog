@@ -82,7 +82,7 @@ export const useUserLoggedStore = defineStore("userLogged", () => {
     const userInfoFromLocalStorage = localStorage.getItem('userInfo')
 
     if (userInfoFromLocalStorage) {
-      console.log("USER INFO FROM LOCAL STORAGE: ", userInfoFromLocalStorage);
+
       userInfo.value = JSON.parse(userInfoFromLocalStorage)
       isUserAdmin.value = userInfo.value.isAdmin
 

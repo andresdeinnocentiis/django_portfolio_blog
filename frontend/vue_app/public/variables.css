@@ -20,6 +20,7 @@
     --colorDarkGrey: rgb(63, 58, 82);
     --colorDarkerGrey: #383B44;
     --colorLightGold: rgb(226, 210, 179);
+    --colorEdit: #d79743;
     --darkBackground: linear-gradient(
         95deg,
         hsl(233deg 27% 18%) 0%,

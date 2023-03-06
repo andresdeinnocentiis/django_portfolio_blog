@@ -25,7 +25,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     comments = serializers.IntegerField(source='get_comments_count', read_only=True)
     class Meta:
         model = Review
-        fields = ['id', 'user', 'anonymous_user','likes', 'comments', 'content', 'rating', 'created_at']
+        fields = ['id', 'post', 'user', 'anonymous_user','likes', 'comments', 'content', 'rating', 'created_at']
     
     def get_user(self, obj):
         if obj.user:
@@ -42,6 +42,11 @@ class ReviewSerializer(serializers.ModelSerializer):
                 'username': obj.anonymous_user.username
             }
         return None
+    
+class ReviewPutSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = '__all__'
     
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()

@@ -23,7 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
     #userprofile = UserProfileSerializer()
     class Meta:
         model = User
-        fields = ['id', 'username','password', 'email', 'first_name', 'last_name', 'isAdmin', 'token', 'linkedin', 'bio', 'image']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'isAdmin', 'token', 'linkedin', 'bio', 'image']
 
 
     def get_isAdmin(self, obj):

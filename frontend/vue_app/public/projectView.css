@@ -413,7 +413,7 @@
     }
 
     .post-admin-action-btn.edit:hover, .post-admin-action-btn.edit:focus {
-        color: #d79743;
+        color: var(--colorEdit);
         transition: all .3s;
     }
 

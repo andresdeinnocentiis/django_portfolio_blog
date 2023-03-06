@@ -38,13 +38,17 @@ class CanUpdate(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         # Check if the request method is PUT
         if request.method == 'PUT':
-            # Check if the user is the owner            
-            if request.data['userInfo']:
+            # Check if the user is the owner      
+            print("REQUEST DATA: ", request.data)      
+            if request.data.get('userInfo'):
+                print("USER INFO: ", request.data['userInfo'])
                 user_info = request.data['userInfo']
                 if user_info.get('anonymousIdentifier') and str(obj.anonymous_user.anonymous_identifier) == user_info.get('anonymousIdentifier'):
+                    print("ANON USER")
                     # I parsed to string "obj.anonymous_user.anonymous_identifier" because it's a uuid obj.
                     return True                    
                 elif ((obj.user and obj.user.id) and user_info.get('id') == obj.user.id):
+                    print("OBJ USER: ", obj.user, "OBJ USER ID: ", obj.user.id, "USER INFO ID: ", user_info.get('id'))
                     return True
 
             else:

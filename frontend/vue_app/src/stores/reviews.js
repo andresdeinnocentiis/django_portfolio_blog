@@ -135,7 +135,7 @@ export const useReviewsStore = defineStore('reviewsStore', () => {
     }
 
 
-    const postReview = async (review) => {
+    const postReview = async (review, postId) => {
         try {
             const response = await getAPI.post('/api/reviews/post/', review, {
             headers: {
@@ -145,7 +145,7 @@ export const useReviewsStore = defineStore('reviewsStore', () => {
             });
 
             // Now we update the current post's reviews:
-            getReviewsForPost()
+            getReviewsForPost(postId)
 
             return true
         } catch (error) { 
@@ -156,16 +156,18 @@ export const useReviewsStore = defineStore('reviewsStore', () => {
     }
 
     const updateReview = async (id, review, user) => {
+
+        if (user.anonymousIdentifier) {
+            review.userInfo = { anonymousIdentifier: user.anonymousIdentifier}
+        } else {
+            review.userInfo = { id: user.id }
+        }
+
         try {
-            const response = await getAPI.put(`/api/reviews/${id}/update/`, review, {
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${userInfo.value.token}`
-            }
-            });
+            const response = await getAPI.put(`/api/reviews/${id}/update/`, review);
 
             // Now we update the current post's reviews:
-            getReviewsForPost()
+            getReviewsForPost(review.post)
 
             return true
         } catch (error) { 

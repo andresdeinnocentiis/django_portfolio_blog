@@ -11,13 +11,17 @@
   <script setup>
   import { ref, defineEmits } from 'vue';
   
-  const value = ref(0);
+  const value = ref(props.defaultValue);
   const clicked = ref(false)
 
   const starWidth = ref(0)
 
   const props = defineProps({
     color: String,
+    defaultValue: {
+      type: Number,
+      default: 0
+    } 
   })
 
   // I define the emit event for updating this value and passing it up to its parent component

@@ -13,7 +13,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.response import Response
 
 # Django REST Framework imports:
-from .serializers import PostSerializer, ReviewSerializer, CommentSerializer, LikeSerializer
+from .serializers import PostSerializer, ReviewSerializer, ReviewPutSerializer, CommentSerializer, LikeSerializer
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.generics import (
     ListAPIView,
@@ -234,9 +234,7 @@ class PostReviewAPIView(CreateAPIView):
     '''
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    # permission_classes = [IsAuthenticated, IsAdminUser] # Lo dejo comentado porque supongo que todos los usuarios deben poder postear reviews
-    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    # authentication_classes = [JWTAuthentication] # Lo dejo comentado porque supongo que todos los usuarios deben poder postear reviews
+
     
 class UpdateReviewAPIView(UpdateAPIView):
     __doc__ = f'''
@@ -244,11 +242,34 @@ class UpdateReviewAPIView(UpdateAPIView):
     This API view updates a blog Review.
     '''
     queryset = Review.objects.all()
-    serializer_class = ReviewSerializer
+    serializer_class = ReviewPutSerializer
     permission_classes=[CanUpdate]
-    # permission_classes = [IsAuthenticated, IsAdminUser] # Lo dejo comentado porque supongo que todos los usuarios deben poder editar sus reviews
-    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    # authentication_classes = [JWTAuthentication] # Lo dejo comentado porque supongo que todos los usuarios deben poder editar sus reviews
+    
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        
+        allowed_attrs = {}
+        if 'post' in request.data:
+            allowed_attrs['post'] = request.data['post']
+        if request.data['user'] != None:
+            allowed_attrs['user'] = request.data['user']['id']
+        if request.data['anonymous_user'] != None:
+            allowed_attrs['anonymous_user'] = request.data['anonymous_user']['id']
+        if 'content' in request.data:
+            allowed_attrs['content'] = request.data['content']
+        if 'rating' in request.data:
+            allowed_attrs['rating'] = request.data['rating']
+
+
+        # Update the model instance with the allowed attributes
+        print("ALLOWED ATTRS: ", allowed_attrs)
+        serializer = self.get_serializer(instance, data=allowed_attrs, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(serializer.data)
+
 
 class DestroyReviewAPIView(DestroyAPIView):
     __doc__ = f'''
@@ -258,9 +279,7 @@ class DestroyReviewAPIView(DestroyAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes=[CanDelete]
-    # permission_classes = [IsAuthenticated, IsAdminUser] # Lo dejo comentado porque supongo que todos los usuarios deben poder eliminar sus reviews
-    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    # authentication_classes = [JWTAuthentication] # Lo dejo comentado porque supongo que todos los usuarios deben poder eliminar sus reviews
+
 
 #NOTE: COMMENT VIEWS:
 class GetCommentsAPIView(ListAPIView):

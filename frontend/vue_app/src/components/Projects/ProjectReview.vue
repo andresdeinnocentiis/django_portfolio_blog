@@ -27,10 +27,22 @@
                     <p class="review-datetime">{{ formattedDate }}</p>
                 </div>
             </div>
-            <StarRating :color="'#27D49F'" :value="review.rating" :className="'single-review'"/>
+            <StarRatingAction :defaultValue="review.rating" color="#27D49F" v-if="onEdit" />
+            <StarRating v-else :color="'#27D49F'" :value="review.rating" :className="'single-review'"/>
         </div>
-        <p class="review-content">{{review.content}}</p>
-        <div class="review-extra-container">
+        <label v-if="onEdit" class="custom-field" aria-label="Enter review">
+            <textarea style="resize: none;" class="review-edit" autofocus v-model="review.content" type="text" required placeholder="&nbsp;" rows="4" cols="50">
+            {{review.content}}
+            </textarea>
+            <span class="placeholder-textarea">Write your review</span>
+        </label>
+        <p v-else class="review-content">{{review.content}}</p>
+        
+        <div v-if="onEdit" class="review-extra-container confirm-edit-container">
+            <font-awesome-icon icon="fa-solid fa-check" class="review-icon-confirm" @click.prevent="handleConfirmEdit" />
+            <font-awesome-icon icon="fa-solid fa-xmark" class="review-icon-cancel" @click.prevent="cancelEditReview" />
+        </div>
+        <div v-else class="review-extra-container">
             <div class="review__icons-div" >
                 <div class="like-action-container"  @click.prevent="handleReviewLikeClick(review.id)">
                     <font-awesome-icon class="review-icons icons__like-action" v-if="isLiked" icon="fa-solid fa-heart" />
@@ -50,6 +62,7 @@
                 <font-awesome-icon icon="fa-solid fa-trash" class="review-admin-action-btn delete" @click.prevent="handleToggleSureModal" />
             </div>
         </div>
+        
     </div>
 
     
@@ -57,7 +70,7 @@
 </template>
 
 <script setup>
-import { computed, ref, defineEmits } from "vue";
+import { readonly, ref, defineEmits } from "vue";
 import { storeToRefs } from "pinia";
 import { useReviewsStore } from "../../stores/reviews";
 import { useUserLoggedStore } from "../../stores/userLogged";
@@ -65,6 +78,7 @@ import { useLikesStore } from "../../stores/likes";
 import { useModalStore } from "../../stores/modal";
 import AreYouSureModal from "../Elements/AreYouSureModal.vue";
 import StarRating from '../Elements/StarRating.vue';
+import StarRatingAction from "../Elements/StarRatingAction.vue";
 
 
 
@@ -75,22 +89,24 @@ const props = defineProps({
     }
 })
 
+const reviewContent = props.review.content
+const onEdit = ref(false)
+
 const emits = defineEmits(['delete-review'])
 
 const userLoggedStore = useUserLoggedStore()
-const { isUserLogged } = userLoggedStore
 const { isUserAdmin, userInfo, anonymousUserInfo } = storeToRefs(userLoggedStore)
 
 const reviewsStore = useReviewsStore()
-const { getUserReviewsForPost, getReviews, updateReview, deleteReview } = reviewsStore
-const { userReviewsForPost, reviewsList, reviewId } = storeToRefs(reviewsStore)
+const { updateReview} = reviewsStore
+const { reviewId } = storeToRefs(reviewsStore)
 
 const likesStore = useLikesStore()
 const { postLike, deleteLike, getUserLikeForReview } = likesStore
 const { currentReviewLike, isReviewLikedByUser } = storeToRefs(likesStore)
 
 const modalStore = useModalStore()
-const { toggleEditProjectModal, toggleTsxModal, toggleSureModal } = modalStore
+const { toggleSureModal } = modalStore
 
 const isLiked = ref(false)
 
@@ -105,7 +121,15 @@ if (userInfo.value) {
     isUserOwner = false
 }
 
-const toggleEditReview = () => {}
+const toggleEditReview = () => {  
+    onEdit.value = !onEdit.value
+}
+
+const cancelEditReview = () => {
+    // If the user made some modifications but didn't want to save the edit, we set the content back to its original value 
+    props.review.content = reviewContent
+    onEdit.value = false
+}
 
 
 
@@ -165,6 +189,23 @@ const handleReviewLikeClick = async (reviewId) => {
         
     }
 
+}
+
+
+const handleConfirmEdit = async () => {
+    reviewId.value = props.review.id
+    try {
+        if (userInfo.value) {
+        await updateReview(reviewId.value, props.review, userInfo.value)
+    } else if (anonymousUserInfo.value) {
+        await updateReview(reviewId.value, props.review, anonymousUserInfo.value)
+    }
+
+    } catch(error) {
+            console.error(error);
+    }
+
+    onEdit.value = false
 }
 
 

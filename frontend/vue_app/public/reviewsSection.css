@@ -108,6 +108,17 @@
     margin-top: 1rem;
 }
 
+.review-extra-container.confirm-edit-container {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid var(--colorGreyBlue);
+    padding-top: 1rem;
+    margin-top: 1rem;
+    gap: 2vw;
+}
+
+
+
 .review__icons-div {
     font-size: 1.1vw;
     display: flex;
@@ -180,4 +191,23 @@
 
 .review-admin-action-btn.edit:hover, .review-admin-action-btn.edit:focus, .review-admin-action-btn.delete:hover, .review-admin-action-btn.delete:focus {
     cursor: pointer;
+}
+
+.review-admin-action-btn.edit:hover, .review-admin-action-btn.edit:focus {
+    color: var(--colorEdit);
+}
+
+.review-admin-action-btn.delete:hover, .review-admin-action-btn.delete:focus {
+    color: var(--textDanger);
+}
+
+.review-icon-confirm, .review-icon-cancel {
+    cursor: pointer;
+}
+
+.review-icon-confirm:hover, .review-icon-confirm:focus {
+    color: var(--colorSpringGreen);
+}
+.review-icon-cancel:hover, .review-icon-cancel:focus {
+    color: var(--textDanger);
 }
