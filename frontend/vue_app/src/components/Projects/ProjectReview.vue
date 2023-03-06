@@ -27,7 +27,7 @@
                     <p class="review-datetime">{{ formattedDate }}</p>
                 </div>
             </div>
-            <StarRatingAction :defaultValue="review.rating" color="#27D49F" v-if="onEdit" />
+            <StarRatingAction color="#27D49F" v-if="onEdit" class="edit-rating" v-model="review.rating" @update:value="handleUpdateValue" />
             <StarRating v-else :color="'#27D49F'" :value="review.rating" :className="'single-review'"/>
         </div>
         <label v-if="onEdit" class="custom-field" aria-label="Enter review">
@@ -76,7 +76,7 @@ import { useReviewsStore } from "../../stores/reviews";
 import { useUserLoggedStore } from "../../stores/userLogged";
 import { useLikesStore } from "../../stores/likes";
 import { useModalStore } from "../../stores/modal";
-import AreYouSureModal from "../Elements/AreYouSureModal.vue";
+import { usePostsStore } from "../../stores/posts";
 import StarRating from '../Elements/StarRating.vue';
 import StarRatingAction from "../Elements/StarRatingAction.vue";
 
@@ -108,6 +108,10 @@ const { currentReviewLike, isReviewLikedByUser } = storeToRefs(likesStore)
 const modalStore = useModalStore()
 const { toggleSureModal } = modalStore
 
+const postsStore = usePostsStore()
+const { getPostDetails } = postsStore
+
+
 const isLiked = ref(false)
 
 
@@ -131,6 +135,11 @@ const cancelEditReview = () => {
     onEdit.value = false
 }
 
+
+// Function to get the value from the child component StarRatingAction
+const handleUpdateValue = (value) => {
+    props.review.rating = value
+}
 
 
 const handleReviewLikeClick = async (reviewId) => {
@@ -204,6 +213,8 @@ const handleConfirmEdit = async () => {
     } catch(error) {
             console.error(error);
     }
+
+    getPostDetails(props.review.post)
 
     onEdit.value = false
 }

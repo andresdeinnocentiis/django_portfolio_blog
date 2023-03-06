@@ -25,8 +25,7 @@
             <div class="main-division__first__bottom">
                 <div class="post-user-actions-container"  :class="{'img-overlay-description-dark': isDarkMode, 'img-overlay-description-light': !isDarkMode}">
                     <p :class="{'dark-span': isDarkMode, 'light-span': !isDarkMode}">
-                        <!--<StarRatingAction :color="isDarkMode ? '#27D49F' : '#00FF9D'" @update:value="handleUpdateValue"/>-->
-                        <StarRatingVue :color="'#27D49F'" :value="userRating" :className="'user-rating'"/>
+                        <StarRating :color="'#27D49F'" :value="userRating" :className="'user-rating'"/>
                     </p>
                     <div class="like-icon-div" @click.prevent="handleLikeClick">
                         <font-awesome-icon class="like-action" v-if="isPostLikedByUser" icon="fa-solid fa-heart" :class="{'dark-span': isDarkMode, 'light-span': !isDarkMode}" />
@@ -106,7 +105,7 @@ import { useUserLoggedStore } from "../../stores/userLogged";
 import { useDarkModeStore } from '../../stores/darkMode';
 import { useModalStore } from '../../stores/modal';
 import Hashtag from '../Elements/Hashtag.vue';
-import StarRatingVue from '../Elements/StarRating.vue';
+import StarRating from '../Elements/StarRating.vue';
 import AreYouSureModal from '../Elements/AreYouSureModal.vue';
 import ProjectEditModal from './ProjectEditModal.vue'
 import TransactionModal from '@/components/Elements/TransactionModal.vue';
