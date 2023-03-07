@@ -25,7 +25,7 @@
             <div class="main-division__first__bottom">
                 <div class="post-user-actions-container"  :class="{'img-overlay-description-dark': isDarkMode, 'img-overlay-description-light': !isDarkMode}">
                     <p :class="{'dark-span': isDarkMode, 'light-span': !isDarkMode}">
-                        <StarRating :color="'#27D49F'" :value="userRating" :className="'user-rating'"/>
+                        <StarRating :color="'#27D49F'" :value="userRating" v-bind="userRating" :className="'user-rating'"/>
                     </p>
                     <div class="like-icon-div" @click.prevent="handleLikeClick">
                         <font-awesome-icon class="like-action" v-if="isPostLikedByUser" icon="fa-solid fa-heart" :class="{'dark-span': isDarkMode, 'light-span': !isDarkMode}" />
@@ -96,7 +96,7 @@
 </template>
 
 <script setup>
-import { defineProps, computed, ref } from 'vue';
+import { defineProps, computed, ref, watchEffect } from 'vue';
 import { storeToRefs } from 'pinia';
 import { usePostsStore } from '../../stores/posts';
 import { useReviewsStore } from '../../stores/reviews';
@@ -167,7 +167,7 @@ const handleLikeClick = async () => {
     // Create the Like Object that would be sent if the request is POST
     const likeObj = {
         user: userInfo.value ? userInfo.value.id : null,
-        anonymous_identifier: anonymousUserInfo.value ? anonymousUserInfo.value.anonymousIdentifier : null,
+        anonymous_identifier: anonymousUserInfo.value ? anonymousUserInfo.value.anonymous_identifier : null,
         post: currentPost.value.id 
     }
     // If it's a logged user:
@@ -327,6 +327,11 @@ if (userInfo.value) {
     await getUserLikeForPost(Number(props.id), anonymousUserInfo)
 }
 
+watchEffect(() => {
+    userReviewsForPost.value
+    rating.value
+    userRating
+})
 
 </script>
 

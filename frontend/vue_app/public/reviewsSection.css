@@ -216,3 +216,60 @@
 .edit-rating {
     font-size: 1.2vw;
 }
+
+/* ============= LEAVE A REVIEW ============== */
+.leave-review-container {
+    display: flex;
+}
+
+.leave-review-btn {
+    background-color: var(--colorSpringGreen);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 30%;
+    word-break: break-all;
+    padding: 1.5rem;
+    box-shadow: 13px 13px 40px -21px rgba(40,67,125,0.75);
+    -webkit-box-shadow: 13px 13px 40px -21px rgba(40,67,125,0.75);
+    -moz-box-shadow: 13px 13px 40px -21px rgba(40,67,125,0.75);
+    border-radius: 10px;
+    color: var(--colorGreyBlue);
+    align-items: center;
+    justify-content: center;
+    transition: all .3s;
+}
+
+.leave-review-btn:hover, .leave-review-btn:focus {
+    cursor: pointer;
+    background-color: var(--textWarning);
+    color: var(--colorWhite);
+}
+
+.leave-review-btn.review-left {
+    text-align: center;
+}
+
+.leave-review-btn.review-left:hover, .leave-review-btn.review-left:focus {
+    cursor:default;
+    background-color: var(--colorSpringGreen);
+    color: var(--colorGreyBlue);
+}
+
+
+
+.leave-review-btn-text {
+    font-size: 1.5vw;
+    font-weight: 700;
+}
+
+.leave-review-write {
+    display: flex;
+    flex-direction: column;
+    gap: 1vw;
+}
+
+.edit-rating.rating-newReview {
+    align-self: center;
+    font-size: 3vmin;
+}

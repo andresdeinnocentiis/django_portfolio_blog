@@ -112,9 +112,9 @@ export const useReviewsStore = defineStore('reviewsStore', () => {
                 response = await getAPI.get(`/api/reviews/post/${postId}/anonymous_user/${userId}/get/`)
             }
 
-            if (response.data) {
+            if (response.data[0]) {
                 const userReview = response.data[0]
-                
+ 
                 userReviewsForPost.value = userReview
 
                 // Save the user review info to local storage
@@ -124,7 +124,7 @@ export const useReviewsStore = defineStore('reviewsStore', () => {
             } else {
                 // There wasn't a user logged in nor an anon user saved in the database
                 // Handle failure
-                userReviewsForPost.value = [{}]
+                userReviewsForPost.value = null
                 // Throw an error or display an error message to the user
                 return false
             }
@@ -140,12 +140,11 @@ export const useReviewsStore = defineStore('reviewsStore', () => {
             const response = await getAPI.post('/api/reviews/post/', review, {
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${userInfo.value.token}`
             }
             });
 
             // Now we update the current post's reviews:
-            getReviewsForPost(postId)
+            await getReviewsForPost(postId)
 
             return true
         } catch (error) { 
@@ -157,8 +156,8 @@ export const useReviewsStore = defineStore('reviewsStore', () => {
 
     const updateReview = async (id, review, user) => {
 
-        if (user.anonymousIdentifier) {
-            review.userInfo = { anonymousIdentifier: user.anonymousIdentifier}
+        if (user.anonymous_identifier) {
+            review.userInfo = { anonymous_identifier: user.anonymous_identifier}
         } else {
             review.userInfo = { id: user.id }
         }

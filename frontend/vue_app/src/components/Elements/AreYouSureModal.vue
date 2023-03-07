@@ -31,7 +31,6 @@ const { toggleSureModal } = modalStore
 const handleYes = () => {
     toggleSureModal()
     props.method()
-    
 }
 
 </script>

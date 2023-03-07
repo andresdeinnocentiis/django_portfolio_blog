@@ -15,6 +15,7 @@ from rest_framework.response import Response
 # Django REST Framework imports:
 from .serializers import PostSerializer, ReviewSerializer, ReviewPutSerializer, CommentSerializer, LikeSerializer
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework import status
 from rest_framework.generics import (
     ListAPIView,
     RetrieveAPIView,
@@ -233,7 +234,28 @@ class PostReviewAPIView(CreateAPIView):
     This API view inserts a review for a post on the DataBase.
     '''
     queryset = Review.objects.all()
-    serializer_class = ReviewSerializer
+    serializer_class = ReviewPutSerializer
+    
+    # Had to rewrite the create function because I had editted the way the api shows the review data, 
+    # so it would show the user's or anonymous_user's data too, but I don't need it to create a review
+    def create(self, request, *args, **kwargs):
+
+        allowed_attrs = {}
+        if 'post' in request.data:
+            allowed_attrs['post'] = request.data['post']
+        allowed_attrs['user'] = request.data.get('user', None)
+        allowed_attrs['anonymous_user'] = request.data.get('anonymous_user', None)
+        if 'content' in request.data:
+            allowed_attrs['content'] = request.data['content']
+        if 'rating' in request.data:
+            allowed_attrs['rating'] = request.data['rating']
+
+        serializer = self.get_serializer(data=allowed_attrs)
+ 
+        serializer.is_valid(raise_exception=True)
+
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     
 class UpdateReviewAPIView(UpdateAPIView):
@@ -252,10 +274,8 @@ class UpdateReviewAPIView(UpdateAPIView):
         allowed_attrs = {}
         if 'post' in request.data:
             allowed_attrs['post'] = request.data['post']
-        if request.data['user'] != None:
-            allowed_attrs['user'] = request.data['user']['id']
-        if request.data['anonymous_user'] != None:
-            allowed_attrs['anonymous_user'] = request.data['anonymous_user']['id']
+        allowed_attrs['user'] = request.data.get('user')['id'] if request.data.get('user') else None
+        allowed_attrs['anonymous_user'] = request.data.get('anonymous_user')['id'] if request.data.get('anonymous_user') else None
         if 'content' in request.data:
             allowed_attrs['content'] = request.data['content']
         if 'rating' in request.data:
@@ -479,6 +499,7 @@ class PostLikeAPIView(CreateAPIView):
     This API view inserts a like for a related post, review or comment on the DataBase.
     '''
     queryset = Like.objects.all()
+    print("QUERYSET: ", queryset)
     serializer_class = LikeSerializer
 
     

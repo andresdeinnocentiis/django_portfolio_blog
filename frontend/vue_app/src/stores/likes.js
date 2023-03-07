@@ -38,8 +38,8 @@ export const useLikesStore = defineStore("likesStore", () => {
         let likeId = false
         let identifier
 
-        if (user.value.anonymousIdentifier) {
-            identifier = user.value.anonymousIdentifier
+        if (user.value.anonymous_identifier) {
+            identifier = user.value.anonymous_identifier
             try {
                 const response = await getAPI.get(`/api/likes/post/${postId}/anonymous_user/${identifier}/get/`, {})
                 const likeArray = response.data
@@ -88,12 +88,13 @@ export const useLikesStore = defineStore("likesStore", () => {
         let likeResult = {}
         let identifier
 
-        if (user.anonymousIdentifier) {
-            identifier = user.anonymousIdentifier
+        if (user.anonymous_identifier) {
+            identifier = user.anonymous_identifier
+
             try {
                 const response = await getAPI.get(`/api/likes/review/${reviewId}/anonymous_user/${identifier}/get/`, {})
                 const likeArray = response.data
-                
+ 
                 if (likeArray.length > 0) {
                     const likeObj = likeArray[0]
                     if(likeObj.review == reviewId && (likeObj.anonymous_identifier == identifier)) {

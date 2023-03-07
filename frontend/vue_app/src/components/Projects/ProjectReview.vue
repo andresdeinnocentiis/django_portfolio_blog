@@ -22,7 +22,7 @@
                 </div>
                 <div class="user-date">
                     <div class="user-verified-data">
-                        <p class="review-username">{{review.anonymous_user.username}}</p>
+                        <p class="review-username">{{review.anonymous_user ? review.anonymous_user.username : "" }}</p>
                     </div>
                     <p class="review-datetime">{{ formattedDate }}</p>
                 </div>
@@ -70,7 +70,7 @@
 </template>
 
 <script setup>
-import { readonly, ref, defineEmits } from "vue";
+import { watchEffect, ref, defineEmits } from "vue";
 import { storeToRefs } from "pinia";
 import { useReviewsStore } from "../../stores/reviews";
 import { useUserLoggedStore } from "../../stores/userLogged";
@@ -121,7 +121,7 @@ let isUserOwner
 if (userInfo.value) {
     isUserOwner = props.review.user && props.review.user.id == userInfo.value.id  ? true : false
 } else if (anonymousUserInfo.value) {
-    isUserOwner = props.review.anonymous_user && props.review.anonymous_user.anonymous_identifier == anonymousUserInfo.value.anonymousIdentifier ? true : false
+    isUserOwner = props.review.anonymous_user && props.review.anonymous_user.anonymous_identifier == anonymousUserInfo.value.anonymous_identifier ? true : false
 } else {
     isUserOwner = false
 }
@@ -149,7 +149,7 @@ const handleReviewLikeClick = async (reviewId) => {
     // Create the Like Object that would be sent if the request is POST
     const likeObj = {
         user: userInfo.value ? userInfo.value.id : null,
-        anonymous_identifier: anonymousUserInfo.value ? anonymousUserInfo.value.anonymousIdentifier : null,
+        anonymous_identifier: anonymousUserInfo.value ? anonymousUserInfo.value.anonymous_identifier : null,
         review: reviewId 
     }
     // If it's a logged user:
@@ -248,5 +248,9 @@ const handleToggleSureModal = () => {
     reviewId.value = props.review.id
     toggleSureModal()
 }
+
+watchEffect(() => {
+    props.review.rating
+})
 
 </script>

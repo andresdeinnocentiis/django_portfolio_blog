@@ -77,7 +77,7 @@ export const useUserLoggedStore = defineStore("userLogged", () => {
   }
 
   // Load userInfo or AnonymousUser
-  const loadUserInfo = () => {
+  const loadUserInfo = async () => {
 
     const userInfoFromLocalStorage = localStorage.getItem('userInfo')
 
@@ -87,30 +87,52 @@ export const useUserLoggedStore = defineStore("userLogged", () => {
       isUserAdmin.value = userInfo.value.isAdmin
 
     } else {
-
-        const anonymousUserInfoFromLocalStorage = localStorage.getItem('anonymousUserInfo')
-
-        if (!anonymousUserInfoFromLocalStorage) {
+        
+        const anonymousUserInfoFromLocalStorage = JSON.parse(localStorage.getItem('anonymousUserInfo'))
+   
+        if (!anonymousUserInfoFromLocalStorage || Object.keys(anonymousUserInfoFromLocalStorage).length === 0) {
 
           // if the anonymous user does not exist, set it
 
           const newAnonymousUser = {
             username: "",
-            anonymousIdentifier: generateAnonymousIdentifier(),
+            anonymous_identifier: generateAnonymousIdentifier(),
           }
 
           // Set the new Anonymous User in the local Storage:
           localStorage.setItem('anonymousUserInfo', JSON.stringify(newAnonymousUser))
-    
+          
           // Set it to the anonymousUserInfo state
           anonymousUserInfo.value = newAnonymousUser
 
-        } else {
+        } else if (anonymousUserInfoFromLocalStorage && !anonymousUserInfoFromLocalStorage.id) {
           // If exists set the anon user to the anonymousUserInfo state
 
-          anonymousUserInfo.value = JSON.parse(anonymousUserInfoFromLocalStorage)
+          anonymousUserInfo.value = anonymousUserInfoFromLocalStorage
+
+          try {
+ 
+            const anonymous_identifier = anonymousUserInfo.value.anonymous_identifier
+
+            const response = await getAPI.get(`/api/anonymous_users/${anonymous_identifier}/get/`)
+
+            if (response.data[0]) {
+
+              anonymousUserInfo.value = response.data[0]
+
+              localStorage.setItem('anonymousUserInfo', JSON.stringify(response.data[0]))
+
+            } 
+
+          } catch(error) {
+            console.log(error);
+          }
         
-        }
+        } else if (anonymousUserInfoFromLocalStorage.id) {
+
+          anonymousUserInfo.value = anonymousUserInfoFromLocalStorage
+
+        } 
     }
   }
 
@@ -128,6 +150,8 @@ export const useUserLoggedStore = defineStore("userLogged", () => {
     try {
       const response = await getAPI.post('/api/anonymous_users/register/', anonymousUser)
       
+      await loadUserInfo()
+
       return true
       
     } catch (error) { 

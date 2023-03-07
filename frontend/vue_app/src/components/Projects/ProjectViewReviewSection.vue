@@ -2,6 +2,7 @@
     <div class="reviews-section-container">
         <h1 class="posts__title">Reviews ({{countReviews}})</h1>
         <div class="reviews-container">
+            <LeaveReview :postId="id" />
             <ProjectReview 
                 v-for="review in currentPostReviews" :key="review.id" 
                 class="review" 
@@ -23,6 +24,7 @@ import { storeToRefs } from 'pinia';
 import { useReviewsStore } from '../../stores/reviews';
 import { useUserLoggedStore } from '../../stores/userLogged';
 import ProjectReview from './ProjectReview.vue';
+import LeaveReview from './LeaveReview.vue'
 import AreYouSureModal from '../Elements/AreYouSureModal.vue';
 
 

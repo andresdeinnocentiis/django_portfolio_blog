@@ -17,7 +17,7 @@ class CanDelete(permissions.BasePermission):
             # Check if the user is the owner
             if request.data['userInfo']:
                 user_info = request.data['userInfo']
-                if user_info.get('anonymousIdentifier') and str(obj.anonymous_user.anonymous_identifier) == user_info.get('anonymousIdentifier'):
+                if user_info.get('anonymous_identifier') and str(obj.anonymous_user.anonymous_identifier) == user_info.get('anonymous_identifier'):
                     # I parsed to string "obj.anonymous_user.anonymous_identifier" because it's a uuid obj.
                     return True                    
                 elif ((obj.user and obj.user.id) and user_info.get('id') == obj.user.id) or user_info.get('isAdmin'):
@@ -39,16 +39,15 @@ class CanUpdate(permissions.BasePermission):
         # Check if the request method is PUT
         if request.method == 'PUT':
             # Check if the user is the owner      
-            print("REQUEST DATA: ", request.data)      
+     
             if request.data.get('userInfo'):
-                print("USER INFO: ", request.data['userInfo'])
+
                 user_info = request.data['userInfo']
-                if user_info.get('anonymousIdentifier') and str(obj.anonymous_user.anonymous_identifier) == user_info.get('anonymousIdentifier'):
-                    print("ANON USER")
+                if user_info.get('anonymous_identifier') and str(obj.anonymous_user.anonymous_identifier) == user_info.get('anonymous_identifier'):
                     # I parsed to string "obj.anonymous_user.anonymous_identifier" because it's a uuid obj.
                     return True                    
                 elif ((obj.user and obj.user.id) and user_info.get('id') == obj.user.id):
-                    print("OBJ USER: ", obj.user, "OBJ USER ID: ", obj.user.id, "USER INFO ID: ", user_info.get('id'))
+
                     return True
 
             else:

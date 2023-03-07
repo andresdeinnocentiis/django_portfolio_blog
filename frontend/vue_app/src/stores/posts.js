@@ -77,8 +77,8 @@ export const usePostsStore = defineStore("postsStore", () => {
         let isLiked = false
         let identifier
 
-        if (user.value.anonymousIdentifier) {
-            identifier = user.value.anonymousIdentifier
+        if (user.value.anonymous_identifier) {
+            identifier = user.value.anonymous_identifier
             try {
                 const response = await getAPI.get(`/api/posts/${postId}/is_liked/anonymous_user/${identifier}/get/`, {})
                 const likeArray = response.data

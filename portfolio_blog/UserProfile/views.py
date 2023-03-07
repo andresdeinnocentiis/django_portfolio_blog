@@ -151,9 +151,7 @@ class GetSingleAnonymousUserAPIView(ListAPIView):
     This API view returns a single Anonymous User.
     '''
     serializer_class = AnonymousUserSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    authentication_classes = [JWTAuthentication]
+
 
     def get_queryset(self):
         '''
@@ -166,10 +164,11 @@ class GetSingleAnonymousUserAPIView(ListAPIView):
             anonymous_identifier = self.kwargs['anonymous_identifier']
             queryset = AnonymousUser.objects.filter(anonymous_identifier=anonymous_identifier)
             return queryset
-        
+            
         except Exception as error:
             return {'error': f'The following error has occurred: {error}'}
-        
+
+    
 class RegisterAnonymousUserAPIView(CreateAPIView):
     __doc__ = f'''
     `[POST]`

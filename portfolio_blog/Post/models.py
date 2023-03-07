@@ -83,7 +83,7 @@ class Review(models.Model):
         return str(self.id)
     
     class Meta:
-        unique_together = ('post', 'user') # I added this so that a user could leave a single review for each post.
+        unique_together = (('post', 'user'),('post', 'anonymous_user')) # I added this so that a user/anon could leave a single review for each post.
     
 
 class Comment(models.Model):
