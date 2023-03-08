@@ -49,7 +49,7 @@ class ReviewPutSerializer(serializers.ModelSerializer):
         fields = '__all__'
     
 class CommentSerializer(serializers.ModelSerializer):
-    user = serializers.SerializerMethodField()
+    user = UserSerializer()
     anonymous_user = serializers.SerializerMethodField()
     likes = serializers.IntegerField(source='get_likes_count', read_only=True)
     comments = serializers.IntegerField(source='get_comments_count', read_only=True)
@@ -59,23 +59,24 @@ class CommentSerializer(serializers.ModelSerializer):
         
     def get_user(self, obj):
         if obj.user:
-            return {
-                'id': obj.user.id,
-                'username': obj.user.username,
-                'linkedin': obj.user.linkedin,
-                'image': obj.user.image if obj.user.image else None
-                
-            }
-        return None
+            return obj.user
+        else:     
+            return None
+        
     
     def get_anonymous_user(self, obj):
         if obj.anonymous_user:
             return {
                 'id': obj.anonymous_user.id,
-                'anonymous_identifier': obj.anonymous_user.identifier,
+                'anonymous_identifier': obj.anonymous_user.anonymous_identifier,
                 'username': obj.anonymous_user.username
             }
         return None
+
+class CommentPutSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = '__all__'
 
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:

@@ -5,7 +5,7 @@
             <LeaveReview :postId="id" />
             <ProjectReview 
                 v-for="review in currentPostReviews" :key="review.id" 
-                class="review" 
+                class="review-component" 
                 :review="review" 
                 ref="childComponentRef"    
             />
@@ -46,13 +46,6 @@ const { userInfo, anonymousUserInfo } = storeToRefs(userLoggedStore)
 
 await getReviewsForPost(Number(props.id))
 const countReviews = currentPostReviews.value.length
-
-const tsxModalMsg = ref({
-    title: "",
-    msg: "",
-    variant: "",
-    success: false
-})
 
 
 const handleDeleteReview = async () => {

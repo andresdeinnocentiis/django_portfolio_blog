@@ -7,11 +7,16 @@ class PostAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'caption', 'rating', 'likes', 'num_reviews', 'tech_used', 'developed_for', 'created_at', 'updated_at']
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ['id', 'review_id', 'parent_id', 'user_username', 'likes', 'comments', 'created_at']
+    list_display = ['id', 'review_id', 'parent_id', 'user_username', 'anonymous_user_username','likes', 'comments', 'created_at']
 
     
     def user_username(self, obj):
-        return obj.user.username
+        if obj.user:
+            return obj.user.username
+    
+    def anonymous_user_username(self, obj):
+        if obj.anonymous_user:
+            return obj.anonymous_user.username
     
    
 

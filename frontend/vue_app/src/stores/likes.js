@@ -9,6 +9,8 @@ export const useLikesStore = defineStore("likesStore", () => {
     const currentPostLikeId = ref(null)
     const currentReviewLike = ref(null)
     const isReviewLikedByUser = ref(false)
+    const currentCommentLike = ref(null)
+    const isCommentLikedByUser = ref(false)
 
     const getLikes = async () => {
 
@@ -148,6 +150,70 @@ export const useLikesStore = defineStore("likesStore", () => {
         }
     }
 
+    const getUserLikeForComment = async(commentId, user) => {
+        let likeResult = {}
+        let identifier
+
+        if (user.anonymous_identifier) {
+            identifier = user.anonymous_identifier
+
+            try {
+                const response = await getAPI.get(`/api/likes/comment/${commentId}/anonymous_user/${identifier}/get/`, {})
+                const likeArray = response.data
+ 
+                if (likeArray.length > 0) {
+                    const likeObj = likeArray[0]
+                    if(likeObj.comment == commentId && (likeObj.anonymous_identifier == identifier)) {
+                        likeResult = likeObj
+                        isCommentLikedByUser.value = true
+                        
+                    } else {
+                        isCommentLikedByUser.value = false
+                        
+                    }
+                } else {
+                    likeResult = {}
+                    isCommentLikedByUser.value = false
+                    
+                }
+                
+                currentCommentLike.value = likeResult        
+            } catch(error) {
+                console.log(error);
+            }
+        } else {
+
+            identifier = user.id
+
+            try {
+                const response = await getAPI.get(`/api/likes/comment/${commentId}/user/${identifier}/get/`, {})
+                const likeArray = response.data
+  
+                if (likeArray.length > 0) {
+                    const likeObj = likeArray[0]
+                    if(likeObj.comment == commentId && (likeObj.user == identifier)) {
+                        likeResult = likeObj
+                        isCommentLikedByUser.value = true
+                        
+                    } else {
+                        isCommentLikedByUser.value = false
+                        
+                    }
+                } else {
+                    likeResult = {}
+                    isCommentLikedByUser.value = false
+                    
+                    
+                }
+                
+                currentCommentLike.value = likeResult       
+                
+            } catch(error) {
+                console.log(error);
+            }
+        }
+    }
+
     const postLike = async (like) => {
         try {
             const response = await getAPI.post('/api/likes/post/', like, {
@@ -191,5 +257,10 @@ export const useLikesStore = defineStore("likesStore", () => {
         }
     }
 
-    return { likesList, getLikes, postLike, deleteLike, getUserLikeForPost, currentPostLikeId, getUserLikeForReview, currentReviewLike, isReviewLikedByUser }
+    return { likesList, getLikes, postLike, deleteLike, 
+        getUserLikeForPost, currentPostLikeId, 
+        getUserLikeForReview, currentReviewLike, isReviewLikedByUser, 
+        getUserLikeForComment, currentCommentLike, isCommentLikedByUser
+    
+    }
 })

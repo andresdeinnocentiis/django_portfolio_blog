@@ -1,68 +1,72 @@
 <template>
     <div>
-        <div class="review-header">
+
+        <div class="review">
+            <div class="review-header">
+                
+                <div v-if="review.user" class="user-verified-container">
+                    <div class="user-verified-img">
+                        <img v-if="review.user.image" :src="review.user.image" alt="">
+                        <font-awesome-icon icon="fa-solid fa-user" v-else />
+                    </div>
+                    <div class="user-date">
+                        <div class="user-verified-data">
+                            <a v-if="review.user.linkedin" :href="review.user.linkedin" target="_blank" class="review-username">{{review.user.username}}</a>
+                            <p v-else class="review-username">{{review.user.username}}</p>
+                            <font-awesome-icon icon="fa-solid fa-circle-check" />
+                        </div>
+                        <p class="review-datetime">{{ formattedDate }}</p>
+                    </div>
+                </div>
+                <div v-else class="user-verified-container">
+                    <div class="user-verified-img">
+                        <font-awesome-icon icon="fa-solid fa-user" />
+                    </div>
+                    <div class="user-date">
+                        <div class="user-verified-data">
+                            <p class="review-username">{{review.anonymous_user ? review.anonymous_user.username : "" }}</p>
+                        </div>
+                        <p class="review-datetime">{{ formattedDate }}</p>
+                    </div>
+                </div>
+                <StarRatingAction color="#27D49F" v-if="onEdit" class="edit-rating" v-model="review.rating" @update:value="handleUpdateValue" />
+                <StarRating v-else :color="'#27D49F'" :value="review.rating" :className="'single-review'"/>
+            </div>
+            <label v-if="onEdit" class="custom-field" aria-label="Enter review">
+                <textarea style="resize: none;" class="review-edit" autofocus v-model="review.content" type="text" required placeholder="&nbsp;" rows="4" cols="50">
+                {{review.content}}
+                </textarea>
+                <span class="placeholder-textarea">Write your review</span>
+            </label>
+            <p v-else class="review-content">{{review.content}}</p>
             
-            <div v-if="review.user" class="user-verified-container">
-                <div class="user-verified-img">
-                    <img v-if="review.user.image" :src="review.user.image" alt="">
-                    <font-awesome-icon icon="fa-solid fa-user" v-else />
-                </div>
-                <div class="user-date">
-                    <div class="user-verified-data">
-                        <a v-if="review.user.linkedin" :href="review.user.linkedin" target="_blank" class="review-username">{{review.user.username}}</a>
-                        <p v-else class="review-username">{{review.user.username}}</p>
-                        <font-awesome-icon icon="fa-solid fa-circle-check" />
+            <div v-if="onEdit" class="review-extra-container confirm-edit-container">
+                <font-awesome-icon icon="fa-solid fa-check" class="review-icon-confirm" @click.prevent="handleConfirmEdit" />
+                <font-awesome-icon icon="fa-solid fa-xmark" class="review-icon-cancel" @click.prevent="cancelEditReview" />
+            </div>
+            <div v-else class="review-extra-container">
+                <div class="review__icons-div" >
+                    <div class="like-action-container"  @click.prevent="handleReviewLikeClick(review.id)">
+                        <font-awesome-icon class="review-icons icons__like-action" v-if="isLiked" icon="fa-solid fa-heart" />
+                        <font-awesome-icon class="review-icons icons__like-action" v-else icon="fa-regular fa-heart" />
                     </div>
-                    <p class="review-datetime">{{ formattedDate }}</p>
+                    <font-awesome-icon class="review-icons icons__comment-action" icon="fa-regular fa-comment" />
                 </div>
-            </div>
-            <div v-else class="user-verified-container">
-                <div class="user-verified-img">
-                    <font-awesome-icon icon="fa-solid fa-user" />
-                </div>
-                <div class="user-date">
-                    <div class="user-verified-data">
-                        <p class="review-username">{{review.anonymous_user ? review.anonymous_user.username : "" }}</p>
+                <div class="likes-count">
+                    <p class="count-text"><span class="amount-likes">{{ review.likes }}</span> {{ review.likes != 1 ? 'likes' : 'like' }}</p>
+                    <div class="comments-action" @click.prevent="toggleShowComments(review.id)">
+                        <p class="count-text count-comments"><span class="amount-likes">{{ review.comments }}</span> {{ review.comments != 1 ? 'comments' : 'comment' }}</p>
+                        <font-awesome-icon v-if="review.comments && !showComments" icon="fa-solid fa-angle-down" />
+                        <font-awesome-icon v-if="review.comments && showComments" icon="fa-solid fa-angle-up" />
                     </div>
-                    <p class="review-datetime">{{ formattedDate }}</p>
+                </div>
+                <div v-if="userInfo && isUserAdmin || isUserOwner" class="review-admin-actions-container">
+                    <font-awesome-icon v-if="isUserOwner" icon="fa-solid fa-pen-to-square" class="review-admin-action-btn edit" @click.prevent="toggleEditReview"/>
+                    <font-awesome-icon icon="fa-solid fa-trash" class="review-admin-action-btn delete" @click.prevent="handleToggleSureModal" />
                 </div>
             </div>
-            <StarRatingAction color="#27D49F" v-if="onEdit" class="edit-rating" v-model="review.rating" @update:value="handleUpdateValue" />
-            <StarRating v-else :color="'#27D49F'" :value="review.rating" :className="'single-review'"/>
         </div>
-        <label v-if="onEdit" class="custom-field" aria-label="Enter review">
-            <textarea style="resize: none;" class="review-edit" autofocus v-model="review.content" type="text" required placeholder="&nbsp;" rows="4" cols="50">
-            {{review.content}}
-            </textarea>
-            <span class="placeholder-textarea">Write your review</span>
-        </label>
-        <p v-else class="review-content">{{review.content}}</p>
-        
-        <div v-if="onEdit" class="review-extra-container confirm-edit-container">
-            <font-awesome-icon icon="fa-solid fa-check" class="review-icon-confirm" @click.prevent="handleConfirmEdit" />
-            <font-awesome-icon icon="fa-solid fa-xmark" class="review-icon-cancel" @click.prevent="cancelEditReview" />
-        </div>
-        <div v-else class="review-extra-container">
-            <div class="review__icons-div" >
-                <div class="like-action-container"  @click.prevent="handleReviewLikeClick(review.id)">
-                    <font-awesome-icon class="review-icons icons__like-action" v-if="isLiked" icon="fa-solid fa-heart" />
-                    <font-awesome-icon class="review-icons icons__like-action" v-else icon="fa-regular fa-heart" />
-                </div>
-                <font-awesome-icon class="review-icons icons__comment-action" icon="fa-regular fa-comment" />
-            </div>
-            <div class="likes-count">
-                <p class="count-text"><span class="amount-likes">{{ review.likes }}</span> {{ review.likes != 1 ? 'likes' : 'like' }}</p>
-                <div class="comments-action">
-                    <p class="count-text count-comments"><span class="amount-likes">{{ review.comments }}</span> {{ review.comments != 1 ? 'comments' : 'comment' }}</p>
-                    <font-awesome-icon v-if="review.comments" icon="fa-solid fa-angle-down" />
-                </div>
-            </div>
-            <div v-if="userInfo && isUserAdmin || isUserOwner" class="review-admin-actions-container">
-                <font-awesome-icon v-if="isUserOwner" icon="fa-solid fa-pen-to-square" class="review-admin-action-btn edit" @click.prevent="toggleEditReview"/>
-                <font-awesome-icon icon="fa-solid fa-trash" class="review-admin-action-btn delete" @click.prevent="handleToggleSureModal" />
-            </div>
-        </div>
-        
+        <CommentsThread v-if="review.comments > 0 " :parentId="review.id" :isOpen="showComments" :parent="'review'" />
     </div>
 
     
@@ -79,6 +83,7 @@ import { useModalStore } from "../../stores/modal";
 import { usePostsStore } from "../../stores/posts";
 import StarRating from '../Elements/StarRating.vue';
 import StarRatingAction from "../Elements/StarRatingAction.vue";
+import CommentsThread from "./CommentsThread.vue";
 
 
 
@@ -86,7 +91,7 @@ const props = defineProps({
     review: {
         type: Object,
         required: true
-    }
+    },
 })
 
 const reviewContent = props.review.content
@@ -115,6 +120,7 @@ const { getPostDetails } = postsStore
 
 const isLiked = ref(false)
 
+const showComments = ref(false)
 
 let isUserOwner 
 
@@ -129,6 +135,11 @@ if (userInfo.value) {
 const toggleEditReview = () => {  
     onEdit.value = !onEdit.value
 }
+
+
+const toggleShowComments = (reviewId) => {
+    showComments.value = !showComments.value
+};
 
 const cancelEditReview = () => {
     // If the user made some modifications but didn't want to save the edit, we set the content back to its original value 

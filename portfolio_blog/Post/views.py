@@ -13,7 +13,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.response import Response
 
 # Django REST Framework imports:
-from .serializers import PostSerializer, ReviewSerializer, ReviewPutSerializer, CommentSerializer, LikeSerializer
+from .serializers import PostSerializer, ReviewSerializer, ReviewPutSerializer, CommentSerializer, CommentPutSerializer, LikeSerializer
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import status
 from rest_framework.generics import (
@@ -182,7 +182,7 @@ class GetReviewsForPostAPIView(ListAPIView):
 class GetUserReviewForPostAPIView(ListAPIView):
     __doc__ = f'''
     `[GET]`
-    This API view returns a all the reviews for a determined post.
+    This API view returns a user review for a determined post.
     '''
     serializer_class = ReviewSerializer
     
@@ -206,7 +206,7 @@ class GetUserReviewForPostAPIView(ListAPIView):
 class GetAnonymousUserReviewForPostAPIView(ListAPIView):
     __doc__ = f'''
     `[GET]`
-    This API view returns a all the reviews for a determined post.
+    This API view returns the anonymous user review for a determined post.
     '''
     serializer_class = ReviewSerializer
     
@@ -283,7 +283,6 @@ class UpdateReviewAPIView(UpdateAPIView):
 
 
         # Update the model instance with the allowed attributes
-        print("ALLOWED ATTRS: ", allowed_attrs)
         serializer = self.get_serializer(instance, data=allowed_attrs, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
@@ -332,28 +331,103 @@ class GetSingleCommentAPIView(RetrieveAPIView):
             raise Http404
         except Exception as error:
             return {'error': f'The following error has occurred: {error}'}
+
+class GetCommentsForReviewAPIView(ListAPIView):
+    __doc__ = f'''
+    `[GET]`
+    This API view returns a all the Comments for a determined review.
+    '''
+    serializer_class = CommentSerializer
+    
+    queryset = Comment.objects.all()
+
+    def get_queryset(self):
+        reviewId = self.kwargs['reviewId']
+
+
+        comments = self.queryset.filter(review=reviewId)
         
+        return comments
+    
+class GetCommentsForParentAPIView(ListAPIView):
+    __doc__ = f'''
+    `[GET]`
+    This API view returns a all the Comments for a determined parent comment.
+    '''
+    serializer_class = CommentSerializer
+    
+    queryset = Comment.objects.all()
+
+    def get_queryset(self):
+        parentId = self.kwargs['parentId']
+
+
+        Comments = self.queryset.filter(parent=parentId)
+        
+        return Comments
+      
 class PostCommentAPIView(CreateAPIView):
     __doc__ = f'''
     `[POST]`
     This API view inserts a comment for a review or for another comment on the DataBase.
     '''
     queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
-    # permission_classes = [IsAuthenticated, IsAdminUser] # Lo dejo comentado porque supongo que todos los usuarios deben poder postear comments
-    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    # authentication_classes = [JWTAuthentication] # Lo dejo comentado porque supongo que todos los usuarios deben poder postear comments
+    serializer_class = CommentPutSerializer
     
+    # Had to rewrite the create function because I had editted the way the api shows the comment data, 
+    # so it would show the user's or anonymous_user's data too, but I don't need it to create a comment
+    def create(self, request, *args, **kwargs):
+
+        allowed_attrs = {}
+        if 'review' in request.data:
+            allowed_attrs['review'] = request.data['review']
+        if 'parent' in request.data:
+            allowed_attrs['parent'] = request.data['parent']
+        allowed_attrs['user'] = request.data.get('user', None)
+        allowed_attrs['anonymous_user'] = request.data.get('anonymous_user', None)
+        if 'content' in request.data:
+            allowed_attrs['content'] = request.data['content']
+
+
+        serializer = self.get_serializer(data=allowed_attrs)
+ 
+        serializer.is_valid(raise_exception=True)
+
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
 class UpdateCommentAPIView(UpdateAPIView):
     __doc__ = f'''
     `[PUT]`
-    This API view updates a comment.
+    This API view updates a blog Comment.
     '''
     queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
-    # permission_classes = [IsAuthenticated, IsAdminUser] # Lo dejo comentado porque supongo que todos los usuarios deben poder editar sus comments
-    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    # authentication_classes = [JWTAuthentication] # Lo dejo comentado porque supongo que todos los usuarios deben poder editar sus comments
+    serializer_class = CommentPutSerializer
+    permission_classes=[CanUpdate]
+    
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        
+        allowed_attrs = {}
+        if 'review' in request.data:
+            allowed_attrs['review'] = request.data['review']
+        if 'parent' in request.data:
+            allowed_attrs['parent'] = request.data['parent']
+        allowed_attrs['user'] = request.data.get('user')['id'] if request.data.get('user') else None
+        allowed_attrs['anonymous_user'] = request.data.get('anonymous_user')['id'] if request.data.get('anonymous_user') else None
+        if 'content' in request.data:
+            allowed_attrs['content'] = request.data['content']
+
+
+
+        # Update the model instance with the allowed attributes
+        serializer = self.get_serializer(instance, data=allowed_attrs, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(serializer.data)
 
 class DestroyCommentAPIView(DestroyAPIView):
     __doc__ = f'''
@@ -362,11 +436,8 @@ class DestroyCommentAPIView(DestroyAPIView):
     '''
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    # permission_classes = [IsAuthenticated, IsAdminUser] # Lo dejo comentado porque supongo que todos los usuarios deben poder eliminar sus comments
-    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    # authentication_classes = [JWTAuthentication] # Lo dejo comentado porque supongo que todos los usuarios deben poder eliminar sus comments
-
-
+    permission_classes=[CanDelete]
+    
 
 #NOTE: LIKE VIEWS: ====================================================================================================================
 class GetLikesAPIView(ListAPIView):
@@ -472,6 +543,53 @@ class GetAnonUserLikeForReviewAPIView(ListAPIView):
             raise Http404
         except Exception as error:
             return {'error': f'The following error has occurred: {error}'}
+class GetUserLikeForCommentAPIView(ListAPIView):
+    __doc__ = f'''
+    `[GET]`
+    This API view returns the user like for a determined comment.
+    '''
+    serializer_class = LikeSerializer
+    
+    queryset = Like.objects.all()
+
+    def get_queryset(self):
+        try:
+            commentId = self.kwargs['commentId']
+            identifier = self.kwargs['identifier']
+
+            likes_x_comment = self.queryset.filter(comment=commentId)
+            user_like_x_comment = likes_x_comment.filter(user=identifier)
+            
+            return user_like_x_comment
+
+        except Like.DoesNotExist:
+            raise Http404
+        except Exception as error:
+            return {'error': f'The following error has occurred: {error}'}
+
+class GetAnonUserLikeForCommentAPIView(ListAPIView):
+    __doc__ = f'''
+    `[GET]`
+    This API view returns the anonymous user like for a determined comment.
+    '''
+    serializer_class = LikeSerializer
+    
+    queryset = Like.objects.all()
+
+    def get_queryset(self):
+        try:
+            commentId = self.kwargs['commentId']
+            identifier = self.kwargs['identifier']
+
+            likes_x_comment = self.queryset.filter(comment=commentId)
+            user_like_x_comment = likes_x_comment.filter(anonymous_identifier=identifier)
+            
+            return user_like_x_comment
+
+        except Like.DoesNotExist:
+            raise Http404
+        except Exception as error:
+            return {'error': f'The following error has occurred: {error}'}
     
 class GetSingleLikeAPIView(RetrieveAPIView):
     __doc__ = f'''
@@ -499,7 +617,6 @@ class PostLikeAPIView(CreateAPIView):
     This API view inserts a like for a related post, review or comment on the DataBase.
     '''
     queryset = Like.objects.all()
-    print("QUERYSET: ", queryset)
     serializer_class = LikeSerializer
 
     
