@@ -13,8 +13,17 @@
 
       </div>
     </header>
-
-    <RouterView />
+    
+    <router-view v-slot="{ Component }">
+      <transition 
+        enter-active-class="animate__animated animate__slideInRight"
+        leave-active-class="animate__animated animate__slideOutLeft"
+        mode="out-in" 
+      >
+        <component :is="Component" />
+      </transition>
+    </router-view>
+    
     <Footer />
   </div>
 </template>
@@ -51,3 +60,13 @@ const currentPage = computed(() => {
 
 
 </script>
+
+<style>
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s ease-out;
+}
+</style>

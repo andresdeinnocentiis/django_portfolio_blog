@@ -214,6 +214,25 @@ export const useCommentsStore = defineStore('commentsStore', () => {
         }
     }
 
+    const postResponse = async (comment, parentId) => {
+        try {
+            const response = await getAPI.post('/api/comments/post/', comment, {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+            });
+
+            // Now we update the current post's comments:
+            await getCommentsForParent(parentId)
+
+            return true
+        } catch (error) { 
+            console.log(error);
+            console.error(error);
+            return false
+        }
+    }
+
     const updateComment = async (id, comment, user) => {
 
         if (user.anonymous_identifier) {
@@ -227,6 +246,28 @@ export const useCommentsStore = defineStore('commentsStore', () => {
 
             // Now we update the current post's reviews:
             getCommentsForReview(comment.review)
+
+            return true
+        } catch (error) { 
+            console.log(error);
+            console.error(error);
+            return false
+        }
+    }
+
+    const updateResponse = async (id, comment, user) => {
+
+        if (user.anonymous_identifier) {
+            comment.userInfo = { anonymous_identifier: user.anonymous_identifier}
+        } else {
+            comment.userInfo = { id: user.id }
+        }
+
+        try {
+            const response = await getAPI.put(`/api/comments/${id}/update/`, comment);
+
+            // Now we update the current post's reviews:
+            getCommentsForParent(comment.parent)
 
             return true
         } catch (error) { 
@@ -255,9 +296,28 @@ export const useCommentsStore = defineStore('commentsStore', () => {
         }
     }
 
+    const deleteResponse = async (commentId, parentId, user) => {
+        try {
+            const response = await getAPI.delete(`/api/comments/${commentId}/delete/`, {
+                data: {
+                    userInfo: user
+                }
+            })
+
+            // Now we update the current post's reviews:
+            getCommentsForParent(parentId)
+
+            return true
+        } catch (error) {
+            console.log(error);
+ 
+            return false
+        }
+    }
 
 
-    return {getComments, postComment, updateComment, deleteComment, 
+
+    return {getComments, postComment, postResponse, updateComment, updateResponse, deleteComment, deleteResponse,
         commentsList, 
         getCommentsForReview, currentReviewComments, 
         getCommentsForParent, currentParentComments,

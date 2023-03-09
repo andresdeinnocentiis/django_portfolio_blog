@@ -19,12 +19,20 @@
 
 .comment {
     padding-left: 4vw;
+    margin-top: 1vw;
 }
 .comment-container {
     background-color: var(--colorPictonBlue);
     color: var(--colorAbsoluteWhite);
     border-top-left-radius: 0;
-    width: 40%;
+    width: 25vw;
+}
+
+.response-container {
+    background-color: var(--colorPictonBlue);
+    color: var(--colorAbsoluteWhite);
+    border-top-left-radius: 0;
+    width: 25vw;
 }
 
 .review-username.comment-username {
@@ -58,4 +66,33 @@
 
 .review__icons-div.comment__icons-div.icons-div-isOwner {
     border-right: 1px solid var(--colorGreyBlue) !important;
+}
+
+.comment-extra-isOwner .review-icon-confirm:hover, .comment-extra-isOwner .review-icon-confirm:focus {
+    color: var(--colorPictonBlue);
+}
+
+
+.placeholder-isOwner.custom-field input:focus + .placeholder {
+    top: -10px;
+    font-size: .7rem;
+    color: var(--colorPictonBlue);
+    
+}
+
+.placeholder-isOwner.custom-field textarea:focus + .placeholder-textarea {
+    top: 10px;
+    font-size: .7rem;
+    color: var(--colorPictonBlue);
+    
+}
+
+.placeholder-isOwner input:focus, .placeholder-isOwner textarea:focus {
+    outline: none;
+    outline:1px solid var(--colorPictonBlue);
+}
+
+.leave-comment-container {
+    margin-top: 3vw;
+    margin-left: 4vw;
 }

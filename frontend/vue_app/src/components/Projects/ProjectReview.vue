@@ -50,7 +50,7 @@
                         <font-awesome-icon class="review-icons icons__like-action" v-if="isLiked" icon="fa-solid fa-heart" />
                         <font-awesome-icon class="review-icons icons__like-action" v-else icon="fa-regular fa-heart" />
                     </div>
-                    <font-awesome-icon class="review-icons icons__comment-action" icon="fa-regular fa-comment" />
+                    <font-awesome-icon class="review-icons icons__comment-action" icon="fa-regular fa-comment" @click.prevent="toggleLeaveComment" />
                 </div>
                 <div class="likes-count">
                     <p class="count-text"><span class="amount-likes">{{ review.likes }}</span> {{ review.likes != 1 ? 'likes' : 'like' }}</p>
@@ -66,7 +66,9 @@
                 </div>
             </div>
         </div>
+        <LeaveComment v-if="onLeaveComment" :reviewId="review.id" @update:onLeaveComment="closeLeaveComment"/>
         <CommentsThread v-if="review.comments > 0 " :parentId="review.id" :isOpen="showComments" :parent="'review'" />
+        
     </div>
 
     
@@ -84,6 +86,7 @@ import { usePostsStore } from "../../stores/posts";
 import StarRating from '../Elements/StarRating.vue';
 import StarRatingAction from "../Elements/StarRatingAction.vue";
 import CommentsThread from "./CommentsThread.vue";
+import LeaveComment from "./LeaveComment.vue";
 
 
 
@@ -104,8 +107,8 @@ const userLoggedStore = useUserLoggedStore()
 const { isUserAdmin, userInfo, anonymousUserInfo } = storeToRefs(userLoggedStore)
 
 const reviewsStore = useReviewsStore()
-const { updateReview} = reviewsStore
-const { reviewId } = storeToRefs(reviewsStore)
+const { updateReview } = reviewsStore
+const { reviewId, currentPostReviews } = storeToRefs(reviewsStore)
 
 const likesStore = useLikesStore()
 const { postLike, deleteLike, getUserLikeForReview } = likesStore
@@ -122,6 +125,8 @@ const isLiked = ref(false)
 
 const showComments = ref(false)
 
+const onLeaveComment = ref(false)
+
 let isUserOwner 
 
 if (userInfo.value) {
@@ -136,6 +141,14 @@ const toggleEditReview = () => {
     onEdit.value = !onEdit.value
 }
 
+
+const toggleLeaveComment = () => {
+    onLeaveComment.value = !onLeaveComment.value
+}
+
+const closeLeaveComment = (leaveComment) => {
+    onLeaveComment.value = leaveComment
+}
 
 const toggleShowComments = (reviewId) => {
     showComments.value = !showComments.value
@@ -261,7 +274,10 @@ const handleToggleSureModal = () => {
 }
 
 watchEffect(() => {
+    getPostDetails(props.review.post)
+    currentPostReviews.value
     props.review.rating
+    props.review.comments
 })
 
 </script>

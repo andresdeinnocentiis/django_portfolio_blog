@@ -186,5 +186,5 @@ export const useUserLoggedStore = defineStore("userLogged", () => {
 
   loadUserInfo()
   
-  return { userInfo, anonymousUserInfo, login, logout, isUserLogged, isUserAdmin, isAnonymousUserDetected, createAnonymousUser, getAnonymousUser }
+  return { userInfo, anonymousUserInfo, login, logout, isUserLogged, isUserAdmin, isAnonymousUserDetected, createAnonymousUser, getAnonymousUser, loadUserInfo }
 });

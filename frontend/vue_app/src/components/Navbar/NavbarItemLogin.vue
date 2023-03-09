@@ -16,7 +16,7 @@
         <li class="nav-item-logout" :class="{'dark-theme-nav-item-logout':darkModeStore.isDarkMode, 'light-theme-nav-item-logout':!darkModeStore.isDarkMode}">
         <a 
             href="#" 
-            @click="logout()" 
+            @click="handleLogout" 
             class="btn-logout"
         >
             <font-awesome-icon icon="fa-solid fa-power-off" :class="{'dark-theme-link-power-off':darkModeStore.isDarkMode, 'light-theme-link-power-off':!darkModeStore.isDarkMode}" />
@@ -43,7 +43,12 @@ const darkModeStore = useDarkModeStore()
 
 const userLoggedStore = useUserLoggedStore() 
 
-const { login, logout, isUserLogged } = userLoggedStore
+const { login, logout, isUserLogged, loadUserInfo } = userLoggedStore
 
+const handleLogout = () => {
+    logout()
+    isUserLogged()
+    loadUserInfo()
+}
 
 </script>

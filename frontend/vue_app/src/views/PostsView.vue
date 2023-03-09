@@ -1,23 +1,24 @@
 <template>
+    <div>
+        <div class="posts_container">
+            <h1 class="posts__title">Projects</h1>
+            <AddButton v-if="isUserAdmin" :btnName="'project'" :color="'#FF435E'" @click.prevent="toggleProjectModal"/>
+            <div class="posts-container">
+                
+                <ProjectCard 
+                    class="post"
+                    v-for="post in postsStore.listPosts"
+                    :key="post.id"
+                    :project="post"
+                />
+            </div>   
     
-    <div class="posts_container">
-        <h1 class="posts__title">Projects</h1>
-        <AddButton v-if="isUserAdmin" :btnName="'project'" :color="'#FF435E'" @click.prevent="toggleProjectModal"/>
-        <div class="posts-container">
-            
-            <ProjectCard 
-                class="post"
-                v-for="post in postsStore.listPosts"
-                :key="post.id"
-                :project="post"
-            />
-        </div>   
-
+        </div>
+        <!-- Add Project [Modal] -->
+        <transition name="fade">
+            <ProjectAddModal />
+        </transition>
     </div>
-    <!-- Add Project [Modal] -->
-    <transition name="fade">
-        <ProjectAddModal />
-    </transition>
 </template>
 
 <script setup>

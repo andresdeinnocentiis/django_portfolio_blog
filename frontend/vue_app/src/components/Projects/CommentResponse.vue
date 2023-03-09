@@ -1,20 +1,20 @@
 <template>
     <div>
-
-        <div class="review comment-container"
-            :class="{'comment-isOwner':comment.user && userInfo && comment.user.id === userInfo.id || comment.anonymous_user && anonymousUserInfo && comment.anonymous_user.id === anonymousUserInfo.id}"
+    
+        <div class="review comment-container response-container"
+            :class="{'comment-isOwner':response.user && userInfo && response.user.id === userInfo.id || response.anonymous_user && anonymousUserInfo && response.anonymous_user.id === anonymousUserInfo.id}"
         >
             <div class="review-header">
                 
-                <div v-if="comment.user" class="user-verified-container">
+                <div v-if="response.user" class="user-verified-container">
                     <div class="user-verified-img">
-                        <img v-if="comment.user.image" :src="comment.user.image" alt="">
+                        <img v-if="response.user.image" :src="response.user.image" alt="">
                         <font-awesome-icon icon="fa-solid fa-user" v-else />
                     </div>
                     <div class="user-date">
                         <div class="user-verified-data">
-                            <a v-if="comment.user.linkedin" :href="comment.user.linkedin" target="_blank" class="review-username comment-username">{{comment.user.username}}</a>
-                            <p v-else class="review-username comment-username">{{comment.user.username}}</p>
+                            <a v-if="response.user.linkedin" :href="response.user.linkedin" target="_blank" class="review-username comment-username">{{response.user.username}}</a>
+                            <p v-else class="review-username comment-username">{{response.user.username}}</p>
                             <font-awesome-icon icon="fa-solid fa-circle-check" />
                         </div>
                         <p class="review-datetime">{{ formattedDate }}</p>
@@ -26,57 +26,57 @@
                     </div>
                     <div class="user-date">
                         <div class="user-verified-data">
-                            <p class="review-username comment-username">{{comment.anonymous_user ? comment.anonymous_user.username : "" }}</p>
+                            <p class="review-username comment-username">{{response.anonymous_user ? response.anonymous_user.username : "" }}</p>
                         </div>
                         <p class="review-datetime">{{ formattedDate }}</p>
                     </div>
                 </div>
             </div>
-            <label v-if="onEdit" class="custom-field" aria-label="Enter comment">
-                <textarea style="resize: none;" class="review-edit" autofocus v-model="comment.content" type="text" required placeholder="&nbsp;" rows="4" cols="50">
-                {{comment.content}}
+            <label v-if="onEdit" class="custom-field" aria-label="Enter comment"
+            :class="{'placeholder-isOwner':response.user && userInfo && response.user.id === userInfo.id || response.anonymous_user && anonymousUserInfo && response.anonymous_user.id === anonymousUserInfo.id}"
+            >
+                <textarea style="resize: none;" class="review-edit" autofocus v-model="response.content" type="text" required placeholder="&nbsp;" rows="4" cols="50">
+                {{response.content}}
                 </textarea>
-                <span class="placeholder-textarea">Write your comment</span>
+                <span class="placeholder-textarea">Write your reply</span>
             </label>
-            <p v-else class="review-content">{{comment.content}}</p>
+            <p v-else class="review-content">{{response.content}}</p>
             
             <div v-if="onEdit" class="review-extra-container confirm-edit-container comment-extra-container"
-                :class="{'comment-extra-isOwner':comment.user && userInfo && comment.user.id === userInfo.id || comment.anonymous_user && anonymousUserInfo && comment.anonymous_user.id === anonymousUserInfo.id}"
+                :class="{'comment-extra-isOwner':response.user && userInfo && response.user.id === userInfo.id || response.anonymous_user && anonymousUserInfo && response.anonymous_user.id === anonymousUserInfo.id}"
             >
                 <font-awesome-icon icon="fa-solid fa-check" class="review-icon-confirm" @click.prevent="handleConfirmEdit" />
-                <font-awesome-icon icon="fa-solid fa-xmark" class="review-icon-cancel" @click.prevent="cancelEditComment" />
+                <font-awesome-icon icon="fa-solid fa-xmark" class="review-icon-cancel" @click.prevent="cancelEditResponse" />
             </div>
             <div v-else class="review-extra-container comment-extra-container"
-            :class="{'comment-extra-isOwner':comment.user && userInfo && comment.user.id === userInfo.id || comment.anonymous_user && anonymousUserInfo && comment.anonymous_user.id === anonymousUserInfo.id}"
+            :class="{'comment-extra-isOwner':response.user && userInfo && response.user.id === userInfo.id || response.anonymous_user && anonymousUserInfo && response.anonymous_user.id === anonymousUserInfo.id}"
             >
                 <div class="review__icons-div comment__icons-div" 
-                :class="{'icons-div-isOwner':comment.user && userInfo && comment.user.id === userInfo.id || comment.anonymous_user && anonymousUserInfo && comment.anonymous_user.id === anonymousUserInfo.id}"
+                :class="{'icons-div-isOwner':response.user && userInfo && response.user.id === userInfo.id || response.anonymous_user && anonymousUserInfo && response.anonymous_user.id === anonymousUserInfo.id}"
                 >
-                    <div class="like-action-container"  @click.prevent="handleCommentLikeClick(comment.id)">
+                    <div class="like-action-container"  @click.prevent="handleCommentLikeClick(response.id)">
                         <font-awesome-icon class="review-icons icons__like-action" v-if="isLiked" icon="fa-solid fa-heart" />
                         <font-awesome-icon class="review-icons icons__like-action" v-else icon="fa-regular fa-heart" />
                     </div>
-                    <font-awesome-icon class="review-icons icons__comment-action" icon="fa-regular fa-comment" @click.prevent="toggleLeaveComment" />
+                    <font-awesome-icon class="review-icons icons__comment-action" icon="fa-regular fa-comment" />
                 </div>
                 <div class="likes-count">
-                    <p class="count-text"><span class="amount-likes">{{ comment.likes }}</span> {{ comment.likes != 1 ? 'likes' : 'like' }}</p>
+                    <p class="count-text"><span class="amount-likes">{{ response.likes }}</span> {{ response.likes != 1 ? 'likes' : 'like' }}</p>
                     <div class="comments-action"  @click.prevent="toggleShowResponses">
-                        <p class="count-text count-comments"><span class="amount-likes">{{ comment.comments }}</span> {{ comment.comments != 1 ? 'replies' : 'reply' }}</p>
-                        <font-awesome-icon v-if="comment.comments && !showResponses" icon="fa-solid fa-angle-down" />
+                        <p class="count-text count-comments"><span class="amount-likes">{{ response.comments }}</span> {{ response.comments != 1 ? 'replies' : 'reply' }}</p>
+                        <font-awesome-icon v-if="response.comments && !showResponses" icon="fa-solid fa-angle-down" />
                         <font-awesome-icon v-if="showResponses" icon="fa-solid fa-angle-up" />
                     </div>
                 </div>
                 <div v-if="userInfo && isUserAdmin || isUserOwner" class="review-admin-actions-container comment-admin-actions-container"
-                    :class="{'admin-actions-isOwner':comment.user && userInfo && comment.user.id === userInfo.id || comment.anonymous_user && anonymousUserInfo && comment.anonymous_user.id === anonymousUserInfo.id}"
+                    :class="{'admin-actions-isOwner':response.user && userInfo && response.user.id === userInfo.id || response.anonymous_user && anonymousUserInfo && response.anonymous_user.id === anonymousUserInfo.id}"
                 >
                     <font-awesome-icon v-if="isUserOwner" icon="fa-solid fa-pen-to-square" class="review-admin-action-btn edit" @click.prevent="toggleEditComment"/>
-                    <font-awesome-icon icon="fa-solid fa-trash" class="review-admin-action-btn delete" @click.prevent="handleDeleteComment" />
+                    <font-awesome-icon icon="fa-solid fa-trash" class="review-admin-action-btn delete" @click.prevent="handleToggleSureModal" />
                 </div>
             </div>
         </div>
-        <ResponsesThread v-if="comment.comments > 0 && showResponses" :parentId="comment.id" :isOpen="showResponses" :parent="'comment'" />
-        <LeaveComment v-if="onLeaveComment" /> 
-        
+        <ResponsesThread v-if="response.comments > 0 && showResponses" :parentId="response.id" :isOpen="showResponses" :parent="'comment'" />
     </div>
 
     
@@ -84,29 +84,26 @@
 </template>
 
 <script setup>
-import { watchEffect, ref, defineEmits } from "vue";
+import { ref, defineEmits } from "vue";
 import { storeToRefs } from "pinia";
 import { useCommentsStore } from "../../stores/comments";
 import { useUserLoggedStore } from "../../stores/userLogged";
 import { useLikesStore } from "../../stores/likes";
 import { useModalStore } from "../../stores/modal";
-import LeaveComment from "./LeaveComment.vue";
 import ResponsesThread from "./ResponsesThread.vue";
 
 
 
 const props = defineProps({
-    comment: {
+    response: {
         type: Object,
         required: true
     },
     id: Number
 })
 
-const commentContent = props.comment.content
+const responseContent = props.response.content
 const onEdit = ref(false)
-
-const onLeaveComment = ref(false)
 
 const emits = defineEmits(['delete-comment'])
 
@@ -114,7 +111,7 @@ const userLoggedStore = useUserLoggedStore()
 const { isUserAdmin, userInfo, anonymousUserInfo } = storeToRefs(userLoggedStore)
 
 const commentsStore = useCommentsStore()
-const { updateComment, getCommentsForParent, deleteComment} = commentsStore
+const { updateResponse, getCommentsForParent} = commentsStore
 const { commentId } = storeToRefs(commentsStore)
 
 const likesStore = useLikesStore()
@@ -132,9 +129,9 @@ const showResponses = ref(false)
 let isUserOwner 
 
 if (userInfo.value) {
-    isUserOwner = props.comment.user && props.comment.user.id == userInfo.value.id  ? true : false
+    isUserOwner = props.response.user && props.response.user.id == userInfo.value.id  ? true : false
 } else if (anonymousUserInfo.value) {
-    isUserOwner = props.comment.anonymous_user && props.comment.anonymous_user.anonymous_identifier == anonymousUserInfo.value.anonymous_identifier ? true : false
+    isUserOwner = props.response.anonymous_user && props.response.anonymous_user.anonymous_identifier == anonymousUserInfo.value.anonymous_identifier ? true : false
 } else {
     isUserOwner = false
 }
@@ -147,15 +144,12 @@ const toggleShowResponses = () => {
     showResponses.value = !showResponses.value
 }
 
-const cancelEditComment = () => {
+const cancelEditResponse = () => {
     // If the user made some modifications but didn't want to save the edit, we set the content back to its original value 
-    props.comment.content = commentContent
+    props.response.content = responseContent
     onEdit.value = false
 }
 
-const toggleLeaveComment = () => {
-    onLeaveComment.value = !onLeaveComment.value
-}
 
 const handleCommentLikeClick = async (commentId) => {
 
@@ -175,7 +169,7 @@ const handleCommentLikeClick = async (commentId) => {
                 // Update the like to see the changes in real time
                 await getUserLikeForComment(commentId, userInfo.value)
                 isLiked.value = false
-                props.comment.likes--
+                props.response.likes--
     
             // If the comment is not yet liked and the user clicked it, then it has to be created
             } else {
@@ -183,7 +177,7 @@ const handleCommentLikeClick = async (commentId) => {
                 // Update the like to see the changes in real time
                 await getUserLikeForComment(commentId, userInfo.value)
                 isLiked.value = true
-                props.comment.likes++
+                props.response.likes++
             }
         } catch(error) {
             console.error(error);
@@ -198,14 +192,14 @@ const handleCommentLikeClick = async (commentId) => {
                 // Update the like to see the changes in real time
                 await getUserLikeForComment(commentId, anonymousUserInfo.value)
                 isLiked.value = false
-                props.comment.likes--
+                props.response.likes--
             // If the comment is not yet liked and the user clicked it, then it has to be created
             } else {
                 await postLike(likeObj)
                 // Update the like to see the changes in real time
                 await getUserLikeForComment(commentId, anonymousUserInfo.value)
                 isLiked.value = true
-                props.comment.likes++
+                props.response.likes++
             } 
         } catch(error) {
             console.error(error);
@@ -217,34 +211,34 @@ const handleCommentLikeClick = async (commentId) => {
 
 
 const handleConfirmEdit = async () => {
-    commentId.value = props.comment.id
+    commentId.value = props.response.id
     try {
         if (userInfo.value) {
-        await updateComment(commentId.value, props.comment, userInfo.value)
+        await updateResponse(commentId.value, props.response, userInfo.value)
     } else if (anonymousUserInfo.value) {
-        await updateComment(commentId.value, props.comment, anonymousUserInfo.value)
+        await updateResponse(commentId.value, props.response, anonymousUserInfo.value)
     }
 
     } catch(error) {
             console.error(error);
     }
 
-    //getPostDetails(props.comment.post) Need to get the post Id from somewhere
+    //getPostDetails(props.response.post) Need to get the post Id from somewhere
 
     onEdit.value = false
 }
 
 
 if (userInfo.value) {
-    await getUserLikeForComment(props.comment.id, userInfo.value)
+    await getUserLikeForComment(props.response.id, userInfo.value)
     isLiked.value = isCommentLikedByUser.value
 
 } else {
-    await getUserLikeForComment(props.comment.id, anonymousUserInfo.value)
+    await getUserLikeForComment(props.response.id, anonymousUserInfo.value)
     isLiked.value = isCommentLikedByUser.value
 }
 
-const date = new Date(props.comment.created_at);
+const date = new Date(props.response.created_at);
 const options = {
   day: "2-digit",
   month: "2-digit",
@@ -257,15 +251,9 @@ const formattedDate = date.toLocaleDateString("en-US", options).replace('AM', 'a
 
 
 
-
-
-const handleDeleteComment = async () => {
-    commentId.value = props.comment.id
-    if (userInfo.value) {
-        await deleteComment(commentId.value, props.comment.review, userInfo.value)
-    } else if (anonymousUserInfo.value) {
-        await deleteComment(commentId.value, props.comment.review, anonymousUserInfo.value)
-    }
-    commentId.value = null
+const handleToggleSureModal = () => {
+    commentId.value = props.response.id
+    toggleSureModal()
 }
+
 </script>

@@ -1,20 +1,28 @@
 <template>
-    <div v-if="isOpen" class="comments-thread-container">
-        <h1 class="review__title">- Comments ({{countComments}}) -</h1>
-        <div class="reviews-container comments-container">
-            <LeaveComment :reviewId="parentId" />
-            <ReviewComment 
-                v-for="comment in thisReviewComments.filter(comment => comment.review === parentId)" :key="comment.id" 
-                class="comment" 
-                :comment="comment" 
-                ref="childComponentRef"    
-            />
-        </div>
+    <div>
+        <h1 v-if="isOpen"  class="review__title">- Comments ({{countComments}}) -</h1>
+        <transition 
+            enter-active-class="animate__animated animate__bounceIn"
+            leave-active-class="animate__animated animate__bounceOut"
+            mode="out-in" 
+        >
+            <div v-if="isOpen" class="comments-thread-container">
+                
+                <div class="reviews-container comments-container">
+                    <!--<LeaveComment :reviewId="parentId" />-->
+                    <ReviewComment 
+                        v-for="comment in thisReviewComments.filter(comment => comment.review === parentId)" :key="comment.id" 
+                        class="comment" 
+                        :comment="comment"               
+                    />
+                </div>
+            </div>
+        </transition>
+        <AreYouSureModal 
+            :action="'delete'"
+            :method="handleDeleteComment"
+        />
     </div>
-    <AreYouSureModal 
-        :action="'delete'"
-        :method="handleDeleteComment"
-    />
 </template>
 
 

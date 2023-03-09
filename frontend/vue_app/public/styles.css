@@ -96,6 +96,10 @@ a {
     text-decoration: none;
 }
 
+a.router-link-active {
+    color: var(--colorSpringGreen);
+}
+
 ul {
     list-style: none;
 }
