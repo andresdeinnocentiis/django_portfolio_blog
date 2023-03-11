@@ -41,31 +41,36 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watchEffect, defineEmits } from 'vue';
+import { ref, onMounted, watchEffect, defineEmits, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useUserLoggedStore } from "../../stores/userLogged";
 import { useCommentsStore } from '../../stores/comments';
-import StarRatingAction from '../Elements/StarRatingAction.vue';
+
 
 const userLoggedStore = useUserLoggedStore()
 const { userInfo, anonymousUserInfo } = storeToRefs(userLoggedStore)
 const { createAnonymousUser } = userLoggedStore
 
 const commentsStore = useCommentsStore()
-const { postComment } = commentsStore
+const { postComment, getComments} = commentsStore
 const { currentReviewComments } = storeToRefs(commentsStore)
 
 const props = defineProps({
     reviewId: {
-        type: Number,
-        required: true
-    }
+        type: Number
+    },
+    parentId: {
+        type: Number
+    },
+    parent: String
 })
 
 const leaveComment = ref(false)
 
+
+
 // I define the emit event for updating this value and passing it up to its parent component
-const emits = defineEmits(["update:onLeaveComment"]);
+const emits = defineEmits(["update:onLeaveComment","new-comment"]);
 
 
 const newComment = ref({
@@ -79,7 +84,6 @@ const cancelLeaveComment = () => {
     newComment.value.content = "" 
 
     emits("update:onLeaveComment", leaveComment.value)
-    console.log("CANCELED");
 }
 
 const handleConfirmNewComment = async () => {
@@ -87,15 +91,17 @@ const handleConfirmNewComment = async () => {
     if (anonymousUserInfo.value && anonymousUserInfo.value.id) {
         // if it's an anon user and is already on the database:
         const commentObj = {
-            review: props.reviewId,
+            review: props.parent == "review" ? props.reviewId : null,
             user: null,
             anonymous_user: anonymousUserInfo.value.id,
             content: newComment.value.content,
+            parent: props.parent == "comment" ? props.parentId : null
         }
         try {
-            await postComment(commentObj, props.reviewId)
+            await postComment(commentObj)
+            emits("new-comment")
             emits("update:onLeaveComment", leaveComment.value)
-            await getCommentsForReview(props.reviewId)
+
         } catch(error) {
             console.log(error);
         }
@@ -103,16 +109,17 @@ const handleConfirmNewComment = async () => {
     } else if (userInfo.value) {
         // If it's a registered user:
         const commentObj = {
-            review: props.reviewId,
+            review:  props.parent == "review" ? props.reviewId : null,
             user: userInfo.value.id,
             anonymous_user: null,
             content: newComment.value.content,
+            parent: props.parent == "comment" ? props.parentId : null
         }
 
         try {
-            await postComment(commentObj, props.reviewId)
+            await postComment(commentObj)
+            emits("new-comment")
             emits("update:onLeaveComment", leaveComment.value)
-            await getCommentsForReview(props.reviewId)
         } catch(error) {
             console.log(error);
         }
@@ -128,16 +135,17 @@ const handleConfirmNewComment = async () => {
         if (success) {
 
             const commentObj = {
-                review: props.reviewId,
+                review: props.parent == "review" ? props.reviewId : null,
                 user: null,
                 anonymous_user: anonymousUserInfo.value.id,
                 content: newComment.value.content,
+                parent: props.parent == "comment" ? props.parentId : null
             }
 
             try {
-                await postComment(commentObj, props.reviewId)
+                await postComment(commentObj)
+                emits("new-comment")
                 emits("update:onLeaveComment", leaveComment.value)
-                await getCommentsForReview(props.reviewId)
             } catch(error) {
                 console.log(error);
             }
@@ -147,14 +155,27 @@ const handleConfirmNewComment = async () => {
     }
 
     emits("update:onLeaveComment", leaveComment.value)
-    await getCommentsForReview(props.reviewId)
+
+    await userLeftComment()
     
 }
 
 
+const userLeftComment = async () => {
+    getComments()
+}
 
+await userLeftComment()
+
+onMounted(async () => {
+
+  await userLeftComment()
+
+})
 
 watchEffect(async () => {
     currentReviewComments.value
+    await userLeftComment()
 })
+
 </script>

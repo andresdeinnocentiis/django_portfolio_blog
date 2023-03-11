@@ -74,9 +74,35 @@
                 </div>
             </div>
         </div>
-        <ResponsesThread v-if="comment.comments > 0 && showResponses" :parentId="comment.id" :isOpen="showResponses" :parent="'comment'" />
-        <LeaveComment v-if="onLeaveComment" /> 
-        
+        <LeaveComment 
+            v-if="onLeaveComment" 
+            :parentId="comment.id" 
+            :parent="'comment'"
+            @update:onLeaveComment="toggleLeaveComment" 
+            @new-comment="handleNewResponse" 
+        /> 
+
+        <div v-if="comment.comments > 0 && showResponses">
+            <h1 v-if="showResponses" class="review__title">- Replies -</h1>
+            <transition 
+                enter-active-class="animate__animated animate__bounceIn"
+                leave-active-class="animate__animated animate__bounceOut"
+                mode="out-in" 
+            >
+                <div v-if="showResponses" class="comments-thread-container">
+                    
+                    <div class="reviews-container comments-container">
+                        <!--<LeaveComment :reviewId="parentId" />-->
+                        <CommentResponse 
+                            v-for="response in thisParentComments.value" 
+                            :key="response.id" 
+                            class="comment" 
+                            :response="response"    
+                        />
+                    </div>
+                </div>
+            </transition>
+        </div>
     </div>
 
     
@@ -84,14 +110,14 @@
 </template>
 
 <script setup>
-import { watchEffect, ref, defineEmits } from "vue";
+import { watchEffect, ref, defineEmits, onMounted, computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useCommentsStore } from "../../stores/comments";
 import { useUserLoggedStore } from "../../stores/userLogged";
 import { useLikesStore } from "../../stores/likes";
 import { useModalStore } from "../../stores/modal";
 import LeaveComment from "./LeaveComment.vue";
-import ResponsesThread from "./ResponsesThread.vue";
+import CommentResponse from "./CommentResponse.vue";
 
 
 
@@ -114,8 +140,8 @@ const userLoggedStore = useUserLoggedStore()
 const { isUserAdmin, userInfo, anonymousUserInfo } = storeToRefs(userLoggedStore)
 
 const commentsStore = useCommentsStore()
-const { updateComment, getCommentsForParent, deleteComment} = commentsStore
-const { commentId } = storeToRefs(commentsStore)
+const { updateComment, getComments, deleteComment} = commentsStore
+const { commentId, commentsList } = storeToRefs(commentsStore)
 
 const likesStore = useLikesStore()
 const { postLike, deleteLike, getUserLikeForComment } = likesStore
@@ -128,6 +154,9 @@ const { toggleSureModal } = modalStore
 const isLiked = ref(false)
 
 const showResponses = ref(false)
+
+await getComments()
+let thisParentComments = ref([])
 
 let isUserOwner 
 
@@ -257,15 +286,34 @@ const formattedDate = date.toLocaleDateString("en-US", options).replace('AM', 'a
 
 
 
+const handleNewResponse = () => {
+    props.comment.comments += 1 
+}
+
 
 
 const handleDeleteComment = async () => {
     commentId.value = props.comment.id
     if (userInfo.value) {
-        await deleteComment(commentId.value, props.comment.review, userInfo.value)
+        await deleteComment(commentId.value, userInfo.value)
     } else if (anonymousUserInfo.value) {
-        await deleteComment(commentId.value, props.comment.review, anonymousUserInfo.value)
+        await deleteComment(commentId.value, anonymousUserInfo.value)
     }
     commentId.value = null
+    emits("delete-comment")
+    await getComments()
 }
+
+onMounted(async () => {
+    await getComments();
+    
+    thisParentComments.value = computed(() => commentsList.value.filter((comment) => comment.parent === props.comment.id))
+});
+
+watchEffect(async() => {
+
+    await getComments()
+    thisParentComments.value = computed(() => commentsList.value.filter((comment) => comment.parent === props.comment.id))
+
+})
 </script>

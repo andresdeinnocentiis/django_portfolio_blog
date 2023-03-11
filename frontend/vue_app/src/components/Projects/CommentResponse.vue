@@ -58,7 +58,7 @@
                         <font-awesome-icon class="review-icons icons__like-action" v-if="isLiked" icon="fa-solid fa-heart" />
                         <font-awesome-icon class="review-icons icons__like-action" v-else icon="fa-regular fa-heart" />
                     </div>
-                    <font-awesome-icon class="review-icons icons__comment-action" icon="fa-regular fa-comment" />
+                    <font-awesome-icon class="review-icons icons__comment-action" icon="fa-regular fa-comment" @click.prevent="toggleLeaveResponse" />
                 </div>
                 <div class="likes-count">
                     <p class="count-text"><span class="amount-likes">{{ response.likes }}</span> {{ response.likes != 1 ? 'likes' : 'like' }}</p>
@@ -72,25 +72,50 @@
                     :class="{'admin-actions-isOwner':response.user && userInfo && response.user.id === userInfo.id || response.anonymous_user && anonymousUserInfo && response.anonymous_user.id === anonymousUserInfo.id}"
                 >
                     <font-awesome-icon v-if="isUserOwner" icon="fa-solid fa-pen-to-square" class="review-admin-action-btn edit" @click.prevent="toggleEditComment"/>
-                    <font-awesome-icon icon="fa-solid fa-trash" class="review-admin-action-btn delete" @click.prevent="handleToggleSureModal" />
+                    <font-awesome-icon icon="fa-solid fa-trash" class="review-admin-action-btn delete" @click.prevent="handleDeleteResponse" />
                 </div>
             </div>
         </div>
-        <ResponsesThread v-if="response.comments > 0 && showResponses" :parentId="response.id" :isOpen="showResponses" :parent="'comment'" />
-    </div>
+        <LeaveComment 
+            v-if="onLeaveResponse" 
+            :parentId="response.id" 
+            :parent="'comment'"
+            @update:onLeaveComment="closeLeaveResponse" 
+            @new-comment="handleNewResponse" 
+        /> 
 
-    
-    
+        <div v-if="response.comments > 0 && showResponses">
+            <h1 v-if="showResponses" class="review__title">- Replies -</h1>
+            <transition 
+                enter-active-class="animate__animated animate__bounceIn"
+                leave-active-class="animate__animated animate__bounceOut"
+                mode="out-in" 
+            >
+                <div v-if="showResponses" class="comments-thread-container">
+                    
+                    <div class="reviews-container comments-container">
+                        <!--<LeaveComment :reviewId="parentId" />-->
+                        <CommentResponse 
+                            v-for="response in thisParentComments.value" 
+                            :key="response.id" 
+                            class="comment" 
+                            :response="response"    
+                        />
+                    </div>
+                </div>
+            </transition>
+        </div>
+    </div>
 </template>
 
 <script setup>
-import { ref, defineEmits } from "vue";
+import { watchEffect, ref, defineEmits, onMounted, computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useCommentsStore } from "../../stores/comments";
 import { useUserLoggedStore } from "../../stores/userLogged";
 import { useLikesStore } from "../../stores/likes";
 import { useModalStore } from "../../stores/modal";
-import ResponsesThread from "./ResponsesThread.vue";
+import LeaveComment from "./LeaveComment.vue";
 
 
 
@@ -105,14 +130,16 @@ const props = defineProps({
 const responseContent = props.response.content
 const onEdit = ref(false)
 
+const onLeaveResponse = ref(false)
+
 const emits = defineEmits(['delete-comment'])
 
 const userLoggedStore = useUserLoggedStore()
 const { isUserAdmin, userInfo, anonymousUserInfo } = storeToRefs(userLoggedStore)
 
 const commentsStore = useCommentsStore()
-const { updateResponse, getCommentsForParent} = commentsStore
-const { commentId } = storeToRefs(commentsStore)
+const { updateResponse, getComments, deleteComment} = commentsStore
+const { commentId, commentsList } = storeToRefs(commentsStore)
 
 const likesStore = useLikesStore()
 const { postLike, deleteLike, getUserLikeForComment } = likesStore
@@ -125,6 +152,9 @@ const { toggleSureModal } = modalStore
 const isLiked = ref(false)
 
 const showResponses = ref(false)
+
+await getComments()
+let thisParentComments = ref([])
 
 let isUserOwner 
 
@@ -150,6 +180,18 @@ const cancelEditResponse = () => {
     onEdit.value = false
 }
 
+
+const handleDeleteResponse = async () => {
+    commentId.value = props.response.id
+    if (userInfo.value) {
+        await deleteComment(commentId.value, userInfo.value)
+    } else if (anonymousUserInfo.value) {
+        await deleteComment(commentId.value, anonymousUserInfo.value)
+    }
+    commentId.value = null
+    emits("delete-comment")
+    await getComments()
+}
 
 const handleCommentLikeClick = async (commentId) => {
 
@@ -210,6 +252,20 @@ const handleCommentLikeClick = async (commentId) => {
 }
 
 
+
+const toggleLeaveResponse = () => {
+    onLeaveResponse.value = !onLeaveResponse.value
+}
+
+const closeLeaveResponse = () => {
+    onLeaveResponse.value = false
+}
+
+
+const handleNewResponse = () => {
+    props.response.comments += 1 
+}
+
 const handleConfirmEdit = async () => {
     commentId.value = props.response.id
     try {
@@ -251,9 +307,17 @@ const formattedDate = date.toLocaleDateString("en-US", options).replace('AM', 'a
 
 
 
-const handleToggleSureModal = () => {
-    commentId.value = props.response.id
-    toggleSureModal()
-}
+onMounted(async () => {
+    await getComments();
+    
+    thisParentComments.value = computed(() => commentsList.value.filter((comment) => comment.parent === props.response.id))
+});
+
+watchEffect(async() => {
+
+    await getComments()
+    thisParentComments.value = computed(() => commentsList.value.filter((comment) => comment.parent === props.response.id))
+
+})
 
 </script>

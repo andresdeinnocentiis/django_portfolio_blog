@@ -62,7 +62,7 @@ export const useCommentsStore = defineStore('commentsStore', () => {
                 // Save the reviews info to local storage
                 localStorage.setItem('commentsList', JSON.stringify(reviewComments))
 
-                return true
+                return reviewComments
             } else {
                 // Handle failure
                 currentReviewComments.value = null
@@ -195,7 +195,7 @@ export const useCommentsStore = defineStore('commentsStore', () => {
     }
 
 
-    const postComment = async (comment, reviewId) => {
+    const postComment = async (comment) => {
         try {
             const response = await getAPI.post('/api/comments/post/', comment, {
             headers: {
@@ -204,9 +204,9 @@ export const useCommentsStore = defineStore('commentsStore', () => {
             });
 
             // Now we update the current post's comments:
-            await getCommentsForReview(reviewId)
+            //await getCommentsForReview(reviewId)
 
-            return true
+
         } catch (error) { 
             console.log(error);
             console.error(error);
@@ -277,16 +277,13 @@ export const useCommentsStore = defineStore('commentsStore', () => {
         }
     }
 
-    const deleteComment = async (commentId, reviewId, user) => {
+    const deleteComment = async (commentId, user) => {
         try {
             const response = await getAPI.delete(`/api/comments/${commentId}/delete/`, {
                 data: {
                     userInfo: user
                 }
             })
-
-            // Now we update the current post's reviews:
-            getCommentsForReview(reviewId)
 
             return true
         } catch (error) {

@@ -236,6 +236,7 @@
 /* ============= LEAVE A REVIEW ============== */
 .leave-review-container {
     display: flex;
+    width: 25vw;
 }
 
 .leave-review-btn {
@@ -243,7 +244,7 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    width: 30%;
+    width: 100%;
     word-break: break-all;
     padding: 1.5rem;
     box-shadow: 13px 13px 40px -21px rgba(40,67,125,0.75);

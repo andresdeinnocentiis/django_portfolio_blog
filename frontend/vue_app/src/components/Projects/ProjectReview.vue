@@ -66,9 +66,35 @@
                 </div>
             </div>
         </div>
-        <LeaveComment v-if="onLeaveComment" :reviewId="review.id" @update:onLeaveComment="closeLeaveComment"/>
-        <CommentsThread v-if="review.comments > 0 " :parentId="review.id" :isOpen="showComments" :parent="'review'" />
-        
+        <LeaveComment 
+            v-if="onLeaveComment" 
+            :reviewId="review.id" 
+            :parent="'review'"
+            @update:onLeaveComment="closeLeaveComment" 
+            @new-comment="handleNewComment" 
+        />
+        <!--<CommentsThread v-if="review.comments > 0 " :parentId="review.id" :isOpen="showComments" :parent="'review'" />-->
+            <div v-if="review.comments > 0 && showComments">
+                <h1 v-if="showComments"  class="review__title">- Comments -</h1>
+                <transition 
+                    enter-active-class="animate__animated animate__bounceIn"
+                    leave-active-class="animate__animated animate__bounceOut"
+                    mode="out-in" 
+                >
+                    <div v-if="showComments" class="comments-thread-container">
+                        
+                        <div class="reviews-container comments-container">
+                            <ReviewComment 
+                                v-for="comment in thisReviewComments.value" 
+                                :key="comment.id" 
+                                class="comment" 
+                                :comment="comment"    
+                                @delete-comment="handleSubstractComment"
+                            />
+                        </div>
+                    </div>
+                </transition>
+            </div>
     </div>
 
     
@@ -76,17 +102,19 @@
 </template>
 
 <script setup>
-import { watchEffect, ref, defineEmits } from "vue";
+import { watchEffect, ref, defineEmits, onMounted, computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useReviewsStore } from "../../stores/reviews";
 import { useUserLoggedStore } from "../../stores/userLogged";
 import { useLikesStore } from "../../stores/likes";
 import { useModalStore } from "../../stores/modal";
 import { usePostsStore } from "../../stores/posts";
+import { useCommentsStore } from "../../stores/comments";
 import StarRating from '../Elements/StarRating.vue';
 import StarRatingAction from "../Elements/StarRatingAction.vue";
-import CommentsThread from "./CommentsThread.vue";
 import LeaveComment from "./LeaveComment.vue";
+import ReviewComment from "./ReviewComment.vue";
+
 
 
 
@@ -119,6 +147,14 @@ const { toggleSureModal } = modalStore
 
 const postsStore = usePostsStore()
 const { getPostDetails } = postsStore
+
+const commentsStore = useCommentsStore()
+const { getComments, deleteComment } = commentsStore
+const { commentId, commentsList } = storeToRefs(commentsStore)
+
+
+await getComments()
+let thisReviewComments = ref([])
 
 
 const isLiked = ref(false)
@@ -273,11 +309,28 @@ const handleToggleSureModal = () => {
     toggleSureModal()
 }
 
-watchEffect(() => {
+const handleNewComment = () => {
+    props.review.comments += 1 
+}
+
+const handleSubstractComment = () => {
+
+    props.review.comments -= 1 
+}
+
+onMounted(async () => {
+    await getComments();
+    
+    thisReviewComments.value = computed(() => commentsList.value.filter((comment) => comment.review === props.review.id))
+});
+
+watchEffect(async() => {
     getPostDetails(props.review.post)
     currentPostReviews.value
     props.review.rating
-    props.review.comments
-})
 
+    await getComments()
+    thisReviewComments.value = computed(() => commentsList.value.filter((comment) => comment.review === props.review.id))
+
+})
 </script>
