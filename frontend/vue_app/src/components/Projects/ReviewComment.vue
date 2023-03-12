@@ -38,7 +38,7 @@
                 </textarea>
                 <span class="placeholder-textarea">Write your comment</span>
             </label>
-            <p v-else class="review-content">{{comment.content}}</p>
+            <p v-else class="review-content"><strong>@{{repliedTo}}</strong>, {{comment.content}}</p>
             
             <div v-if="onEdit" class="review-extra-container confirm-edit-container comment-extra-container"
                 :class="{'comment-extra-isOwner':comment.user && userInfo && comment.user.id === userInfo.id || comment.anonymous_user && anonymousUserInfo && comment.anonymous_user.id === anonymousUserInfo.id}"
@@ -78,7 +78,7 @@
             v-if="onLeaveComment" 
             :parentId="comment.id" 
             :parent="'comment'"
-            @update:onLeaveComment="toggleLeaveComment" 
+            @update:onLeaveComment="closeLeaveComment" 
             @new-comment="handleNewResponse" 
         /> 
 
@@ -98,6 +98,7 @@
                             :key="response.id" 
                             class="comment" 
                             :response="response"    
+                            :repliedTo="comment.user ? comment.user.username : comment.anonymous_user.username"
                         />
                     </div>
                 </div>
@@ -126,7 +127,8 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    id: Number
+    id: Number,
+    repliedTo: String
 })
 
 const commentContent = props.comment.content
@@ -174,6 +176,11 @@ const toggleEditComment = () => {
 
 const toggleShowResponses = () => {
     showResponses.value = !showResponses.value
+}
+
+
+const closeLeaveComment = () => {
+    onLeaveComment.value = false
 }
 
 const cancelEditComment = () => {

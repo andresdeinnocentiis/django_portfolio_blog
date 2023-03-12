@@ -9,6 +9,7 @@
 @import "./starRating.css";
 @import "./reviewsSection.css";
 @import "./commentsSection.css";
+@import "./about.css";
 
 * {
     margin: 0;

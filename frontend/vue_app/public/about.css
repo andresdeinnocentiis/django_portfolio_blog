@@ -1,0 +1,248 @@
+@import "./variables.css";
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.about-container {
+    display: flex;
+    padding: 0 2vw;
+    margin-bottom: 5vw;
+}
+
+.desc-section-container {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 30%;
+    flex-grow: 0;
+    flex-shrink: 0;
+    gap: 1.5vw;
+    
+}
+
+.skills-section-container {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 35%;
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin-left: 4vw;
+}
+
+.exp-section-container {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 28%;
+    flex-grow: 0;
+    flex-shrink: 0;
+    
+}
+
+.about-title {
+    font-size: 8vw;
+    background-color: var(--colorSpringGreen);
+    width: fit-content;
+    padding: 0 .7vw;
+    color: var(--colorWhite);
+}
+
+.about-short-desc {
+    font-size: 1.2vw;
+    line-height: 1.7vw;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+
+.about-full-desc-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1vw;
+    font-size: .9vw;
+    line-height: 1.3vw;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.about-email span {
+    color: var(--colorSpringGreen);
+}
+
+.click-here {
+    color: var(--colorSpringGreen);
+    font-weight: 500;
+}
+
+.click-here:hover, .click-here:focus {
+    cursor: pointer;
+}
+
+
+/*=========================== SKILLS SECTION ==========================*/
+
+.skills-section-container {
+    margin-top: 11vw;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.skills-section-container h3 {
+    font-size: 1.5vw;
+    width: fit-content;
+    padding-bottom: .5vw;
+    border-bottom: 2px solid var(--colorSpringGreen);
+}
+
+
+.about-techs-container {
+    margin: 2vw 0;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.th {
+    padding: 20px;
+}
+
+
+
+.validate-btn-col {
+    padding-left: 20px;
+}
+
+.about-techs-container th {
+    text-align: start;
+    
+}
+
+th {
+    padding: 1vw .5vw;
+}
+
+td {
+    padding: .3vw .5vw;
+}
+
+td:first-child {
+    border-bottom: 1px solid var(--colorSpringGreen);
+    
+}
+
+tr:first-child td {
+    padding-top: 1vw;
+}
+
+.table-num-validations {
+    text-align: center;
+}
+
+.validate-btn-td {
+    width: fit-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.validate-btn {
+    width: 100%;
+    background-color: var(--colorSpringGreen);
+    font-weight: 500;
+    padding: 10px 10px;
+    color: var(--colorGreyBlue);
+}
+
+.validate-header {
+    display: flex;
+    justify-content:flex-start;
+    text-align: center !important;
+}
+
+.table-study-desc {
+    text-align: center;
+}
+
+td:first-child {
+    width: 50%;
+
+}
+
+.study-cell-desc {
+    text-align: center;
+}
+
+/*====================== EXPERIENCE SECTION ==========================*/
+
+.exp-section-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.exp-img-container {
+    width: 17vw;
+    height: 17vw;
+    position: relative;
+    align-self: flex-end;
+}
+
+.exp-img-container::after {
+    content: "";
+    position: absolute;
+    width: 15vw;
+    height: 18vw;
+    border: 1vw solid var(--colorSpringGreen);
+    left: 3vw;
+    top: -1.5vw;
+    z-index: -1;
+}
+
+.exp-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(20%) contrast(110%);
+    object-position: 100% 30%;
+}
+
+.work-experience {
+    margin-top: 3vw;
+    display: flex;
+    flex-direction: column;
+    margin-left: 3vw;
+}
+
+.work-exp-container {
+    display: flex;
+    flex-direction: column;
+    align-self: flex-end;
+    justify-self: flex-end;
+    margin-top: 1.5vw;
+}
+
+.work-exp-row {
+    display: flex;
+
+    
+}
+
+.exp-years {
+    font-weight: 100;
+    width: 30%;
+    border-right: 3px solid var(--colorSpringGreen);
+    padding-right: 1vw;
+    padding-bottom: 1vw;
+}
+
+.exp-job {
+    font-weight: 300;
+    padding-left: 1vw;
+    padding-bottom: 1vw;
+    width: 60%;
+}
+
+.exp-job span {
+    font-weight: 500;
+    color: var(--colorEmerald);
+}

@@ -7,7 +7,7 @@ class TechnologyAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'years_exp', 'validations']
 
 class StudyAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'institution', 'type', 'from_date', 'to_date', 'validations']
+    list_display = ['id', 'name', 'description', 'institution', 'type', 'from_date', 'to_date', 'validations']
 
 class ValidationAdmin(admin.ModelAdmin):
     list_display = ['id', 'user_username', 'anonymous_identifier', 'technology_name', 'study_name']

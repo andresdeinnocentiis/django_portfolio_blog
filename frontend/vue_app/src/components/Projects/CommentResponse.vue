@@ -40,7 +40,7 @@
                 </textarea>
                 <span class="placeholder-textarea">Write your reply</span>
             </label>
-            <p v-else class="review-content">{{response.content}}</p>
+            <p v-else class="review-content"><strong>@{{repliedTo}}</strong>, {{response.content}}</p>
             
             <div v-if="onEdit" class="review-extra-container confirm-edit-container comment-extra-container"
                 :class="{'comment-extra-isOwner':response.user && userInfo && response.user.id === userInfo.id || response.anonymous_user && anonymousUserInfo && response.anonymous_user.id === anonymousUserInfo.id}"
@@ -124,7 +124,8 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    id: Number
+    id: Number,
+    repliedTo: String
 })
 
 const responseContent = props.response.content

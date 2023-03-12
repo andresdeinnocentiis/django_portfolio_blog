@@ -49,6 +49,11 @@
 .comment-isOwner .comment-username {
     color: var(--colorGreyBlue) !important;
 }
+
+.review-content strong {
+    font-style: italic;
+}
+
 .review.comment-container .comment-extra-isOwner{
     border-top: 1px solid var(--colorGreyBlue) !important;
 }

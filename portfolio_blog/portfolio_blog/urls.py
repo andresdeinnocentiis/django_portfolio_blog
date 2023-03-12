@@ -29,8 +29,6 @@ urlpatterns = [
     path('about/', about, name="about"),
     path('resume/', resume, name="resume"),
     
-    path('extras/', include('Extra.urls.extra_urls')),
-    
     # API URLS
     
     path('api/users/', include('UserProfile.urls.user_api_urls')),

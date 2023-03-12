@@ -89,6 +89,7 @@
                                 :key="comment.id" 
                                 class="comment" 
                                 :comment="comment"    
+                                :repliedTo="review.user ? review.user.username : review.anonymous_user.username"
                                 @delete-comment="handleSubstractComment"
                             />
                         </div>

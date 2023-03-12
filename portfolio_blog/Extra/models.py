@@ -7,7 +7,6 @@ class Technology(models.Model):
     name = models.CharField(max_length=100)
     image = models.ImageField(null=True, blank=True,upload_to=f'tech_images')
     years_exp = models.FloatField(default=0.0)
-    validations = models.IntegerField(default=0)
     
     def get_validations_count(self):
         return Validation.objects.filter(technology=self).count()
@@ -22,11 +21,11 @@ class Technology(models.Model):
 class Study(models.Model):
     name = models.CharField(max_length=100)
     type = models.CharField(max_length=100)
-    institution = models.CharField(max_length=100)
+    institution = models.CharField(max_length=100,null=True, blank=True)
     image = models.ImageField(null=True, blank=True,upload_to=f'study_images')
     description = models.TextField()
-    from_date = models.DateField()
-    to_date = models.DateField()
+    from_date = models.DateField(null=True, blank=True)
+    to_date = models.DateField(null=True, blank=True)
     institution_link = models.CharField(max_length=100,null=True, blank=True)
     certificate_link = models.CharField(max_length=100,null=True, blank=True)
     validations = models.IntegerField(default=0)

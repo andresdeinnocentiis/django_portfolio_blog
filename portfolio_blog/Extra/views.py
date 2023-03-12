@@ -18,82 +18,6 @@ from rest_framework.generics import (
 )
 
 # Create your views here.
-def get_all_studies(request):
-    
-    studies = Study.objects.all()
-    
-    context = {
-        'studies': studies,   
-    }
-    
-    return render(request, 'pages/Extra/all_studies.html', context)
-
-
-def get_all_technologies(request):
-    
-    technologies = Technology.objects.all()
-    
-    context = {
-        'technologies': technologies,   
-    }
-    
-    return render(request, 'pages/Extra/all_technologies.html', context)
-
-
-def add_study(request):
-    if request.method == 'POST':
-        
-        add_study_form = AddStudyForm(request.POST, request.FILES)
-        
-        if add_study_form.is_valid():
-            
-            info = add_study_form.cleaned_data
-            
-            study = Study.objects.create(
-                name = info['name'],
-                type = info['type'],
-                institution = info['institution'],
-                image = info['image'],
-                description = info['description'],
-                from_date = info['from_date'],
-                to_date = info['to_date'],
-                institution_link = info['institution_link'],
-                certificate_link = info['certificate_link'],
-            )
-            
-            study.save()
-            
-            return redirect('/extras/studies')
-        
-    else:
-        add_study_form = AddStudyForm()
-        
-    return render(request, 'pages/Extra/add_study.html', {'add_study_form': add_study_form})
-
-
-def add_technology(request):
-    if request.method == 'POST':
-        
-        add_tech_form = AddTechnologyForm(request.POST, request.FILES)
-        
-        if add_tech_form.is_valid():
-            
-            info = add_tech_form.cleaned_data
-            
-            tech = Technology.objects.create(
-                name = info['name'],
-                image = info['image'],
-                years_exp = info['years_exp'],
-            )
-            
-            tech.save()
-            
-            return redirect('/extras/technologies')
-        
-    else:
-        add_tech_form = AddTechnologyForm()
-        
-    return render(request, 'pages/Extra/add_tech.html', {'add_tech_form': add_tech_form})
 
 
 #NOTE: STUDY VIEWS:
@@ -104,9 +28,7 @@ class GetStudysAPIView(ListAPIView):
     '''
     queryset = Study.objects.all()
     serializer_class = StudySerializer
-    # permission_classes = [IsAuthenticated, IsAdminUser]
-    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    # authentication_classes = [JWTAuthentication]
+
     
 class GetSingleStudyAPIView(RetrieveAPIView):
     __doc__ = f'''
@@ -226,6 +148,9 @@ class DestroyTechnologyAPIView(DestroyAPIView):
     # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
     authentication_classes = [JWTAuthentication]
 
+
+
+
 #NOTE: VALIDATION VIEWS:
 class GetValidationsAPIView(ListAPIView):
     __doc__ = f'''
@@ -234,9 +159,7 @@ class GetValidationsAPIView(ListAPIView):
     '''
     queryset = Validation.objects.all()
     serializer_class = ValidationSerializer
-    # permission_classes = [IsAuthenticated, IsAdminUser]
-    # # Agregamos esta autenticación para poder mandar requests a la API teniendo instalado Simple JWT Token
-    # authentication_classes = [JWTAuthentication]
+
     
 class GetSingleValidationAPIView(RetrieveAPIView):
     __doc__ = f'''
@@ -253,6 +176,105 @@ class GetSingleValidationAPIView(RetrieveAPIView):
             pk = self.kwargs['pk']
             obj = Validation.objects.get(pk=pk)
             return obj
+        except Validation.DoesNotExist:
+            raise Http404
+        except Exception as error:
+            return {'error': f'The following error has occurred: {error}'}
+        
+
+class GetUserValidationForTechnologyAPIView(ListAPIView):
+    __doc__ = f'''
+    `[GET]`
+    This API view returns the user Validation for a determined Technology.
+    '''
+    serializer_class = ValidationSerializer
+    
+    queryset = Validation.objects.all()
+
+    def get_queryset(self):
+        try:
+            skillId = self.kwargs['skillId']
+            identifier = self.kwargs['identifier']
+
+            validations_x_tech = self.queryset.filter(technology=skillId)
+            user_Validation_x_tech = validations_x_tech.filter(user=identifier)
+            
+            return user_Validation_x_tech
+
+        except Validation.DoesNotExist:
+            raise Http404
+        except Exception as error:
+            return {'error': f'The following error has occurred: {error}'}
+
+class GetAnonUserValidationForTechnologyAPIView(ListAPIView):
+    __doc__ = f'''
+    `[GET]`
+    This API view returns the anonymous user like for a determined review.
+    '''
+    serializer_class = ValidationSerializer
+    
+    queryset = Validation.objects.all()
+
+    def get_queryset(self):
+        try:
+            skillId = self.kwargs['skillId']
+            identifier = self.kwargs['identifier']
+
+            validations_x_tech = self.queryset.filter(technology=skillId)
+            user_Validation_x_tech = validations_x_tech.filter(anonymous_identifier=identifier)
+            
+            return user_Validation_x_tech
+
+        except Validation.DoesNotExist:
+            raise Http404
+        except Exception as error:
+            return {'error': f'The following error has occurred: {error}'}
+        
+        
+
+class GetUserValidationForStudyAPIView(ListAPIView):
+    __doc__ = f'''
+    `[GET]`
+    This API view returns the user Validation for a determined Study.
+    '''
+    serializer_class = ValidationSerializer
+    
+    queryset = Validation.objects.all()
+
+    def get_queryset(self):
+        try:
+            studyId = self.kwargs['studyId']
+            identifier = self.kwargs['identifier']
+
+            validations_x_study = self.queryset.filter(study=studyId)
+            user_validation_x_study = validations_x_study.filter(user=identifier)
+            
+            return user_validation_x_study
+
+        except Validation.DoesNotExist:
+            raise Http404
+        except Exception as error:
+            return {'error': f'The following error has occurred: {error}'}
+
+class GetAnonUserValidationForStudyAPIView(ListAPIView):
+    __doc__ = f'''
+    `[GET]`
+    This API view returns the anonymous user like for a determined review.
+    '''
+    serializer_class = ValidationSerializer
+    
+    queryset = Validation.objects.all()
+
+    def get_queryset(self):
+        try:
+            studyId = self.kwargs['studyId']
+            identifier = self.kwargs['identifier']
+
+            validations_x_study = self.queryset.filter(study=studyId)
+            user_validation_x_study = validations_x_study.filter(anonymous_identifier=identifier)
+            
+            return user_validation_x_study
+
         except Validation.DoesNotExist:
             raise Http404
         except Exception as error:
