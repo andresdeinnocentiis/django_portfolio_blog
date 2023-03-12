@@ -172,6 +172,11 @@ td:first-child {
     text-align: center;
 }
 
+.validate-btn:hover, .validate-btn:focus {
+    background-color: var(--textInfo);
+    color: var(--colorWhite);
+}
+
 /*====================== EXPERIENCE SECTION ==========================*/
 
 .exp-section-container {
