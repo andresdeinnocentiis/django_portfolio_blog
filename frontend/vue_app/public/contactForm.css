@@ -1,0 +1,84 @@
+@import "./variables.css";
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.contact-form-container {
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    min-height: 83vh;
+    margin: 0 auto;
+    background-color: var(--colorAbsoluteWhite);
+    padding: 3vw;
+    margin-bottom: 3vw;
+}
+
+.contact-form-title {
+    margin-bottom: 1vw;
+    color: var(--colorGreyBlue);
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5vw;
+}
+
+.contact-form-placeholder {
+    color: var(--colorGreyBlue);
+}
+
+.contact-form-btns-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 2vw;
+}
+
+.contact-form-btns-container a {
+    color: var(--colorEmerald);
+    font-weight: 500;
+    padding-left: .5vw;
+}
+
+.register-btns {
+    margin-top: 1.5vw;
+}
+
+.already-user {
+    color: var(--colorGreyBlue);
+}
+.contact-send {
+    background-color: var(--colorSpringGreen);
+    color: var(--colorGreyBlue);
+    padding: .5vw 1vw;
+    transition: all .3s;
+}
+
+.contact-reset {
+    background-color: var(--textDanger);
+    color: var(--colorWhite);
+    padding: .5vw 1vw;
+    transition: all .3s;
+}
+
+.contact-send:hover, .contact-send:focus {
+    background-color: var(--colorWhite);
+    color: var(--colorEmerald);
+    border: 1px solid var(--colorEmerald);
+    padding: .5vw 1vw;
+    transition: all .3s;
+}
+
+.contact-reset:hover, .contact-reset:focus {
+    background-color: var(--colorWhite);
+    color: var(--textDanger);
+    border: 1px solid var(--textDanger);
+    padding: .5vw 1vw;
+    transition: all .3s;
+}

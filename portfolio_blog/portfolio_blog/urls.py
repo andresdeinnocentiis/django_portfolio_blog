@@ -15,21 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from portfolio_blog.views import home, contact, about, resume
 from django.conf.urls.static import static
 from django.conf import settings
-
+from . import views
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     
-    path('', home, name="home"),
-    path('contact/', contact, name="contact"),
-    path('about/', about, name="about"),
-    path('resume/', resume, name="resume"),
+ 
     
     # API URLS
+    path('api/send_email/', views.send_email, name='send_email'),
     
     path('api/users/', include('UserProfile.urls.user_api_urls')),
     path('api/anonymous_users/', include('UserProfile.urls.anonymous_user_api_urls')),

@@ -29,7 +29,7 @@
             :class="{'dark-theme-last-nav-item':darkModeStore.isDarkMode, 'light-theme-last-nav-item':!darkModeStore.isDarkMode}"
         >    
             <router-link :to="{name: 'login'}" :class="{'dark-theme-link':darkModeStore.isDarkMode, 'light-theme-link':!darkModeStore.isDarkMode}">
-                Login
+                Login / Register
             </router-link> 
         </li>
     </div>

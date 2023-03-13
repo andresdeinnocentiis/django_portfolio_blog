@@ -10,7 +10,31 @@ export const useUserLoggedStore = defineStore("userLogged", () => {
   const logging = ref(false)
   const isUserAdmin = ref(false)
 
-  
+  const getUserDetails = async (userId) => {
+    try {
+      const response = await getAPI.get(`/api/users/${userId}/get/`)
+
+      if (response.data) {
+      // Update the store state with the user's information
+          const user = response.data
+
+          userInfo.value = user
+          // Save the user info to local storage
+          localStorage.setItem('userInfo', JSON.stringify(user))
+          
+      } else {
+          // Handle failure
+          userInfo.value = null
+          // Throw an error or display an error message to the user
+          throw new Error('Failed getting the user. Please try again.')
+
+      }
+
+  } catch(error) { 
+      console.error("ERROR: ", error);
+
+  }
+  }
 
   const login = async (username, password) => {
     try{
@@ -184,7 +208,81 @@ export const useUserLoggedStore = defineStore("userLogged", () => {
 
   }
 
+  const createUser = async (userData) => {
+    try {
+      const response = await getAPI.post('/api/users/register/', userData, {
+        headers: {
+          'Content-Type': 'application/json',
+        }, timeout: 10000 
+      });
+
+      if (response.data) {
+        const user = response.data
+        login(userData.username, userData.password)
+      }
+
+
+      return true
+    } catch (error) { 
+        console.log(error);
+        return false
+    }
+  }
+
+
+  const deleteUser = async (userId) => {
+    try {
+        const response = await getAPI.delete(`/api/users/${userId}/delete/`, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.value.token}`
+            }
+        })
+
+        logout()
+
+        // We redirect to the Home section:
+        setTimeout(() => {
+            router.push({name: 'home'})
+        }, 2000)
+        
+
+        return true
+    } catch (error) {
+        console.log(error);
+
+        return false
+    }
+  }
+
+  const updateUser = async (id, user) => {
+    try {
+        const response = await getAPI.put(`/api/users/${id}/update/`, user, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${userInfo.value.token}`
+        }
+        });
+
+        // Now we update the userInfo:
+        getUserDetails(id)
+
+        return true
+    } catch (error) { 
+        console.log(error);
+        console.error(error);
+        return false
+    }
+  }
+
+
+
   loadUserInfo()
   
-  return { userInfo, anonymousUserInfo, login, logout, isUserLogged, isUserAdmin, isAnonymousUserDetected, createAnonymousUser, getAnonymousUser, loadUserInfo }
+  return { userInfo, anonymousUserInfo, 
+    login, logout, isUserLogged, isUserAdmin, 
+    isAnonymousUserDetected, createAnonymousUser, 
+    getAnonymousUser, loadUserInfo,
+    deleteUser, updateUser, getUserDetails, createUser
+  }
 });

@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
+from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
@@ -59,6 +60,25 @@ class MyTokenObtainPairView(TokenObtainPairView):
     
 
 #NOTE: API USER VIEWS:
+
+# Check if username exists:
+def username_exists(request):
+    username = request.GET.get('username')
+    user_exists = User.objects.filter(username=username).exists()
+    data = {
+        'username_exists': user_exists
+    }
+    return JsonResponse(data)
+
+# Check if email exists:
+def email_exists(request):
+    email = request.GET.get('email')
+    email_exists = User.objects.filter(email=email).exists()
+    data = {
+        'email_exists': email_exists
+    }
+    return JsonResponse(data)
+
 class GetUserAPIView(ListAPIView):
     __doc__ = f'''
     `[GET]`
@@ -105,12 +125,27 @@ class RegisterUserAPIView(CreateAPIView):
     serializer_class = UserSerializerWithToken
     
     def perform_create(self, serializer):
-
+        print("SERIALIZER VAL. DATA: ", serializer.validated_data)
         password = make_password(serializer.validated_data['password'])
         user = serializer.save(password=password)
         UserProfile.objects.create(user=user)
 
-
+@api_view(['POST'])
+def registerUser(request):
+    data = request.data
+    try:
+        user = User.objects.create(
+            username = data['email'],
+            email= data['email'],
+            password = make_password(data['password'])
+        )
+        serializer = UserSerializerWithToken(user, many=False)
+        UserProfile.objects.create(user=user, linkedin=data['linkedin'])
+        
+        return Response(serializer.data)
+    except:
+        message = {'detail':'User with this email already exists'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
     
     
 class UpdateUserAPIView(UpdateAPIView):

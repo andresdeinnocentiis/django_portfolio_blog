@@ -10,6 +10,8 @@
 @import "./reviewsSection.css";
 @import "./commentsSection.css";
 @import "./about.css";
+@import "./contactForm.css";
+@import "./registerForm.css";
 
 * {
     margin: 0;
